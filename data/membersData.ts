@@ -13,7 +13,7 @@ const membersData: MemberData[] = [
     name: 'sahuang',
     description: '',
     specialties: ['Crypto', 'OSINT'],
-    gravatarHash: '00000000000000000000000000000000',
+    gravatarHash: '740255f8ddc8f903d3addafb219ea077',
     socialLinks: {
       github: 'https://github.com/sahuang',
       linkedin: 'https://www.linkedin.com/in/xiaohai-xu-1a8884138/',
@@ -32,10 +32,31 @@ const membersData: MemberData[] = [
     },
   },
   {
-    name: 'michael',
+    name: 'michael@IOException',
     description: '',
     specialties: ['Crypto', 'Pwn'],
     gravatarHash: '00000000000000000000000000000001',
+    socialLinks: {},
+  },
+  {
+    name: 'msimonelli',
+    description: '',
+    specialties: ['Reverse', 'Pwn'],
+    gravatarHash: '00000000000000000000000000000002',
+    socialLinks: {},
+  },
+  {
+    name: 'FLUX',
+    description: '',
+    specialties: ['Web', 'Forensics'],
+    gravatarHash: '00000000000000000000000000000003',
+    socialLinks: {},
+  },
+  {
+    name: 'Philoguy1',
+    description: '',
+    specialties: ['Web', 'Misc'],
+    gravatarHash: '00000000000000000000000000000004',
     socialLinks: {},
   },
 ]
