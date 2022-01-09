@@ -397,6 +397,7 @@ const splashData = [
   { title: 'ガランド / ピコン', lyrics: 'Number 10884\n夜でも' },
   { title: 'Miku / Anamanaguchi', lyrics: 'I’m thinking Miku Miku\nOo-ee-oo' },
   { title: 'サラマンダー / DECO*27', lyrics: '頭の中は最高更新中' },
+  { title: 'アイデンティティ / Kanaria', lyrics: '落ちる\n流れ星と歪なあの星' },
 ]
 
 export default splashData

@@ -3,7 +3,7 @@ import { SocialBarProps } from '@/components/SocialBar'
 export interface MemberData {
   name: string
   description: string
-  gravatarHash: string,
+  gravatarHash: string
   specialties: string[]
   socialLinks: Partial<SocialBarProps>
 }
@@ -21,7 +21,7 @@ const membersData: MemberData[] = [
     },
   },
   {
-    name: 'Eana Hufwe',
+    name: 'Eana',
     description: 'Maintainer of the website.',
     specialties: ['Misc', 'Web'],
     gravatarHash: 'bee48ae645948fe70368ae0fb73ee2b2',
@@ -40,24 +40,32 @@ const membersData: MemberData[] = [
   },
   {
     name: 'msimonelli',
-    description: '',
+    description:
+      'hi! im marco. im a c++ dev and reverse engineer in my spare time, with the occasional sprinkling of pwn on the side',
     specialties: ['Reverse', 'Pwn'],
     gravatarHash: '00000000000000000000000000000002',
-    socialLinks: {},
+    socialLinks: {
+      github: 'https://github.com/m-simonelli',
+    },
   },
   {
     name: 'FLUX',
-    description: '',
+    description: 'Full Stack MERN + LAMP Developer | Geek | Web3 & Security Enthusiast',
     specialties: ['Web', 'Forensics'],
     gravatarHash: '00000000000000000000000000000003',
-    socialLinks: {},
+    socialLinks: {
+      github: 'https://github.com/pjflux2001',
+    },
   },
   {
-    name: 'Philoguy1',
-    description: '',
+    name: 'wlaasmi',
+    description: '3+ years of experience in cybersecurity working in France',
     specialties: ['Web', 'Misc'],
     gravatarHash: '00000000000000000000000000000004',
-    socialLinks: {},
+    socialLinks: {
+      linkedin: 'https://www.linkedin.com/in/walid-laasmi-374abb13a/',
+      github: 'https://github.com/jedai47/',
+    },
   },
 ]
 
