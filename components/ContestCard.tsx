@@ -4,7 +4,7 @@ import { ContestData } from '@/data/contestsData'
 const ContestCard = ({ place, ctftimeId, name, ctfPoints, ctftimeRating }: ContestData) => (
   <div className="w-full p-4 md:w-1/2" style={{ maxWidth: '544px' }}>
     <div className="flex flex-col h-full gap-6 p-6 overflow-hidden border-2 border-gray-200 rounded-md md:flex-row border-opacity-60 dark:border-gray-700">
-      <div className="relative w-16 mb-6 text-center h-fit">
+      <div className="relative w-16 mb-6 -mt-6 text-center h-fit">
         <div className="pt-6 pb-3 z-1 w-16 bg-gradient-to-b from-rose-700 to-rose-900 after:w-16 after:box-border after:absolute after:left-0 after:top-full after:h-6 after:border-l-[2rem] after:border-r-[2rem] after:border-b-[2rem] after:border-rose-900 after:border-b-transparent">
           <span
             className={
