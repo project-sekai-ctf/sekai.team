@@ -44,9 +44,9 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
         <div className="pt-8 pb-8 space-y-2 md:space-y-5">
           <p className="text-lg leading-7 text-center text-gray-500 dark:text-gray-400">
             <code
-              aria-label={`Project SEKAI is a CTF team with over ${membersData.length} members and participated in ${contestsData.length} contests.`}
+              aria-label={`Project SEKAI is a CTF team with over ${membersData.length} members and participated in over ${contestsData.length} contests.`}
             >
-              {`SEKAI{I5_\u200BA_\u200BCTF_\u200Bt3Am_\u200Bw/_\u200B${membersData.length}+_\u200BmbRs_\u200B&_\u200Bp4r71CiP4tEd_\u200Bin_\u200B${contestsData.length}_\u200Bc0nt3Stz}`}
+              {`SEKAI{I5_\u200BA_\u200BCTF_\u200Bt3Am_\u200Bw/_\u200B${membersData.length}+_\u200BmbRs_\u200B&_\u200Bp4r71CiP4tEd_\u200Bin_\u200B${contestsData.length}+_\u200Bc0nt3Stz}`}
             </code>
           </p>
         </div>
