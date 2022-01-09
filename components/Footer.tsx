@@ -29,6 +29,8 @@ export default function Footer() {
           </div>
         </div>
         <div className="mb-8 text-xs text-center text-gray-200 dark:text-gray-700">
+          This website is in no way affiliated with any of the following individuals or
+          organizations.
           <Link href="https://github.com/timlrx/tailwind-nextjs-starter-blog">
             Tailwind Nextjs Theme
           </Link>
