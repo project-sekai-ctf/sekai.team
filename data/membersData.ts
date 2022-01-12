@@ -32,7 +32,7 @@ const membersData: MemberData[] = [
     },
   },
   {
-    name: 'Michael Zhang',
+    name: 'michael',
     description: 'Associate Researcher at SIFT',
     specialties: ['Crypto', 'Pwn'],
     gravatarHash: '00000000000000000000000000000001',
