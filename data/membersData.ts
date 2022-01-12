@@ -11,7 +11,7 @@ export interface MemberData {
 const membersData: MemberData[] = [
   {
     name: 'sahuang',
-    description: '',
+    description: 'Rhythm Gamer',
     specialties: ['Crypto', 'OSINT'],
     gravatarHash: '740255f8ddc8f903d3addafb219ea077',
     socialLinks: {
@@ -32,11 +32,13 @@ const membersData: MemberData[] = [
     },
   },
   {
-    name: 'michael@IOException',
-    description: '',
+    name: 'Michael Zhang',
+    description: 'Associate Researcher at SIFT',
     specialties: ['Crypto', 'Pwn'],
     gravatarHash: '00000000000000000000000000000001',
-    socialLinks: {},
+    socialLinks: {
+      twitter: 'https://twitter.com/_mzhang',
+    },
   },
   {
     name: 'msimonelli',
