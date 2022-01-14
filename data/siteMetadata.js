@@ -5,7 +5,7 @@ const siteMetadata = {
   description: 'Website of Project SEKAI, yet another CTF team.',
   language: 'en-us',
   theme: 'dark', // system, dark or light
-  siteUrl: 'https://sekai.1a23.studio',
+  siteUrl: 'https://sekai.team',
   siteRepo: 'https://github.com/blueset/sekai.team',
   siteLogo: '/static/images/fullLogo.svg',
   image: '/static/images/avatar.png',

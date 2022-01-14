@@ -13,7 +13,6 @@ import remarkFootnotes from 'remark-footnotes'
 import remarkMath from 'remark-math'
 import remarkCodeTitles from './remark-code-title'
 import remarkTocHeadings from './remark-toc-headings'
-import remarkImgToJsx from './remark-img-to-jsx'
 // Rehype packages
 import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
@@ -41,7 +40,7 @@ export function dateSortDesc(a: string, b: string) {
   return 0
 }
 
-export async function getFileBySlug<T>(
+export async function getFileBySlug(
   type: 'authors' | 'blog',
   slug: string | string[]
 ): Promise<MdxFile> {

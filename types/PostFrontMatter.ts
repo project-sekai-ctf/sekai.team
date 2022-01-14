@@ -1,6 +1,6 @@
 export type PostFrontMatter = {
   title: string
-  date: string | Date | null
+  date: string
   tags: string[]
   lastmod?: string
   draft?: boolean
@@ -8,6 +8,6 @@ export type PostFrontMatter = {
   images?: string[]
   authors?: string[]
   layout?: string
-  slug: string
+  slug: string | null
   fileName: string
 }

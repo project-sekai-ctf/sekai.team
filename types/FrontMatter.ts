@@ -3,12 +3,12 @@ import { AuthorFrontMatter } from './AuthorFrontMatter'
 import { PostFrontMatter } from './PostFrontMatter'
 import { Toc } from './Toc'
 
-export type MdxFrontMatter = PostFrontMatter &
-  AuthorFrontMatter & {
+export type MdxFrontMatter = Omit<Partial<PostFrontMatter>, 'date' | 'slug'> &
+  Partial<AuthorFrontMatter> & {
     readingTime: IReadTimeResults
     slug: string | string[] | null
     fileName: string
-    date: Date | null
+    date: string | null
   }
 
 export type MdxFile = {
