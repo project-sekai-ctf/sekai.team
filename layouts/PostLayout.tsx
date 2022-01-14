@@ -48,8 +48,8 @@ export default function PostLayout({ frontMatter, authorDetails, next, prev, chi
                 <div>
                   <dt className="sr-only">Published on</dt>
                   <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
-                    <time dateTime={date}>
-                      {new Date(date).toLocaleDateString(siteMetadata.locale, postDateTemplate)}
+                    <time dateTime={date as string}>
+                      {new Date(date).toLocaleDateString(siteMetadata.dateLocale, postDateTemplate)}
                     </time>
                   </dd>
                 </div>
@@ -91,7 +91,7 @@ export default function PostLayout({ frontMatter, authorDetails, next, prev, chi
                               {author.twitter.replace('https://twitter.com/', '@')}
                             </Link>
                           ) : (
-                            <span className="text-gray-500">{author.occupation}</span>
+                            <span className="text-gray-500">{author.description}</span>
                           )}
                         </dd>
                       </dl>

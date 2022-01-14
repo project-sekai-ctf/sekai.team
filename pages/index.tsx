@@ -9,18 +9,23 @@ import { PostFrontMatter } from 'types/PostFrontMatter'
 import NewsletterForm from '@/components/NewsletterForm'
 import Splashscreen from '@/components/Splashscreen'
 import FullLogo from '@/data/fullLogo.svg'
-import membersData from '@/data/membersData'
+import { getMembersFiles } from '@/data/membersData'
 import contestsData from '@/data/contestsData'
+import { MdxFile } from 'types/FrontMatter'
 
 const MAX_DISPLAY = 5
 
-export const getStaticProps: GetStaticProps<{ posts: PostFrontMatter[] }> = async () => {
+export const getStaticProps: GetStaticProps<{
+  posts: PostFrontMatter[]
+  members: MdxFile[]
+}> = async () => {
   const posts = await getAllFilesFrontMatter('blog')
+  const members = await getMembersFiles()
 
-  return { props: { posts } }
+  return { props: { posts, members } }
 }
 
-export default function Home({ posts }: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Home({ posts, members }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <>
       <PageSEO title={siteMetadata.title} description={siteMetadata.description} />
@@ -44,9 +49,9 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
         <div className="pt-8 pb-8 space-y-2 md:space-y-5">
           <p className="text-lg leading-7 text-center text-gray-500 dark:text-gray-400">
             <code
-              aria-label={`Project SEKAI is a CTF team with over ${membersData.length} members and participated in over ${contestsData.length} contests.`}
+              aria-label={`Project SEKAI is a CTF team with over ${members.length} members and participated in over ${contestsData.length} contests.`}
             >
-              {`SEKAI{I5_\u200BA_\u200BCTF_\u200Bt3Am_\u200Bw/_\u200B${membersData.length}+_\u200BmbRs_\u200B&_\u200Bp4r71CiP4tEd_\u200Bin_\u200B${contestsData.length}+_\u200Bc0nt3Stz}`}
+              {`SEKAI{I5_\u200BA_\u200BCTF_\u200Bt3Am_\u200Bw/_\u200B${members.length}+_\u200BmbRs_\u200B&_\u200Bp4r71CiP4tEd_\u200Bin_\u200B${contestsData.length}+_\u200Bc0nt3Stz}`}
             </code>
           </p>
         </div>
@@ -61,7 +66,7 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
                     <dl>
                       <dt className="sr-only">Published on</dt>
                       <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
-                        <time dateTime={date}>{formatDate(date)}</time>
+                        <time dateTime={date as string}>{formatDate(date as string)}</time>
                       </dd>
                     </dl>
                     <div className="space-y-5 xl:col-span-3">

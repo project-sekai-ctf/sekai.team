@@ -20,6 +20,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypeKatex from 'rehype-katex'
 import rehypeCitation from 'rehype-citation'
 import rehypePrismPlus from 'rehype-prism-plus'
+import { MdxFile } from 'types/FrontMatter'
 
 const root = process.cwd()
 
@@ -40,7 +41,10 @@ export function dateSortDesc(a: string, b: string) {
   return 0
 }
 
-export async function getFileBySlug<T>(type: 'authors' | 'blog', slug: string | string[]) {
+export async function getFileBySlug<T>(
+  type: 'authors' | 'blog',
+  slug: string | string[]
+): Promise<MdxFile> {
   const mdxPath = path.join(root, 'data', type, `${slug}.mdx`)
   const mdPath = path.join(root, 'data', type, `${slug}.md`)
   const source = fs.existsSync(mdxPath)

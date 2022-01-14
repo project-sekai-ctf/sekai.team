@@ -1,16 +1,21 @@
 import SocialIcon from '@/components/social-icons'
 
-export interface SocialBarProps {
-  email?: string
-  github?: string
-  facebook?: string
-  youtube?: string
-  linkedin?: string
-  twitter?: string
-  ctftime?: string
-  discord?: string
-  web?: string
-  hackerearth?: string
+export const socialKeys = [
+  'email',
+  'github',
+  'facebook',
+  'youtube',
+  'linkedin',
+  'twitter',
+  'ctftime',
+  'discord',
+  'web',
+  'hackerearth',
+] as const
+
+export type SocialBarProps = {
+  [key in typeof socialKeys[number]]?: string
+} & {
   size?: number
 }
 

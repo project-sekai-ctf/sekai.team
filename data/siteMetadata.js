@@ -19,6 +19,7 @@ const siteMetadata = {
   ctftime: 'https://ctftime.org/team/169557',
   discord: 'https://discord.gg/JKW7pcBd',
   locale: 'en-US',
+  dateLocale: 'en-GB',
   analytics: {
     // supports plausible, simpleAnalytics or googleAnalytics
     plausibleDataDomain: '', // e.g. tailwind-nextjs-starter-blog.vercel.app

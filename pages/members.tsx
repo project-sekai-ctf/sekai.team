@@ -1,9 +1,17 @@
 import siteMetadata from '@/data/siteMetadata'
-import membersData from '@/data/membersData'
-import MemberCard from '@/components/MemberCard'
+import { getMembersFiles } from '@/data/membersData'
 import { PageSEO } from '@/components/SEO'
+import { GetStaticProps } from 'next'
+import { MDXLayoutRenderer } from '@/components/MDXComponents'
+import { MdxFile } from 'types/FrontMatter'
 
-export default function Projects() {
+export const getStaticProps: GetStaticProps<{
+  members: MdxFile[]
+}> = async () => {
+  return { props: { members: await getMembersFiles() } }
+}
+
+export default function Projects({ members }: { members: MdxFile[] }) {
   return (
     <>
       <PageSEO title={`Members - ${siteMetadata.title}`} description={siteMetadata.description} />
@@ -18,8 +26,14 @@ export default function Projects() {
         </div>
         <div className="container py-12">
           <div className="flex flex-wrap -m-4 place-items-stretch">
-            {membersData.map((d) => (
-              <MemberCard {...d} key={d.name} />
+            {members.map((d) => (
+              <MDXLayoutRenderer
+                layout="MemberLayout"
+                mdxSource={d.mdxSource}
+                frontMatter={d.frontMatter}
+                {...d}
+                key={d.frontMatter.name}
+              />
             ))}
           </div>
         </div>
