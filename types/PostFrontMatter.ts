@@ -8,6 +8,7 @@ export type PostFrontMatter = {
   images?: string[]
   authors?: string[]
   layout?: string
+  canonical?: string
   slug: string | null
   fileName: string
 }

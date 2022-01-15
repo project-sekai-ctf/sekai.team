@@ -31,7 +31,7 @@ interface Props {
 }
 
 export default function PostLayout({ frontMatter, authorDetails, next, prev, children }: Props) {
-  const { slug, fileName, date, title, tags } = frontMatter
+  const { slug, fileName, date, title, tags, canonical } = frontMatter
 
   return (
     <SectionContainer>
@@ -120,6 +120,16 @@ export default function PostLayout({ frontMatter, authorDetails, next, prev, chi
             </div>
             <footer>
               <div className="text-sm font-medium leading-5 divide-gray-200 xl:divide-y dark:divide-gray-700 xl:col-start-1 xl:row-start-2">
+                {canonical && (
+                  <div className="py-4 xl:py-8">
+                    <h2 className="text-xs tracking-wide text-gray-500 uppercase dark:text-gray-400">
+                      Originally published on
+                    </h2>
+                    <div className="flex flex-wrap text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+                      <Link href={canonical}>{new URL(canonical).hostname}</Link>
+                    </div>
+                  </div>
+                )}
                 {tags && (
                   <div className="py-4 xl:py-8">
                     <h2 className="text-xs tracking-wide text-gray-500 uppercase dark:text-gray-400">

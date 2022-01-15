@@ -99,6 +99,7 @@ export const BlogSEO = ({
   date,
   lastmod,
   url,
+  canonical,
   images = [],
 }: BlogSeoProps) => {
   const router = useRouter()
@@ -170,6 +171,7 @@ export const BlogSEO = ({
       <Head>
         {date && <meta property="article:published_time" content={publishedAt} />}
         {lastmod && <meta property="article:modified_time" content={modifiedAt} />}
+        {canonical && <link rel="canonical" href={canonical} />}
         <link rel="canonical" href={`${siteMetadata.siteUrl}${router.asPath}`} />
         <script
           type="application/ld+json"
