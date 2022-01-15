@@ -29,7 +29,11 @@ export default function MemberLayout({ frontMatter, children }: Props) {
   return (
     <div className="w-full p-4 md:w-1/2" style={{ maxWidth: '544px' }}>
       <div className="flex flex-col h-full gap-6 p-6 overflow-hidden border-2 border-gray-200 rounded-md md:flex-row border-opacity-60 dark:border-gray-700">
-        <img src={avatar} className="w-24 rounded h-fit" alt={`Profile pic of ${name}`} />
+        <img
+          src={avatar}
+          className="w-24 rounded h-auto self-start"
+          alt={`Profile pic of ${name}`}
+        />
         <div>
           <h2 className="mb-3 text-2xl font-bold leading-8 tracking-tight">{name}</h2>
           <p className="flex flex-row flex-wrap items-start gap-2 mb-3 max-w-none">
