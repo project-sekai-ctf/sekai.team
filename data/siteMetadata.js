@@ -17,7 +17,7 @@ const siteMetadata = {
   youtube: '',
   linkedin: '',
   ctftime: 'https://ctftime.org/team/169557',
-  discord: 'https://discord.gg/JKW7pcBd',
+  discord: 'https://discord.gg/6yHty4kp8m',
   locale: 'en-US',
   dateLocale: 'en-GB',
   analytics: {
