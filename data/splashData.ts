@@ -412,7 +412,7 @@ const splashData = [
     lyrics: 'ここに居られることに感謝しよう\nただ生きていることにありがとう',
   },
   { title: '愛して愛して愛して / きくお', lyrics: '幸せなの\n嗚呼' },
-  { title: '踊 / DECO*27, Giga', lyrics: '合図を奏でて\nprr prr prr prr yeah' },
+  { title: '踊 / DECO*27, Giga, TeddyLoid', lyrics: '合図を奏でて\nprr prr prr prr yeah' },
   { title: 'うっせぇわ / syudou', lyrics: '正しさとは\n愚かさとは' },
 ]
 
