@@ -398,6 +398,22 @@ const splashData = [
   { title: 'Miku / Anamanaguchi', lyrics: 'I’m thinking Miku Miku\nOo-ee-oo' },
   { title: 'サラマンダー / DECO*27', lyrics: '頭の中は最高更新中' },
   { title: 'アイデンティティ / Kanaria', lyrics: '落ちる\n流れ星と歪なあの星' },
+  {
+    title: 'にっこり^^調査隊のテーマ / ワンダフル☆オポチュニティ！',
+    lyrics: 'ぼくらには\n不可能を可能に変える\n何かがあるさ',
+  },
+  {
+    title: '君色マリンスノウ / カルロス袴田（サイゼP）',
+    lyrics:
+      'どっこいしょ～どっこいしょ！！\n(どっこいしょ～どっこいしょ！！)\nソーラン！ソーラン！\n(ソーラン！ソーラン！)',
+  },
+  {
+    title: '心拍数♯0822 / 蝶々P',
+    lyrics: 'ここに居られることに感謝しよう\nただ生きていることにありがとう',
+  },
+  { title: '愛して愛して愛して / きくお', lyrics: '幸せなの\n嗚呼' },
+  { title: '踊 / DECO*27, Giga', lyrics: '合図を奏でて\nprr prr prr prr yeah' },
+  { title: 'うっせぇわ / syudou', lyrics: '正しさとは\n愚かさとは' },
 ]
 
 export default splashData
