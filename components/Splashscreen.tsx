@@ -8,7 +8,7 @@ const prepareNode = (text: string, node: HTMLElement): HTMLElement => {
   node.classList.add('relative')
   const placeholder = document.createElement('div')
   placeholder.classList.add('invisible')
-  placeholder.innerText = text
+  placeholder.innerHTML = text
   const animator = document.createElement('div')
   animator.classList.add('absolute', 'top-0', 'left-0')
   animator.dataset.text = text
@@ -17,14 +17,18 @@ const prepareNode = (text: string, node: HTMLElement): HTMLElement => {
   return animator
 }
 
-const animateNode = (node: HTMLElement, length) => {
+const animateNode = (node: HTMLElement) => {
   const full = node.dataset.text
-  node.innerText = full.substring(0, length + 1)
-  if (node.innerText.length < full.length) {
-    setTimeout(() => {
-      animateNode(node, length + 1)
-    }, 25)
+  const chars = [...full.matchAll(/(<.+?>.?|.)/g)].map((c) => c[0])
+  let index = 1
+  const animate = () => {
+    node.innerHTML = chars.slice(0, index).join('')
+    if (index < chars.length) {
+      index++
+      setTimeout(animate, 25)
+    }
   }
+  animate()
 }
 
 const hideSplash = (node: HTMLElement) => {
@@ -61,7 +65,7 @@ const Splashscreen = () => {
 
       lineNodes.forEach((node, index) => {
         setTimeout(() => {
-          animateNode(node, 1)
+          animateNode(node)
         }, index * 200)
       })
 
