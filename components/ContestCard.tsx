@@ -8,7 +8,7 @@ const ContestCard = ({ place, ctftimeId, name, ctfPoints, ctftimeRating }: Conte
         <div className="pt-6 pb-3 z-1 w-16 bg-gradient-to-b from-rose-700 to-rose-900 after:w-16 after:box-border after:absolute after:left-0 after:top-full after:h-6 after:border-l-[2rem] after:border-r-[2rem] after:border-b-[2rem] after:border-rose-900 after:border-b-transparent">
           <span
             className={
-              place >= 100 ? '' : place >= 10 ? 'text-xl font-semibold' : 'text-2xl font-bold'
+              place >= 100 ? '' : place >= 10 ? 'text-2xl font-semibold' : 'text-3xl font-bold'
             }
           >
             <sup>#</sup>
@@ -27,7 +27,7 @@ const ContestCard = ({ place, ctftimeId, name, ctfPoints, ctftimeRating }: Conte
             Points: {ctfPoints}
           </span>
           <span className="inline-block px-3 py-1 text-white bg-green-800 rounded-full">
-            Rating: {ctftimeRating}
+            Rating: {isNaN(ctftimeRating) ? 'Pending' : ctftimeRating}
           </span>
         </p>
         <Link

@@ -170,7 +170,7 @@ const splashData = [
   },
   {
     title: '自傷無色 / ササノマリイ',
-    lyrics: '誰も僕を望まない\nそんな<b>世界</b>だったらいいのかな',
+    lyrics: '誰も僕を望まない\nそんな<b>世界</b>だったら\nいいのかな',
   },
   { title: 'ダンスロボットダンス / ナユタン星人', lyrics: '合理とは真逆のプログラム' },
   {
@@ -339,7 +339,7 @@ const splashData = [
   },
   {
     title: 'ミルククラウン・オン・ソーネチカ / ユジー',
-    lyrics: 'だって嘘ばかり tiny tiny <b>世界</b>に罪とか',
+    lyrics: 'だって嘘ばかり tiny tiny\n<b>世界</b>に罪とか',
   },
   {
     title: '愛されなくても君がいる / ピノキオピー',
@@ -646,6 +646,10 @@ const splashData = [
   { title: '愛して愛して愛して / きくお', lyrics: '幸せなの\n嗚呼' },
   { title: '踊 / DECO*27, Giga, TeddyLoid', lyrics: '合図を奏でて\nprr prr prr prr yeah' },
   { title: 'うっせぇわ / syudou', lyrics: '正しさとは\n愚かさとは' },
+  {
+    title: 'トリコロージュ / 煮ル果実',
+    lyrics: '痛みだってさ\n癒えぬ傷だってさ\nすべて生きてくため\n乗り越える試練',
+  },
 ]
 
 export default splashData
