@@ -4,10 +4,18 @@ export interface ContestData {
   name: string
   ctfPoints: number
   ctftimeRating: number
+  writeupTag?: string
 }
 
 const contestsData: ContestData[] = [
-  { place: 3, ctftimeId: 1545, name: 'KnightCTF 2022', ctfPoints: 5075.0, ctftimeRating: NaN },
+  {
+    place: 3,
+    ctftimeId: 1545,
+    name: 'KnightCTF 2022',
+    ctfPoints: 5075.0,
+    ctftimeRating: NaN,
+    writeupTag: 'knight-ctf-2022',
+  },
   { place: 46, ctftimeId: 1533, name: 'Newark Academy CTF', ctfPoints: 1265.0, ctftimeRating: NaN },
   { place: 49, ctftimeId: 1540, name: 'TetCTF 2022', ctfPoints: 516.0, ctftimeRating: 2.307 },
   { place: 8, ctftimeId: 1536, name: 'BackdoorCTF 2021', ctfPoints: 1524.0, ctftimeRating: 12.872 },

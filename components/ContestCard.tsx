@@ -1,7 +1,14 @@
 import Link from './Link'
 import { ContestData } from '@/data/contestsData'
 
-const ContestCard = ({ place, ctftimeId, name, ctfPoints, ctftimeRating }: ContestData) => (
+const ContestCard = ({
+  place,
+  ctftimeId,
+  name,
+  ctfPoints,
+  ctftimeRating,
+  writeupTag,
+}: ContestData) => (
   <div className="w-full p-4 md:w-1/2" style={{ maxWidth: '544px' }}>
     <div className="flex flex-col h-full gap-6 p-6 overflow-hidden border-2 border-gray-200 rounded-md md:flex-row border-opacity-60 dark:border-gray-700">
       <div className="relative w-16 mb-6 -mt-6 text-center h-fit">
@@ -32,11 +39,20 @@ const ContestCard = ({ place, ctftimeId, name, ctfPoints, ctftimeRating }: Conte
         </p>
         <Link
           href={`https://ctftime.org/event/${ctftimeId}`}
-          className="text-base font-medium leading-6 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-          aria-label={`Link to ${name}`}
+          className="text-base font-medium mr-2 leading-6 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+          aria-label={`CTFTime Link to ${name}`}
         >
           View on CTFTime &rarr;
         </Link>
+        {writeupTag && (
+          <Link
+            href={`/tags/${writeupTag}`}
+            className="text-base font-medium leading-6 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+            aria-label={`Writeups of ${name}`}
+          >
+            Our writeups &rarr;
+          </Link>
+        )}
       </div>
     </div>
   </div>
