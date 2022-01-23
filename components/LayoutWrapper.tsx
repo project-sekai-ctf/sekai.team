@@ -22,7 +22,7 @@ const LayoutWrapper = ({ children }: Props) => {
         <header className="flex items-center justify-between py-10">
           <div>
             {showTitle ? (
-              <Link href="/" aria-label="Tailwind CSS Blog">
+              <Link href="/" aria-label="Visit home page">
                 <div className="flex items-center justify-between">
                   <div className="mr-3">
                     <Logo height={80} width="auto" viewBox="0 0 279 200" />

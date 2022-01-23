@@ -2,6 +2,8 @@ import siteMetadata from '@/data/siteMetadata'
 import contestsData from '@/data/contestsData'
 import ContestCard from '@/components/ContestCard'
 import { PageSEO } from '@/components/SEO'
+import { groupBy } from 'lodash'
+import { Fragment } from 'react'
 
 export default function Projects() {
   return (
@@ -17,11 +19,20 @@ export default function Projects() {
           </p>
         </div>
         <div className="container py-12">
-          <div className="flex flex-wrap -m-4 place-items-stretch">
-            {contestsData.map((d) => (
-              <ContestCard {...d} key={d.name} />
+          {Object.entries(groupBy(contestsData, 'year'))
+            .sort((a, b) => b[0].localeCompare(a[0]))
+            .map(([year, contests]) => (
+              <Fragment key={year}>
+                <h2 className="text-2xl font-bold sm:text-3xl md:text-4xl mb-6 mt-12 first:mt-0">
+                  {year}
+                </h2>
+                <div className="flex flex-wrap -m-4 place-items-stretch">
+                  {contests.map((d) => (
+                    <ContestCard {...d} key={d.name} />
+                  ))}
+                </div>
+              </Fragment>
             ))}
-          </div>
         </div>
       </div>
     </>
