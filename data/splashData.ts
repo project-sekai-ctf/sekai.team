@@ -604,7 +604,7 @@ const splashData = [
   { title: 'ワールドワイドワンダー / TOKOTOKO', lyrics: '宇宙旅行に\nパスポートって要りますか' },
   {
     title: 'ワールドワイドワンダー / TOKOTOKO',
-    lyrics: '僕らが歩いていく<b>セカイ</b>のe明日はどんな色？',
+    lyrics: '僕らが歩いていく<b>セカイ</b>の\n明日はどんな色？',
   },
   {
     title: 'ラストスコア / せきこみごはん',
