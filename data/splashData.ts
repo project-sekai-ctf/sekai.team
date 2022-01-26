@@ -295,7 +295,7 @@ const splashData = [
     lyrics: '無意味な<b>世界</b>のルールくらい\n無駄としか言い様がない',
   },
   { title: 'from Y to Y / ジミーサムP', lyrics: 'ここは始まりか、\n終わりか……' },
-  { title: 'from Y to Y / ジミーサムP', lyrics: '願うことさえ許されない<b>世界</b>なのかな' },
+  { title: 'from Y to Y / ジミーサムP', lyrics: '願うことさえ許されない\n<b>世界</b>なのかな' },
   {
     title: '霽れを待つ / Orangestar',
     lyrics: '譲れないものただ一つ\n理由は知らぬまま\n生きて行く\n今も',
@@ -649,6 +649,10 @@ const splashData = [
   {
     title: 'トリコロージュ / 煮ル果実',
     lyrics: '痛みだってさ\n癒えぬ傷だってさ\nすべて生きてくため\n乗り越える試練',
+  },
+  {
+    title: 'コスモスパイス / ピノキオピー',
+    lyrics: '生命のきらめく\nまろやかな海\nニコイチでぼくら笑ってる',
   },
 ]
 
