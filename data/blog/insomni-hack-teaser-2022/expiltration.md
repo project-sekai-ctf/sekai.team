@@ -93,7 +93,7 @@ Looking at the source code, we can see that the script is encoding files to bina
 
 From online resources about Raspberry Pi, we can know that `led0` is the green LED and `led1` is the red LED.
 
-A Python script can be written to extract the luminosity of the LEDs frame-by-frame. The luminosity can then be polarized and compared to extract the bits.
+A Python script can be written to extract the luminance of the LEDs frame-by-frame. The luminance can then be polarized and compared to extract the bits.
 
 ```py
 import cv2
@@ -136,9 +136,9 @@ b = bitstring.BitArray(bin="".join(map(str, bits[1:])))
 print(b.bytes.decode())
 ```
 
-Below is a partial visualization of the luminosity of the LEDs frame by frame. The part shown below gives bytes `…000 0011 0111 0101 0101 0101 0110 010…`, which is `…7UV…` in ASCII bits.
+Below is a partial visualization of the luminance of the LEDs frame by frame. The part shown below gives bytes `…000 0011 0111 0101 0101 0101 0110 010…`, which is `…7UV…` in ASCII bits.
 
-![Partial visualization of the luminosity of the LEDs](/static/images/insomnihack-teaser-2022/visualization-led.png)
+![Partial visualization of the luminance of the LEDs](/static/images/insomnihack-teaser-2022/visualization-led.png)
 
 A Root Certificate Authority certificate and a private key is found from the extracted data.
 
