@@ -10,11 +10,28 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 30,
+    ctftimeId: 1505,
+    name: "Insomni'hack teaser 2022",
+    writeupTag: 'insomnihack-teaser-2022',
+    ctfPoints: 529,
+    ctftimeRating: NaN,
+    year: 2022,
+  },
+  {
+    place: 83,
+    ctftimeId: 1507,
+    name: 'Real World CTF 4th',
+    ctfPoints: 105.0,
+    ctftimeRating: 1.982,
+    year: 2022,
+  },
+  {
     place: 3,
     ctftimeId: 1545,
     name: 'KnightCTF 2022',
     ctfPoints: 5075.0,
-    ctftimeRating: NaN,
+    ctftimeRating: 21.657,
     writeupTag: 'knight-ctf-2022',
     year: 2022,
   },
@@ -23,7 +40,7 @@ const contestsData: ContestData[] = [
     ctftimeId: 1533,
     name: 'Newark Academy CTF',
     ctfPoints: 1265.0,
-    ctftimeRating: NaN,
+    ctftimeRating: 6.841,
     year: 2022,
   },
   {
