@@ -25,6 +25,7 @@ const siteMetadata = {
     plausibleDataDomain: '', // e.g. tailwind-nextjs-starter-blog.vercel.app
     simpleAnalytics: false, // true or false
     googleAnalyticsId: '', // e.g. UA-000000-2 or G-XXXXXXX
+    cloudflareAnalytics: 'a743232028f24754b6bbe0b63373fc97',
   },
   newsletter: {
     // supports mailchimp, buttondown, convertkit, klaviyo
