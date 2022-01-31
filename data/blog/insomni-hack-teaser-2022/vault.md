@@ -17,7 +17,7 @@ summary: 'Prototype pollution which allows to run arbitrary js in admin context 
 >
 > They are so confident in their solution that they also released their [source code](https://static.insomnihack.ch/media/Vault_191c4ba6dc394e5713771ac4808a02330fd9583a-9516bb402ba3ca3401458c8d8e08d112cde7a9f7e9a5a9b349dc9ac403e1b48f_RR5HK9s.tgz).
 
-We start by checking the web page and notice that there is a login, register and report link section. So my first thought was trying to find an XSS and report a link in order to grab an admin's cookie for example but we had an issue we can't register :
+We start by checking the web page and notice that there is a login, register and report link section. So my first thought was trying to find an XSS and report a link in order to grab an admin’s cookie for example but we had an issue we can’t register:
 
 ![Registration Error](/static/images/insomnihack-teaser-2022/registration_error.png)
 
