@@ -15,7 +15,7 @@ summary: 'Git repo secret.'
 >
 > It's time to check his research with [practice](https://static.insomnihack.ch/media/VirusINC-2f2decd2db45ea7368eeab89d0134afce30254f7f7f4e6a0d6d5e7ff91618569.png).
 
-The github repository provided explains how to use the `Virus Disassembler` by providing it an image of the virus:
+The GitHub repository provided explains how to use the `Virus Disassembler` by providing it an image of the virus:
 
 ```
 python3 VirusDisassembler.py virus.png
