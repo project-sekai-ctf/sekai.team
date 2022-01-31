@@ -3,7 +3,7 @@ title: Insomni'hack teaser 2022 – Herald
 date: '2022-01-30'
 draft: false
 authors: ['sahuang']
-tags: ["Insomni'hack teaser 2022", 'Mobile', 'Reverse Engineering', 'Android', 'apk', 'rev']
+tags: ["Insomni'hack teaser 2022", 'Mobile', 'Reverse Engineering', 'Android', 'apk', 'rev', 'React Native']
 summary: 'Hermes Bytecode Reverse Engineering.'
 ---
 
@@ -23,11 +23,11 @@ Playing around, if `admin` is used as username, we further receive an alert `You
 
 ![Login attempt with username admin](/static/images/insomnihack-teaser-2022/herald-admin.png)
 
-Since it's an apk file, we can use any apk decompiler to decompile it and extract all assets. While most files are irrelevant, we noticed a bundle file `index.android.bundle` under `/resources/assets`, which is a Hermes JavaScript bytecode file (`Hermes` is a JavaScript engine optimized for React Native). At this point we are pretty sure this app was built with React Native, so the key is to reverse this bundle file.
+Since it’s an apk file, we can use any apk decompiler to decompile it and extract all assets. While most files are irrelevant, we noticed a bundle file `index.android.bundle` under `/resources/assets`, which is a Hermes JavaScript bytecode file (`Hermes` is a JavaScript engine optimized for React Native). At this point we are pretty sure this app was built with React Native, so the key is to reverse this bundle file.
 
 Checking through bundle file reversing, we found this [GitHub Repo](https://github.com/bongtrop/hbctool) of `hbctool`, a command-line interface for disassembling and assembling the Hermes Bytecode. The tool is capable of decompiling `bundle` to `hasm` and compiling `hasm` back to `bundle`. However, we get the following error when trying to decompile:
 
-```console
+```shell
 MacBook-Pro-2 ~ % hbctool disasm index.android.bundle test_hasm
 AssertionError: The HBC version (84) is not supported.
 ```
