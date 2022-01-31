@@ -126,7 +126,7 @@ GO
 
 After some researching, I find this article named [Beware of Side-Channel Attacks in Row-Level Security in SQL Server 2016](https://www.mssqltips.com/sqlservertip/4379/beware-of-sidechannel-attacks-in-rowlevel-security-in-sql-server-2016/) explaining how to bypass this Predicate by causing an error like a zero division error so we tried to cause an error while trying to bruteforce each character of the flag.
 
-Unfortunately, the CTF ended at this time and didn't manage to finish the challenge on time but the injection required is shown below :
+Unfortunately, the CTF ended at this time and didn’t manage to finish the challenge on time but the injection required is shown below:
 
 ```sql
 select 1 from dbo.Vault where username='secret' and secret_name='flag' and 1/(ascii(substring(secret_value,1,1))-GUESS)=1
