@@ -8,4 +8,4 @@ description: C++ Dev and Reverse engineer
 order: 3
 ---
 
-Hi! I'm marco. I'm a c++ dev and reverse engineer in my spare time, with the occasional sprinkling of pwn on the side.
+Hi! I’m Marco. I’m a C++ dev and reverse engineer in my spare time, with the occasional sprinkling of pwn on the side.
