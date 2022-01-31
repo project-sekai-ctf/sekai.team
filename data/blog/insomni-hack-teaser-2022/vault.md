@@ -21,7 +21,7 @@ We start by checking the web page and notice that there is a login, register and
 
 ![Registration Error](/static/images/insomnihack-teaser-2022/registration_error.png)
 
-We continue by checking the source code and manage to find a Javascript Protocol Pollution bug that can lead to an XSS `http://vault.insomnihack.ch:5000/?__proto__[url][]=data:,alert(1)//&__proto__[dataType]=script#page=secrets` as shown below:
+We continue by checking the source code and manage to find a JavaScript Protocol Pollution bug that can lead to an XSS `http://vault.insomnihack.ch:5000/?__proto__[url][]=data:,alert(1)//&__proto__[dataType]=script#page=secrets` as shown below:
 
 ![Alert XSS](/static/images/insomnihack-teaser-2022/xss_alert_1.png)
 
