@@ -29,7 +29,7 @@ Time to try to get a callback from the admin through the report link function so
 
 ![First Callback](/static/images/insomnihack-teaser-2022/first_callback.png)
 
-We noticed at this point that cookies on the site are httpOnly so we need something else:
+We noticed at this point that cookies on the site are `httpOnly` so we need something else:
 
 ```python
 @app.route('/api/report', methods=['POST'])
