@@ -99,7 +99,7 @@ We continue by adding an injection to our payload `fetch("/api/stats?username=ad
 
 ![successful_injection](/static/images/insomnihack-teaser-2022/successful_injection.png)
 
-After several failed attempts of selecting the flag from the database we notice that `instal.sql` has a SecurityPredicate which prevents access from different users to specific rows :
+After several failed attempts of selecting the flag from the database we notice that `install.sql` has a `SecurityPredicate` which prevents access from different users to specific rows:
 
 ```sql
 DROP SECURITY POLICY IF EXISTS dbo.SecurityPolicy;
