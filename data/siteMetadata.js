@@ -17,7 +17,7 @@ const siteMetadata = {
   youtube: '',
   linkedin: 'https://www.linkedin.com/company/project-sekai-ctf/',
   ctftime: 'https://ctftime.org/team/169557',
-  discord: 'https://discord.gg/6yHty4kp8m',
+  discord: '',
   locale: 'en-US',
   dateLocale: 'en-GB',
   analytics: {
