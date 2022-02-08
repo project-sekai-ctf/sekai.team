@@ -10,12 +10,29 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 1,
+    ctftimeId: 1556,
+    name: 'Cyber Grabs CTF 0x03',
+    ctfPoints: 6550,
+    ctftimeRating: 46.46,
+    year: 2022,
+  },
+  {
+    place: 73,
+    ctftimeId: 1541,
+    name: 'DiceCTF 2022',
+    writeupTag: 'dice-ctf-2022',
+    ctfPoints: 736,
+    ctftimeRating: 3.205,
+    year: 2022,
+  },
+  {
     place: 30,
     ctftimeId: 1505,
     name: "Insomni'hack teaser 2022",
     writeupTag: 'insomnihack-teaser-2022',
     ctfPoints: 529,
-    ctftimeRating: NaN,
+    ctftimeRating: 4.197,
     year: 2022,
   },
   {
