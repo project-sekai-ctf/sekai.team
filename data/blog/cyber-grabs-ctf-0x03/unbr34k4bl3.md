@@ -41,11 +41,11 @@ $$
 Taking the entire equation $\bmod\ e_1$ gives us:
 
 $$
-\begin{aligned} 1 &\equiv 1 + e_2 + e_2^2 \mod e_1 \\\ 0 &\equiv e_2 + e_2^2 \\\ 0 &\equiv e_2(1 + e_2) \end{aligned}
+\begin{aligned} 1 &\equiv 1 + e_2 + e_2^2 \pmod {e_1} \\\ 0 &\equiv e_2 + e_2^2 \\\ 0 &\equiv e_2(1 + e_2) \end{aligned}
 $$
 
 This means there are two possibilities: either $e_1 = e_2$ or $e_1$ is even
-(since we know $e_2$ is a prime). The first case isn’t possible, because with $x \> 2$, the geometric series equation would not be satisfied. So it must be true
+(since we know $e_2$ is a prime). The first case isn’t possible, because with $x > 2$, the geometric series equation would not be satisfied. So it must be true
 that $\boxed{e_1 = 2}$, the only even prime.
 
 Applying geometric series expansion, $1 + e_2 + e_2^2 = 2^{x + 1} - 1$. We can
@@ -60,8 +60,8 @@ $iq = q^{-1} \bmod p$. In order words:
 
 $$
 \begin{aligned}
-  p \times ip &\equiv 1 \mod q \\\
-  q \times iq &\equiv 1 \mod p
+  p \times ip &\equiv 1 \bmod q \\\
+  q \times iq &\equiv 1 \bmod p
 \end{aligned}
 $$
 
@@ -206,27 +206,27 @@ possibly be a $d_1$ such that $2 \cdot d_1 \equiv 1 \bmod \phi$. According to
 [Wikipedia](https://en.wikipedia.org/wiki/Rabin_cryptosystem), the decryption for a standard two-prime $n$ takes 3 steps:
 
 1. Compute the square root of $c \bmod p$ and $c \bmod q$:
-   - $m_p = c^{\frac{1}{4}(p + 1)} \mod p$
-   - $m_q = c^{\frac{1}{4}(q + 1)} \mod q$
+   - $m_p = c^{\frac{1}{4}(p + 1)} \bmod p$
+   - $m_q = c^{\frac{1}{4}(q + 1)} \bmod q$
 2. Use the extended Euclidean algorithm to find $y_p$ and $y_q$ such that $y_p
    \cdot p + y_q \cdot q = 1$.
 3. Use the Chinese remainder theorem to find the roots of $c$ modulo $n$:
-   - $r_1 = (y_p \cdot p \cdot m_q + y_q \cdot q \cdot m_p) \mod n$
+   - $r_1 = (y_p \cdot p \cdot m_q + y_q \cdot q \cdot m_p) \bmod n$
    - $r_2 = n - r_1$
-   - $r_3 = (y_p \cdot p \cdot m_q - y_q \cdot q \cdot m_p) \mod n$
+   - $r_3 = (y_p \cdot p \cdot m_q - y_q \cdot q \cdot m_p) \bmod n$
    - $r_4 = n - r_3$
 4. The real message could be any $r_i$, but we don’t know which.
 
 Converting this to work with $n = pqr$, it looks like:
 
-1. Compute the square root of $c \mod p$, $c \mod q$, and $c \mod r$:
-   - $m_p = c^{\frac{1}{4}(p + 1)} \mod p$
-   - $m_q = c^{\frac{1}{4}(q + 1)} \mod q$
-   - $m_r = c^{\frac{1}{4}(r + 1)} \mod r$
+1. Compute the square root of $c \bmod p$, $c \bmod q$, and $c \bmod r$:
+   - $m_p = c^{\frac{1}{4}(p + 1)} \bmod p$
+   - $m_q = c^{\frac{1}{4}(q + 1)} \bmod q$
+   - $m_r = c^{\frac{1}{4}(r + 1)} \bmod r$
 2. Using the variable names from [AoPS](https://artofproblemsolving.com/wiki/index.php/Chinese_Remainder_Theorem)’s definition of CRT:
    - For $k \in \{ p, q, r \}, b_k = \frac{n}{k}$.
-   - For $k \in \{ p, q, r \}, a_k \cdot b_k \equiv 1 \mod k$.
-3. Let $r = \displaystyle\sum_k^{\{ p, q, r \}} \pm (a_k \cdot b_k \cdot m_k) \mod n$.
+   - For $k \in \{ p, q, r \}, a_k \cdot b_k \equiv 1 \bmod k$.
+3. Let $r = \displaystyle\sum_k^{\{ p, q, r \}} \pm (a_k \cdot b_k \cdot m_k) \bmod n$.
 4. The real message could be any $r$, but we don’t know which.
 
 In code this looks like:
