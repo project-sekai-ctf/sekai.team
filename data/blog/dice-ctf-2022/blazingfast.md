@@ -129,6 +129,8 @@ We proceed by testing this idea by sending around 600 `ﬀ` which would unpack t
 
 ![No Error](/static/images/dice-ctf-2022/blazing-fast/no_error.png)
 
+This is because `"ﬃ".toUpperCase()` becomes `"FFI"`. The string written to WSAM module is the converted one (disregarding the memory allocated), but the length reported was of the original string. This discrepancy allowing us to write $3n+m$ characters to the memory with only $n+m$ bytes checked for blacklisted characters, thus bypassing the check.
+
 We proceed by using this technique and adding to it our XSS payload to see if we can pop an alert:
 
 ```
