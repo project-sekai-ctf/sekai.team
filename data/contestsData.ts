@@ -13,6 +13,7 @@ const contestsData: ContestData[] = [
     place: 1,
     ctftimeId: 1556,
     name: 'Cyber Grabs CTF 0x03',
+    writeupTag: 'cyber-grabs-ctf-0x03',
     ctfPoints: 6550,
     ctftimeRating: 46.46,
     year: 2022,
