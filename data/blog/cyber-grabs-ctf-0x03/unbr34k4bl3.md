@@ -3,7 +3,7 @@ title: Cyber Grabs CTF 0x03 – Unbr34k4bl3
 date: '2022-02-07'
 draft: false
 authors: ['michael']
-tags: ['Cyber Grabs CTF 0x03', 'crypto', 'rsa', 'number theory']
+tags: ['Cyber Grabs CTF 0x03', 'Crypto', 'RSA', 'Number Theory']
 summary: 'Unbreakable RSA Challenge?'
 ---
 

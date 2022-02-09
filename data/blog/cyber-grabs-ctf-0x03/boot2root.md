@@ -3,8 +3,8 @@ title: Cyber Grabs CTF 0x03 – boot2root
 date: '2022-02-07'
 draft: false
 authors: ['thebish0p']
-tags: ['Cyber Grabs CTF 0x03', 'Jenkins', 'Shell', 'System Access', 'Privilege Escalation']
-summary: 'Bruteforce jenkins login page with a wordlist we find leading to system access and proceeding by escalating to root'
+tags: ['Cyber Grabs CTF 0x03', 'Web', 'Jenkins', 'Shell', 'System Access', 'Privilege Escalation']
+summary: 'Bruteforce Jenkins login page with a wordlist we find leading to system access and proceeding by escalating to Root'
 ---
 
 ## boot2root

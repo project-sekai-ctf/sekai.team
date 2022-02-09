@@ -29,7 +29,7 @@ We can see the content of our paste by sending a `GET` request on `/note` and ea
 
 ![Random Content](/static/images/dice-ctf-2022/knock/random_content.png)
 
-As you can see if we tamper the token we get `invalid token` error :
+As you can see if we tamper the token we get `invalid token` error:
 
 ![Invalid Token](/static/images/dice-ctf-2022/knock/invalid_token.png)
 
@@ -104,9 +104,9 @@ class Database {
   }
 }
 let test = new Database()
-console.log(test.generateToken(0)) // Generates this : 7bd881fe5b4dcc6cdafc3e86b4a70e07cfd12b821e09a81b976d451282f6e264
+console.log(test.generateToken(0)) // Generates this: 7bd881fe5b4dcc6cdafc3e86b4a70e07cfd12b821e09a81b976d451282f6e264
 ```
 
-By sending `id` as `0` and the token we just got we can see the flag now :
+By sending `id` as `0` and the token we just got we can see the flag now:
 
 ![Flag](/static/images/dice-ctf-2022/knock/flag.png)
