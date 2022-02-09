@@ -17,7 +17,7 @@ summary: 'Bruteforce jenkins login page with a wordlist we find leading to syste
 >
 > Flag Format: `cybergrabs{boot2root}`
 
-This challenge was hosted on TryHackMe. We launch an instance and start by running an nmap quick scan on the machine’s IP address to check for open ports:
+This challenge was hosted on [TryHackMe](https://tryhackme.com/). We launch an instance and start by running an nmap quick scan on the machine’s IP address to check for open ports:
 
 ```
 nmap -T4 -A -F 10.10.156.214
@@ -59,7 +59,7 @@ As shown below `s3cret` is a wordlist and `confidential` is actually just random
 | :-------------------------------------------------------------------------------: |
 |                               _Base32 decoded data_                               |
 
-We try running several wordlists using dirbuster but we don't find any other directories on port 80.
+We try running several wordlists using dirbuster but we don’t find any other directories on port 80.
 
 We proceed by going to port 8080 which had a Jenkins login page.
 

@@ -23,30 +23,29 @@ Looking at the source code, this challenge looks like a typical RSA challenge at
 
 - $n = pqr$ (line 34). This is a twist but RSA strategies can easily be
   extended to 3 prime components.
-- $p, q \equiv 3 \mod 4$ (line 19). This suggests that the cryptosystem is
+- $p, q \equiv 3 \bmod 4$ (line 19). This suggests that the cryptosystem is
   actually a [Rabin cryptosystem](https://en.wikipedia.org/wiki/Rabin_cryptosystem).
-- We're not given the public keys $e_1$ and $e_2$, but they are related through
+- We’re not given the public keys $e_1$ and $e_2$, but they are related through
   $x$.
 
 ## Finding $e_1$ and $e_2$
 
 We know that $e_1$ and $e_2$ are related through $x$, which is some even number
-greater than 2, but we're not given any of their real values. We're also given
+greater than 2, but we’re not given any of their real values. We’re also given
 through an oddly-named `functor` function that:
 
 $$
 1 + e_1 + e_1^2 + \cdots + e_1^x = 1 + e_2 + e_2^2
 $$
 
-Taking the entire equation $\mod e_1$ gives us:
+Taking the entire equation $\bmod\ e_1$ gives us:
 
 $$
 \begin{aligned} 1 &\equiv 1 + e_2 + e_2^2 \mod e_1 \\\ 0 &\equiv e_2 + e_2^2 \\\ 0 &\equiv e_2(1 + e_2) \end{aligned}
 $$
 
 This means there are two possibilities: either $e_1 = e_2$ or $e_1$ is even
-(since we know $e_2$ is a prime). The first case isn't possible, because with $x
-\> 2$, the geometric series equation would not be satisfied. So it must be true
+(since we know $e_2$ is a prime). The first case isn’t possible, because with $x \> 2$, the geometric series equation would not be satisfied. So it must be true
 that $\boxed{e_1 = 2}$, the only even prime.
 
 Applying geometric series expansion, $1 + e_2 + e_2^2 = 2^{x + 1} - 1$. We can
@@ -56,8 +55,8 @@ and $\boxed{e_2 = 5}$ gives us a value that make $e_2$ prime.
 
 ## Finding $p$ and $q$
 
-We're not actually given $p$ or $q$, but we are given $ip = p^{-1} \mod q$ and
-$iq = q^{-1} \mod p$. In order words:
+We’re not actually given $p$ or $q$, but we are given $ip = p^{-1} \bmod q$ and
+$iq = q^{-1} \bmod p$. In order words:
 
 $$
 \begin{aligned}
@@ -76,7 +75,7 @@ $$
 \end{aligned}
 $$
 
-We'll be trying to use these formulas to create a quadratic that we can use to
+We’ll be trying to use these formulas to create a quadratic that we can use to
 eliminate $k_1$ and $k_2$. Multiplying these together gives:
 
 $$
@@ -86,7 +85,7 @@ $$
 \end{aligned}
 $$
 
-I grouped $p$ and $q$ together here because it's important to note that since we
+I grouped $p$ and $q$ together here because it’s important to note that since we
 have $x$, we know $r$ and thus $pq = \frac{n}{r}$. This means that for purposes
 of solving the equation, $pq$ is a constant to us. This actually introduces an
 interesting structure on the right hand side, we can create 2 new variables:
@@ -117,7 +116,7 @@ $$
 $$
 
 $\frac{1}{pq}$ is basically $0$, and since $k_1$ and $k_2$ are both smaller than
-$p$ or $q$, then we'll approximate this using $k_1k_2 = ip \times iq - 1$. Now
+$p$ or $q$, then we’ll approximate this using $k_1k_2 = ip \times iq - 1$. Now
 that $k_1k_2$ has become a constant, we can create the coefficients we need:
 
 $$
@@ -153,7 +152,7 @@ def quadratic(b, c):
 alpha, beta = quadratic(-alpha_plus_beta, alpha_times_beta)
 ```
 
-Now that we have $\alpha$ and $\beta$, we can try GCD'ing them against $pq$ to
+Now that we have $\alpha$ and $\beta$, we can try GCD’ing them against $pq$ to
 get $p$ and $q$:
 
 ```py
@@ -167,8 +166,8 @@ assert p * q == pq # Success!
 ### Alternative method
 
 @sahuang used the [sympy] library to do this part instead, resulting in much
-less manual math. It's based on [this] proof from Math StackExchange that $p
-\cdot (p^{-1} \mod q) + q \cdot (q^{-1} \mod p) = pq + 1$.
+less manual math. It’s based on [this] proof from Math StackExchange that $p
+\cdot (p^{-1} \bmod q) + q \cdot (q^{-1} \bmod p) = pq + 1$.
 
 [sympy]: https://www.sympy.org
 [this]: https://math.stackexchange.com/a/1705450
@@ -183,9 +182,9 @@ sol = solve((eq1, eq2), (p, q))
 
 ## Decrypting the ciphertexts
 
-Now that we know $p$ and $q$, it's time to plug them back into the cryptosystem
-and get our plaintexts. $c_2$ is actually easier than $c_1$, because with $e_2 =
-5$ we can just find the modular inverse:
+Now that we know $p$ and $q$, it’s time to plug them back into the cryptosystem
+and get our plaintexts. $c_2$ is actually easier than $c_1$, because with 
+$e_2 = 5$ we can just find the modular inverse:
 
 ```py
 phi = (p - 1) * (q - 1) * (r - 1)
@@ -195,18 +194,18 @@ print(long_to_bytes(m2))
 # ... The last part of the flag is: 8ut_num83r_sy5t3m_15_3v3n_m0r3_1nt3r35t1n6} ...
 ```
 
-This trick won't work with $c_1$ however:
+This trick won’t work with $c_1$ however:
 
 ```py
 d1 = pow(e1, -1, phi)
 # ValueError: base is not invertible for the given modulus
 ```
 
-Because $\phi$ is even (it's the product of one less than 3 primes), there can't
-possibly be a $d_1$ such that $2 \cdot d_1 \equiv 1 \mod \phi$. According to
+Because $\phi$ is even (it’s the product of one less than 3 primes), there can’t
+possibly be a $d_1$ such that $2 \cdot d_1 \equiv 1 \bmod \phi$. According to
 [Wikipedia](https://en.wikipedia.org/wiki/Rabin_cryptosystem), the decryption for a standard two-prime $n$ takes 3 steps:
 
-1. Compute the square root of $c \mod p$ and $c \mod q$:
+1. Compute the square root of $c \bmod p$ and $c \bmod q$:
    - $m_p = c^{\frac{1}{4}(p + 1)} \mod p$
    - $m_q = c^{\frac{1}{4}(q + 1)} \mod q$
 2. Use the extended Euclidean algorithm to find $y_p$ and $y_q$ such that $y_p
@@ -216,7 +215,7 @@ possibly be a $d_1$ such that $2 \cdot d_1 \equiv 1 \mod \phi$. According to
    - $r_2 = n - r_1$
    - $r_3 = (y_p \cdot p \cdot m_q - y_q \cdot q \cdot m_p) \mod n$
    - $r_4 = n - r_3$
-4. The real message could be any $r_i$, but we don't know which.
+4. The real message could be any $r_i$, but we don’t know which.
 
 Converting this to work with $n = pqr$, it looks like:
 
@@ -224,11 +223,11 @@ Converting this to work with $n = pqr$, it looks like:
    - $m_p = c^{\frac{1}{4}(p + 1)} \mod p$
    - $m_q = c^{\frac{1}{4}(q + 1)} \mod q$
    - $m_r = c^{\frac{1}{4}(r + 1)} \mod r$
-2. Using the variable names from [AoPS](https://artofproblemsolving.com/wiki/index.php/Chinese_Remainder_Theorem)'s definition of CRT:
+2. Using the variable names from [AoPS](https://artofproblemsolving.com/wiki/index.php/Chinese_Remainder_Theorem)’s definition of CRT:
    - For $k \in \{ p, q, r \}, b_k = \frac{n}{k}$.
    - For $k \in \{ p, q, r \}, a_k \cdot b_k \equiv 1 \mod k$.
 3. Let $r = \displaystyle\sum_k^{\{ p, q, r \}} \pm (a_k \cdot b_k \cdot m_k) \mod n$.
-4. The real message could be any $r$, but we don't know which.
+4. The real message could be any $r$, but we don’t know which.
 
 In code this looks like:
 
