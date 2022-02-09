@@ -16,8 +16,8 @@ const ContestCard = ({
           className={
             (place == 1
               ? 'from-yellow-600 to-yellow-800 after:border-yellow-800'
-              : 'from-rose-700 to-rose-900 after:border-rose-900 ') +
-            ' h-[4.5rem] pb-3 flex items-end justify-center z-1 w-16 bg-gradient-to-b after:w-16 after:box-border after:absolute after:left-0 after:top-full after:h-6 after:border-l-[2rem] after:border-r-[2rem] after:border-b-[2rem] after:border-b-transparent after:border-rose-900'
+              : 'from-rose-700 to-rose-900 after:border-rose-900') +
+            ' h-[4.5rem] pb-3 flex items-end justify-center z-1 w-16 bg-gradient-to-b after:w-16 after:box-border after:absolute after:left-0 after:top-full after:h-6 after:border-l-[2rem] after:border-r-[2rem] after:border-b-[2rem] after:border-b-transparent'
           }
         >
           <span
