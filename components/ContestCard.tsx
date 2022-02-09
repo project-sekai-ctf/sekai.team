@@ -12,26 +12,29 @@ const ContestCard = ({
   <div className="w-full p-4 md:w-1/2" style={{ maxWidth: '544px' }}>
     <div className="flex flex-col h-full gap-6 p-6 overflow-hidden border-2 border-gray-200 rounded-md md:flex-row border-opacity-60 dark:border-gray-700">
       <div className="relative w-16 mb-6 -mt-6 text-center h-fit">
-        {place > 1 && (
-          <div className="pt-6 pb-3 z-1 w-16 bg-gradient-to-b from-rose-700 to-rose-900 after:w-16 after:box-border after:absolute after:left-0 after:top-full after:h-6 after:border-l-[2rem] after:border-r-[2rem] after:border-b-[2rem] after:border-rose-900 after:border-b-transparent">
-            <span
-              className={
-                place >= 100 ? '' : place >= 10 ? 'text-2xl font-semibold' : 'text-3xl font-bold'
-              }
-            >
-              <sup>#</sup>
-              {place}
-            </span>
-          </div>
-        )}
-        {place == 1 && (
-          <div className="pt-6 pb-3 z-1 w-16 bg-gradient-to-b from-yellow-600 to-yellow-800 after:w-16 after:box-border after:absolute after:left-0 after:top-full after:h-6 after:border-l-[2rem] after:border-r-[2rem] after:border-b-[2rem] after:border-yellow-800 after:border-b-transparent">
-            <span className="text-3xl font-bold">
-              <sup>#</sup>
-              {place}
-            </span>
-          </div>
-        )}
+        <div
+          className={
+            (place == 1
+              ? 'from-yellow-600 to-yellow-800 after:border-yellow-800'
+              : 'from-rose-700 to-rose-900 after:border-rose-900 ') +
+            ' h-[4.5rem] pb-3 flex items-end justify-center z-1 w-16 bg-gradient-to-b after:w-16 after:box-border after:absolute after:left-0 after:top-full after:h-6 after:border-l-[2rem] after:border-r-[2rem] after:border-b-[2rem] after:border-b-transparent after:border-rose-900'
+          }
+        >
+          <span
+            className={
+              (place >= 100
+                ? ''
+                : place >= 10
+                ? 'text-2xl font-semibold'
+                : place >= 2
+                ? 'text-3xl font-bold'
+                : 'text-4xl font-bold') + ' inline-block leading-none'
+            }
+          >
+            <sup>#</sup>
+            {place}
+          </span>
+        </div>
       </div>
       <div>
         <h2 className="mb-3 text-2xl font-bold leading-8 tracking-tight">
@@ -49,7 +52,7 @@ const ContestCard = ({
         </p>
         <Link
           href={`https://ctftime.org/event/${ctftimeId}`}
-          className="text-base font-medium mr-2 leading-6 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+          className="mr-2 text-base font-medium leading-6 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
           aria-label={`CTFTime Link to ${name}`}
         >
           View on CTFTime &rarr;
