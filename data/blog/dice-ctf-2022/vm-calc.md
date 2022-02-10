@@ -1,0 +1,175 @@
+---
+title: DICE CTF 2022 – vm-calc
+date: '2022-02-09'
+draft: false
+authors: ['lemon']
+tags: ['DICE CTF 2022', 'Web', 'Prototype Pollution', 'CVE-2022-21824', 'vm2', 'Proxy']
+summary: 'Pollute prototype with a recent vulerability in console.table, and throw a proxy object within an exception.'
+---
+
+## vm-calc (481)
+
+> by Strellic
+>
+> A simple and very secure online calculator!
+>
+> [instancer.mc.ax/vm-calc](https://instancer.mc.ax/vm-calc), [dist.tar](https://static.dicega.ng/uploads/6dcf39e45c26032a15d83fb62515e9df26059e4345b978dad07a17b2bf2c5826/dist.tar)
+
+Hello, I’m Lemon. I managed to solve [`blazing-fast`](blazingfast.md) and [`knock-knock`](knock.md), and after the contest with some hints I solved `vm-calc`. It was a very (hard) problem.
+Anyways, let me show you guys how I managed to solve it.
+
+### Source code review
+
+At first I though it’s a simple VM escape:
+
+```js
+const express = require('express');
+const fsp = require('fs/promises');
+const crypto = require('crypto');
+
+const { NodeVM } = require('vm2');
+const vm = new NodeVM({
+    eval: false,
+    wasm: false,
+    wrapper: 'none',
+    strict: true
+});
+
+const PORT = process.env.PORT || 80;
+
+const users = [
+    { user: "strellic", pass: "4136805643780af20755baddcc947d20f7e38e52f421c3c89a5a8b9d8a8d1da7" },
+    { user: "ginkoid", pass: "cdf72d24394745eab295c6e047ee41aaec62f56bd41e2cea4ef7d244d96b51dd" }
+];
+
+const sha256 = (data) => crypto.createHash('sha256').update(data).digest('hex');
+
+const app = express();
+
+app.set("view engine", "hbs");
+
+app.use(express.urlencoded({ extended: false }));
+
+app.get("/", (req, res) => res.render("index"));
+app.post("/", (req, res) => {
+    const { calc } = req.body;
+
+    if(!calc) {
+        return res.render("index");
+    }
+
+    let result;
+    try {
+        result = vm.run(`return ${calc}`);
+    }
+    catch(err) {
+        console.log(err);
+        return res.render("index", { result: "There was an error running your calculation!"});
+    }
+
+    if(typeof result !== "number") {
+        return res.render("index", { result: "Nice try..."});
+    }
+
+    res.render("index", { result });
+});
+
+app.get("/admin", (req, res) => res.render("admin"));
+
+app.post("/admin", async (req, res) => {
+    let { user, pass } = req.body;
+    if(!user || !pass || typeof user !== "string" || typeof pass !== "string") {
+        return res.render("admin", { error: "Missing username or password!" });
+    }
+
+    let hash = sha256(pass);
+    if(users.filter(u => u.user === user && u.pass === hash)[0] !== undefined) {
+        res.render("admin", { flag: await fsp.readFile("flag.txt") });
+    }
+    else {
+        res.render("admin", { error: "Incorrect username or password!" });
+    }
+});
+
+app.listen(PORT, () => console.log(`vm-calc listening on port ${PORT}`));
+```
+
+And honestly all I know about VM escape is in this GitHub Gist: 
+
+<script src="https://gist.github.com/jcreedcmu/4f6e6d4a649405a9c86bb076905696af.js"></script>
+
+And I found out some interesting ways in it:
+
+```javascript
+const code5 = `throw new Proxy({}, {
+  get: function(me, key) {
+	 const cc = arguments.callee.caller;
+	 if (cc != null) {
+		(cc.constructor.constructor('console.log(sauce)'))();
+	 }
+	 return me[key];
+  }
+})`;  
+
+try {
+  vm.runInContext(code5, vm.createContext(Object.create(null)));
+}
+catch(e) {
+  console.log(e);
+}
+```
+
+Throw a Proxy out as an exception, and then when someone executes `toString()` on this exception, it will be triggered, and you can `arguments.callee.caller`.
+
+but it’s a `vm2`  :(
+
+### 1-day CVE Exploitation
+
+After some time I figured out that this question is not asking us to find `vm2` 0-day, but to use a Node.js 1-day: use prototype pollution to bypass the check. So, let’s explain how.
+
+Here’s the vulnerable part of the code:
+
+```javascript
+if(users.filter(u => u.user === user && u.pass === hash)[0] !== undefined) {
+    res.render("admin", { flag: await fsp.readFile("flag.txt") });
+}
+```
+
+For me, at least it looks a bit weird, since it just filters the users array and check if an entry exists, like why not just use `Array.prototype.find` to directly check the existence of an element.
+Also, I was sure that `vm2` didn’t have any VM sandbox escape vulnerability, so I was sure that the weakness is here.
+So, I had to check the `Dockerfile` to get the Node.js version: 
+
+```dockerfile
+FROM node:16.13.1-bullseye-slim
+```
+
+And the only to go was my homie Google 😊, and thank god, I got this:
+
+> [**Prototype pollution via `console.table` properties (Low)(CVE-2022-21824)**](https://nodejs.org/en/blog/vulnerability/jan-2022-security-releases/#prototype-pollution-via-console-table-properties-low-cve-2022-21824)
+> 
+> Due to the formatting logic of the `console.table()` function it was not safe to allow user controlled input to be passed to the `properties` parameter while simultaneously passing a plain object with at least one property as the first parameter, which could be `__proto__`. The prototype pollution has very limited control, in that it only allows an empty string to be assigned numerical keys of the object `prototype`.  
+> 
+> Versions of Node.js with the fix for this use a null protoype for the object these properties are being assigned to.  
+>
+> More details will be available at [CVE-2022-21824](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-21824) after publication.
+> 
+> Thanks to Patrik Oldsberg (rugvip) for reporting this vulnerability.
+
+We can pollute the first property of the array, the `[][0]` will be something that will make the `if` (check) `true` due to the prototype pollution.
+
+```js
+console.table([{ x : 1 }], [ "__proto__" ]);
+```
+
+The first parameter of this API is `data`, and the second parameter is the field to display, like this: 
+
+![A scrennshot of the table generated by console.table() command.](/static/images/dice-ctf-2022/vm-calc/p2.png)
+
+Here’s the fixed commit: 
+https://github.com/nodejs/node/commit/3454e797137b1706b11ff2f6f7fb60263b39396b
+
+Sending the payload `console.table([{x:1}], ["__proto__"]);` would prototype pollute the `0` property with an empty string, which allowed you to bypass the login check. :)
+
+The flag is: `dice{y0u_4re_a_tru3_vm2_j4ilbreak3r!!!}`
+
+That’s all, folks.
