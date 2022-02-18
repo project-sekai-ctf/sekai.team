@@ -694,6 +694,10 @@ const splashData = [
     title: 'ONESELF / Twinfield',
     lyrics: '指先でなぜた<b>世界</b>に\n吐いた言葉一つだけ\n「光あれ」と',
   },
+  {
+    title: 'Peaky Peaky / みきとP',
+    lyrics: '響け<b>セカイ</b>に',
+  },
 ]
 
 export default splashData
