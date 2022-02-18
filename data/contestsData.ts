@@ -10,6 +10,30 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 36,
+    ctftimeId: 1550,
+    name: 'Hayyim CTF 2022',
+    ctfPoints: 851.99,
+    ctftimeRating: 3.72,
+    year: 2022,
+  },
+  {
+    place: 70,
+    ctftimeId: 1553,
+    name: 'Hayyim CTF 2022',
+    ctfPoints: 100,
+    ctftimeRating: NaN,
+    year: 2022,
+  },
+  {
+    place: 9,
+    ctftimeId: 1560,
+    name: 'DefCamp CTF 21-22 Online',
+    ctfPoints: 3838,
+    ctftimeRating: 36.967,
+    year: 2022,
+  },
+  {
     place: 1,
     ctftimeId: 1556,
     name: 'Cyber Grabs CTF 0x03',

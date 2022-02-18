@@ -654,6 +654,46 @@ const splashData = [
     title: 'コスモスパイス / ピノキオピー',
     lyrics: '生命のきらめく\nまろやかな海\nニコイチでぼくら笑ってる',
   },
+  {
+    title: 'Flyer! / Chinozo',
+    lyrics: 'この世に生を持った意味？\nそんなこと考えている前に\n足掻いてみせて\n一歩踏み出して',
+  },
+  {
+    title: 'Flyer! / Chinozo',
+    lyrics: '雲突き抜け\n描き出す <b>セカイ</b>へ',
+  },
+  {
+    title: 'ジウダス / すこやか大聖堂',
+    lyrics: '前に倣え並べ下れ\n<ruby>地獄<rt>ここ</ruby>で待ってやろうぜ',
+  },
+  {
+    title: 'ナンセンス文学 / Eve',
+    lyrics: 'ホントの僕はいないんだって\n自分“らしく”なんて無いんだって',
+  },
+  {
+    title: 'ナンセンス文学 / Eve',
+    lyrics: '踊りあかそう\nこの夜を沸かそう\n涙はほいっ　して\n眠らないように',
+  },
+  {
+    title: '心予報 / Eve',
+    lyrics: 'だから\nこの夜を越えてゆけ\n響かせて その想いを',
+  },
+  {
+    title: '僕らまだアンダーグラウンド / Eve',
+    lyrics: '眠れない夜を踊るのさ',
+  },
+  {
+    title: '僕らまだアンダーグラウンド / Eve',
+    lyrics: '最高の舞台にしようぜ\n胸の高鳴る方へ\n喜劇的な<b>世界</b>が幕を開け',
+  },
+  {
+    title: '徳川カップヌードル禁止令 / Mitchie M',
+    lyrics: 'オッペケペーの\nオッペケペーの\nペーペーダヨー',
+  },
+  {
+    title: 'ONESELF / Twinfield',
+    lyrics: '指先でなぜた<b>世界</b>に\n吐いた言葉一つだけ\n「光あれ」と',
+  },
 ]
 
 export default splashData
