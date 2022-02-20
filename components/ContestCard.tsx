@@ -46,17 +46,21 @@ const ContestCard = ({
           <span className="inline-block px-3 py-1 text-white rounded-full bg-sky-800">
             Points: {ctfPoints}
           </span>
-          <span className="inline-block px-3 py-1 text-white bg-green-800 rounded-full">
-            Rating: {isNaN(ctftimeRating) ? 'Pending' : ctftimeRating}
-          </span>
+          {ctftimeRating !== undefined && (
+            <span className="inline-block px-3 py-1 text-white bg-green-800 rounded-full">
+              Rating: {isNaN(ctftimeRating) ? 'Pending' : ctftimeRating}
+            </span>
+          )}
         </p>
-        <Link
-          href={`https://ctftime.org/event/${ctftimeId}`}
-          className="mr-2 text-base font-medium leading-6 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-          aria-label={`CTFTime Link to ${name}`}
-        >
-          View on CTFTime &rarr;
-        </Link>
+        {ctftimeId && (
+          <Link
+            href={`https://ctftime.org/event/${ctftimeId}`}
+            className="mr-2 text-base font-medium leading-6 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+            aria-label={`CTFTime Link to ${name}`}
+          >
+            View on CTFTime &rarr;
+          </Link>
+        )}
         {writeupTag && (
           <Link
             href={`/tags/${writeupTag}`}

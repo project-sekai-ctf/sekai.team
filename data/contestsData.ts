@@ -1,14 +1,20 @@
 export interface ContestData {
   place: number
-  ctftimeId: number
+  ctftimeId?: number
   name: string
   ctfPoints: number
-  ctftimeRating: number
+  ctftimeRating?: number
   writeupTag?: string
   year: number
 }
 
 const contestsData: ContestData[] = [
+  {
+    place: 1,
+    name: 'MOCSCTF 2022',
+    ctfPoints: 3390,
+    year: 2022,
+  },
   {
     place: 36,
     ctftimeId: 1550,

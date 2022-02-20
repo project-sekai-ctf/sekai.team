@@ -105,17 +105,17 @@ export const BlogSEO = ({
   const router = useRouter()
   const publishedAt = new Date(date).toISOString()
   const modifiedAt = new Date(lastmod || date).toISOString()
+  const authorNames = authorDetails?.map(({ name }) => name).join(', ')
+  const params = { title, desc: summary, authors: authorNames }
+  const query = new URLSearchParams(params).toString()
+  const defaultSocialBanner = `https://labs.1a23.com/og/og-image/sekai.png?${query}`
   const imagesArr =
-    images.length === 0
-      ? [siteMetadata.socialBanner]
-      : typeof images === 'string'
-      ? [images]
-      : images
+    images.length === 0 ? [defaultSocialBanner] : typeof images === 'string' ? [images] : images
 
   const featuredImages = imagesArr.map((img) => {
     return {
       '@type': 'ImageObject',
-      url: `${siteMetadata.siteUrl}${img}`,
+      url: img.startsWith('https://') ? img : `${siteMetadata.siteUrl}${img}`,
     }
   })
 
