@@ -38,9 +38,13 @@ const ContestCard = ({
       </div>
       <div>
         <h2 className="mb-3 text-2xl font-bold leading-8 tracking-tight">
-          <Link href={`https://ctftime.org/event/${ctftimeId}`} aria-label={`Link to ${name}`}>
-            {name}
-          </Link>
+          {ctftimeId ? (
+            <Link href={`https://ctftime.org/event/${ctftimeId}`} aria-label={`Link to ${name}`}>
+              {name}
+            </Link>
+          ) : (
+            name
+          )}
         </h2>
         <p className="flex flex-col items-start gap-2 mb-3 text-gray-500 xl:flex-row max-w-none dark:text-gray-400">
           <span className="inline-block px-3 py-1 text-white rounded-full bg-sky-800">

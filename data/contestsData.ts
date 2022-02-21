@@ -11,6 +11,14 @@ export interface ContestData {
 const contestsData: ContestData[] = [
   {
     place: 1,
+    ctftimeId: 1581,
+    name: 'GCSC CTF 2022',
+    ctfPoints: 1215,
+    ctftimeRating: NaN,
+    year: 2022,
+  },
+  {
+    place: 1,
     name: 'MOCSCTF 2022',
     ctfPoints: 3390,
     year: 2022,
@@ -18,17 +26,9 @@ const contestsData: ContestData[] = [
   {
     place: 36,
     ctftimeId: 1550,
-    name: 'Hayyim CTF 2022',
+    name: 'Decompetition v2.0',
     ctfPoints: 851.99,
     ctftimeRating: 3.72,
-    year: 2022,
-  },
-  {
-    place: 70,
-    ctftimeId: 1553,
-    name: 'Hayyim CTF 2022',
-    ctfPoints: 100,
-    ctftimeRating: NaN,
     year: 2022,
   },
   {
@@ -145,14 +145,6 @@ const contestsData: ContestData[] = [
     name: 'TFC CTF 2021',
     ctfPoints: 2823.0,
     ctftimeRating: 15.934,
-    year: 2021,
-  },
-  {
-    place: 90,
-    ctftimeId: 1376,
-    name: 'Balsn CTF 2021',
-    ctfPoints: 50.0,
-    ctftimeRating: 0.8,
     year: 2021,
   },
   {
