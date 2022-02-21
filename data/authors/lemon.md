@@ -2,10 +2,9 @@
 name: lemon 蔡
 avatar: https://www.gravatar.com/avatar/6884dca105cdacb1eac9e58e468a860f?d=identicon&s=256
 specialties: [Web, Pwn]
-github: https://github.com/stuckforflow
 member: true
-description: parrot funclub
+description: Parrot Funclub
 order: 7
 ---
 
-parrot funclub
+Parrot Funclub
