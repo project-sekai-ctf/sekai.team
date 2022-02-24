@@ -33,7 +33,6 @@ export default function Home({ posts, members }: InferGetStaticPropsType<typeof 
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div className="pt-8 pb-8 text-center">
           <FullLogo
-            height="auto"
             viewBox="0 0 509 202"
             className="mx-auto mb-8"
             style={{ width: 'clamp(65%, 600px, calc(100% - 20px))' }}

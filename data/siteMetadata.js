@@ -12,7 +12,7 @@ const siteMetadata = {
   socialBanner: '/static/images/twitter-card.png',
   email: '',
   github: '',
-  twitter: '',
+  twitter: 'https://twitter.com/ProjectSEKAIctf',
   facebook: '',
   youtube: '',
   linkedin: 'https://www.linkedin.com/company/project-sekai-ctf/',
