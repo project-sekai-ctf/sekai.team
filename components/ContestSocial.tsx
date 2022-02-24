@@ -1,12 +1,6 @@
-import { Fragment, useRef, useState, useEffect, useCallback } from 'react'
+import { Fragment, useRef, useState, useCallback } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import html2canvas from 'html2canvas'
-import FullLogo from '@/data/fullLogo.svg'
-
-const exportAsImage = async (el: HTMLElement) => {
-  const canvas = await html2canvas(el)
-  return canvas.toDataURL('image/png', 1.0)
-}
+import domtoimage from 'dom-to-image'
 
 export default function ContestSocial({
   open,
@@ -26,7 +20,8 @@ export default function ContestSocial({
   const designRef = useCallback((designRef) => {
     console.log('designRef', designRef)
     if (designRef) {
-      setTimeout(() => exportAsImage(designRef).then(setImage), 100)
+      // setTimeout(() => exportAsImage(designRef).then(setImage), 100)
+      setTimeout(() => domtoimage.toPng(designRef).then(setImage), 100)
     }
   }, [])
 
@@ -77,7 +72,7 @@ export default function ContestSocial({
                         (place == 1
                           ? 'from-yellow-500 to-yellow-700 after:border-yellow-700'
                           : 'from-rose-600 to-rose-800 after:border-rose-800') +
-                        ' h-[10rem] ml-8 pb-12 flex relative items-end justify-center text-white z-1 w-32 bg-gradient-to-b after:w-32 after:box-border after:absolute after:left-0 after:top-full after:h-8 after:border-l-[4rem] after:border-r-[4rem] after:border-b-[4rem] after:border-b-transparent'
+                        ' h-[10rem] ml-8 pb-3 flex relative items-end justify-center text-white z-1 w-32 bg-gradient-to-b after:w-32 after:box-border after:absolute after:left-0 after:top-full after:h-8 after:border-l-[4rem] after:border-r-[4rem] after:border-b-[4rem] after:border-b-transparent'
                       }
                     >
                       <span
@@ -95,7 +90,7 @@ export default function ContestSocial({
                         {place}
                       </span>
                     </div>
-                    <div className="absolute left-8 bottom-12 w-8/12">
+                    <div className="absolute left-8 bottom-8 w-8/12">
                       <h4 className="font-semibold text-3xl">{ctfPoints} pts</h4>
                       <h1 className="font-bold text-6xl">{name}</h1>
                     </div>
