@@ -14,7 +14,7 @@ const contestsData: ContestData[] = [
     ctftimeId: 1581,
     name: 'GCSC CTF 2022',
     ctfPoints: 1215,
-    ctftimeRating: NaN,
+    ctftimeRating: 20.66,
     year: 2022,
   },
   {

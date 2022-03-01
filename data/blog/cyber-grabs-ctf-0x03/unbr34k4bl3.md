@@ -5,6 +5,7 @@ draft: false
 authors: ['michael']
 tags: ['Cyber Grabs CTF 0x03', 'Crypto', 'RSA', 'Number Theory']
 summary: 'Unbreakable RSA Challenge?'
+canonical: 'https://mzhang.io/posts/2022-02-07-cybergrabs-ctf-unbreakable/'
 ---
 
 ## Unbr34k4bl3
