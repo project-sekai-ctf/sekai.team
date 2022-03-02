@@ -18,8 +18,6 @@ canonical: 'https://mzhang.io/posts/2022-02-07-cybergrabs-ctf-unbreakable/'
 >
 > [output.txt](https://mzhang.io/posts/2022-02-07-cybergrabs-ctf-unbreakable/output.txt) [source.py](https://mzhang.io/posts/2022-02-07-cybergrabs-ctf-unbreakable/source.py)
 
-[Original Writeup](https://mzhang.io/posts/2022-02-07-cybergrabs-ctf-unbreakable/)
-
 Looking at the source code, this challenge looks like a typical RSA challenge at first, but there are some important differences to note:
 
 - $n = pqr$ (line 34). This is a twist but RSA strategies can easily be
@@ -184,7 +182,7 @@ sol = solve((eq1, eq2), (p, q))
 ## Decrypting the ciphertexts
 
 Now that we know $p$ and $q$, it’s time to plug them back into the cryptosystem
-and get our plaintexts. $c_2$ is actually easier than $c_1$, because with 
+and get our plaintexts. $c_2$ is actually easier than $c_1$, because with
 $e_2 = 5$ we can just find the modular inverse:
 
 ```py
