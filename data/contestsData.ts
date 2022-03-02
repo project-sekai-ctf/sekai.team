@@ -10,9 +10,25 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 2,
+    ctftimeId: 1571,
+    name: 'Ugra CTF Quals 2022',
+    ctfPoints: 2975,
+    ctftimeRating: 45.988,
+    year: 2022,
+  },
+  {
+    place: 11,
+    ctftimeId: 1547,
+    name: 'TSJ CTF 2022',
+    ctfPoints: 1146,
+    ctftimeRating: NaN,
+    year: 2022,
+  },
+  {
     place: 1,
     ctftimeId: 1581,
-    name: 'GCSC CTF 2022',
+    name: 'Guinean Cyber Security Challenge',
     ctfPoints: 1215,
     ctftimeRating: 20.66,
     year: 2022,
