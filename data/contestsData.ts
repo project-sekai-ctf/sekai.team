@@ -44,6 +44,7 @@ const contestsData: ContestData[] = [
   {
     place: 1,
     name: 'MOCSCTF 2022',
+    writeupTag: 'mocsctf-2022',
     ctfPoints: 3390,
     year: 2022,
   },
