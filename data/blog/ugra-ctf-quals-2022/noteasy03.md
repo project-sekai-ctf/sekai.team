@@ -8,17 +8,28 @@ summary: 'Single table substitution on Elliptic Curve'
 canonical: 'https://yanhuijessica.github.io/Chictf-Writeups/crypto/noteasy03/'
 ---
 
-## noteasy03
+## noteasy03 (crypto, 350)
 
+> Цезарь скривился,  
+> Замкнулся в себе.  
+> Преумножение.
+> 
+> ---
+> 
 > Caesar curved,<br />closed in on himself.<br />Multiplication.
+>
+> (Google Translate)
 
+
+> Attachments: `ciphertext.txt`  
 > Flag Format: `ugra_[A-Za-z0-9_]+`
+
 
 ![noteasy03](/static/images/ugra-ctf-quals-2022/noteasy03/noteasy0301.png)
 
 According to `curved`, `closed in on himself` and the picture, we speculated that it should be some kind of curve. Meanwhile, all points can find corresponding points on the curve.
 
-Considering the ciphertext and the flag format, we got the following mapping relationship and speculated that it's a single table substitution according to `Caesar`.
+Considering the ciphertext and the flag format, we got the following mapping relationship and speculated that it’s a single table substitution according to `Caesar`.
 
 ```
 r -> u
@@ -28,7 +39,7 @@ a -> a
 ] -> _
 ```
 
-We excluded common single table substitution ciphers(all linear) and finally thought out Elliptic Curves.
+We excluded common single table substitution ciphers (all linear) and finally thought out Elliptic Curves.
 
 Although the shape of the point distribution does not seem to match the Elliptic Curves in the real number field, the point set in the figure completely conforms to the characteristics of the Elliptic Curve in the FINITE field. Meanwhile, the inverse of a point on the Elliptic Curve can meet the mapping requirements of encryption and decryption.
 
