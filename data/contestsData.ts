@@ -24,6 +24,7 @@ const contestsData: ContestData[] = [
     ctfPoints: 2975,
     ctftimeRating: 45.988,
     year: 2022,
+    writeupTag: 'ugra-ctf-quals-2022',
   },
   {
     place: 11,

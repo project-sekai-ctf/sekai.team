@@ -61,7 +61,7 @@ export async function getFileBySlug(
 
   // Parsing frontmatter here to pass it in as options to rehype plugin
   const { data: frontmatter } = matter(source)
-  const { code } = await bundleMDX({
+  let { code } = await bundleMDX({
     source,
     // mdx imports can be automatically source from the components directory
     cwd: path.join(root, 'components'),
@@ -99,6 +99,8 @@ export async function getFileBySlug(
       return options
     },
   })
+
+  code = code.replaceAll('children:"\\u21A9"', 'children:"\\u21A9\\uFE0E"')
 
   return {
     mdxSource: code,
