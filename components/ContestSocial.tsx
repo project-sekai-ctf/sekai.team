@@ -89,12 +89,8 @@ export default function ContestSocial({
                       </span>
                     </div>
                     <div className="absolute w-8/12 left-8 bottom-8">
-                      <h4 className="text-3xl font-semibold text-[#0069A5]">{ctfPoints} pts</h4>
-                      <h1
-                        className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-[#0069A5] to-[#003D6B] pb-2"
-                      >
-                        {name}
-                      </h1>
+                      <h4 className="text-3xl font-semibold">{ctfPoints} pts</h4>
+                      <h1 className="text-6xl font-bold">{name}</h1>
                     </div>
                     <img
                       src="/static/images/fullLogo.png"
