@@ -288,7 +288,7 @@ We can see that the top chunk is freed and goes into unsorted bin. At here, the 
 0x00007ffe68571c18│+0x0038: 0x0000000000000000
 ```
 
-So now, let’s leak the libc main arena address in the freed top chunk first. To do that, we just simply malloc an amount which is smaller than freed top chunk (which turn into unsorted bin) because malloc() doesn't remove data on that chunk (just free() does), and then print the libc main arena address out (Address changed because I rerun it):
+So now, let’s leak the libc main arena address in the freed top chunk first. To do that, we just simply malloc an amount which is smaller than freed top chunk (which turn into unsorted bin) because malloc() doesn’t remove data on that chunk (just free() does), and then print the libc main arena address out (Address changed because I rerun it):
 
 ```
 malloc(2, 0x100)
@@ -362,7 +362,7 @@ We will want to malloc `0xcf0-0x10` because there is heap metadata, so if we `ma
 malloc(1, 0xcf0-0x10)
 ```
 
-Why I use index 1? Just because we don't use those 0x1000 byte of chunk 1 anymore so we reuse index 1 again. After `malloc(1, 0xcf0-0x10)`, the stack where chunk 1 is placed changed:
+Why I use index 1? Just because we don’t use those 0x1000 byte of chunk 1 anymore so we reuse index 1 again. After `malloc(1, 0xcf0-0x10)`, the stack where chunk 1 is placed changed:
 
 ```
 0x00007ffec709f4d0│+0x0000: "B=malloc(3296)\n"   ← $rax, $rsp, $rdi
@@ -467,7 +467,7 @@ Dump of assembler code for function __GI___libc_realloc:
 
 ```
 
-So in our case that `__realloc_hook` is not null (we will overwrite with one gadget), it then `pop` and execute the function inside `__realloc_hook`. So if we overwrite `__malloc_hook` with `realloc + 24` (address is `0x00007f5c371c8018`), which means we don't push any register, but we can pop all 6 value on stack in to rbx, rbp, r12, r13, r14, r15, and also the stack didn't change, we can control it more easily. And here is the status of stack:
+So in our case that `__realloc_hook` is not null (we will overwrite with one gadget), it then `pop` and execute the function inside `__realloc_hook`. So if we overwrite `__malloc_hook` with `realloc + 24` (address is `0x00007f5c371c8018`), which means we don’t push any register, but we can pop all 6 value on stack in to rbx, rbp, r12, r13, r14, r15, and also the stack didn’t change, we can control it more easily. And here is the status of stack:
 
 ```
 0x00007ffec709f4d0│+0x0000: "D=malloc(4096)\n"   ← $rax, $rsp, $rdi
