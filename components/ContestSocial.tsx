@@ -18,9 +18,7 @@ export default function ContestSocial({
   const cancelButtonRef = useRef(null)
   const [image, setImage] = useState<string | null>(null)
   const designRef = useCallback((designRef) => {
-    console.log('designRef', designRef)
     if (designRef) {
-      // setTimeout(() => exportAsImage(designRef).then(setImage), 100)
       setTimeout(() => domtoimage.toPng(designRef).then(setImage), 100)
     }
   }, [])
@@ -29,11 +27,11 @@ export default function ContestSocial({
     <Transition.Root show={open} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed z-10 inset-0 overflow-y-auto"
+        className="fixed inset-0 z-10 overflow-y-auto"
         initialFocus={cancelButtonRef}
         onClose={setOpen}
       >
-        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -43,7 +41,7 @@ export default function ContestSocial({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-gray-800 bg-opacity-75 transition-opacity" />
+            <Dialog.Overlay className="fixed inset-0 transition-opacity bg-gray-800 bg-opacity-75" />
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}
@@ -59,8 +57,8 @@ export default function ContestSocial({
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="inline-block align-bottom bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle md:w-fit sm:w-full">
-              <div className="bg-gray-900 px-4 pt-5 pb-4 sm:p-6 sm:pb-4 w-fit">
+            <div className="inline-block overflow-hidden text-left align-bottom transition-all transform bg-gray-900 rounded-lg shadow-xl sm:my-8 sm:align-middle md:w-fit sm:w-full">
+              <div className="px-4 pt-5 pb-4 bg-gray-900 sm:p-6 sm:pb-4 w-fit">
                 <div className="relative">
                   <div
                     ref={designRef}
@@ -90,14 +88,14 @@ export default function ContestSocial({
                         {place}
                       </span>
                     </div>
-                    <div className="absolute left-8 bottom-8 w-8/12">
-                      <h4 className="font-semibold text-3xl">{ctfPoints} pts</h4>
-                      <h1 className="font-bold text-6xl">{name}</h1>
+                    <div className="absolute w-8/12 left-8 bottom-8">
+                      <h4 className="text-3xl font-semibold">{ctfPoints} pts</h4>
+                      <h1 className="text-6xl font-bold">{name}</h1>
                     </div>
                     <img
                       src="/static/images/fullLogo.png"
                       alt="Logo"
-                      className="absolute top-8 right-8 w-3/12"
+                      className="absolute w-3/12 top-8 right-8"
                     />
                   </div>
                   <img
@@ -107,10 +105,10 @@ export default function ContestSocial({
                   />
                 </div>
               </div>
-              <div className="bg-gray-800 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              <div className="px-4 py-3 bg-gray-800 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button
                   type="button"
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-700 shadow-sm px-4 py-2 bg-gray-700 text-base font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  className="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-white bg-gray-700 border border-gray-700 rounded-md shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={() => setOpen(false)}
                   ref={cancelButtonRef}
                 >
