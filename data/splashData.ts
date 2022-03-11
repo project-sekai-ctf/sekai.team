@@ -707,6 +707,10 @@ const splashData = [
     title: '雨とペトラ / みきとP',
     lyrics: '取り残されてしまう前に\n手を伸ばしてくれ',
   },
+  {
+    title: 'メタモリボン / emon(Tes.), Tudiken',
+    lyrics: 'アイデアは繋がって',
+  },
 ]
 
 const unconfirmed = [
