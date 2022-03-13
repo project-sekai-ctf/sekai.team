@@ -10,6 +10,15 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 6,
+    ctftimeId: 1559,
+    name: 'DaVinciCTF 2022',
+    writeupTag: 'davinci-ctf-2022',
+    ctfPoints: 8875,
+    ctftimeRating: 25.045,
+    year: 2022,
+  },
+  {
     place: 9,
     ctftimeId: 1593,
     name: 'UMDCTF 2022',
@@ -18,17 +27,10 @@ const contestsData: ContestData[] = [
     year: 2022,
   },
   {
-    place: 49,
-    ctftimeId: 1595,
-    name: 'Engineer CTF',
-    ctfPoints: 4131,
-    ctftimeRating: NaN,
-    year: 2022,
-  },
-  {
     place: 1,
     ctftimeId: 1579,
     name: 'FooBar CTF 2022',
+    writeupTag: 'foobar-ctf-2022',
     ctfPoints: 6379,
     ctftimeRating: 43.22,
     year: 2022,
