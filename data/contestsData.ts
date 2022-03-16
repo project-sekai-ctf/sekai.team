@@ -13,6 +13,7 @@ const contestsData: ContestData[] = [
     place: 7,
     ctftimeId: 1582,
     name: 'UTCTF 2022',
+    writeupTag: 'utctf-2022',
     ctfPoints: 14074,
     ctftimeRating: 29.258,
     year: 2022,
@@ -66,7 +67,7 @@ const contestsData: ContestData[] = [
     name: 'TSJ CTF 2022',
     writeupTag: 'tsjctf-2022',
     ctfPoints: 1146,
-    ctftimeRating: NaN,
+    ctftimeRating: 10.162,
     year: 2022,
   },
   {
