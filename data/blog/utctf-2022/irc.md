@@ -10,7 +10,7 @@ canonical: ''
 
 ## IRC
 
-Original Challenge Link - https://utctf.live/challenges#IRC-26
+Original Challenge Link: https://utctf.live/challenges#IRC-26
 
 > Steal my irc password.
 >
@@ -18,7 +18,7 @@ Original Challenge Link - https://utctf.live/challenges#IRC-26
 >
 > I spent way too long solving this problem...
 >
-> memdump.lime.z
+> [memdump.lime.z](https://utexas.box.com/s/z2ljzoah8cp3alsp8p0uwh7hdvvz5wq3)
 >
 > By Daniel Parks (@danielp on discord)
 
@@ -43,7 +43,7 @@ Linux version 5.10.0-11-amd64 (debian-kernel@lists.debian.org) (gcc-10 (Debian 1
 
 ## 3. Build a custom profile for Debian 10:
 
-You can do this lots of ways - basically you will need a system.map for the running kernel, and you will need to combine it in an appropriately named zip file with module.dwarf - then put that zip file in your volatility profiles directory. Lots of good tutorials out there to do this - like https://andreafortuna.org/2019/08/22/how-to-generate-a-volatility-profile-for-a-linux-system/
+You can do this lots of ways – basically you will need a system.map for the running kernel, and you will need to combine it in an appropriately named zip file with `module.dwarf` – then put that zip file in your volatility profiles directory. Lots of good tutorials out there to do this – like https://andreafortuna.org/2019/08/22/how-to-generate-a-volatility-profile-for-a-linux-system/
 
 ## 4. Once you have a working profile:
 
@@ -76,7 +76,7 @@ Offset             Name                 Pid             PPid            Uid     
 
 ## 5. Review process listing:
 
-He is running hexchat, next you can google or install hexchat locally to figure out where things are stored and how things are setup. Some quick googling reveals that the confing file will be in **_hexchat.conf_**, also while googling I found some previous mention about a file **_servlist.conf_** that used to hold credentials in earlier versions. I decided to do a bit more recon on the image, maybe get lucky with bash history:
+He is running hexchat, next you can google or install hexchat locally to figure out where things are stored and how things are setup. Some quick googling reveals that the confing file will be in `hexchat.conf`, also while googling I found some previous mention about a file `servlist.conf` that used to hold credentials in earlier versions. I decided to do a bit more recon on the image, maybe get lucky with bash history:
 
 ```bash
 $ vol.py -f memdump.lime --profile=LinuxDebian1102x64 linux_bash
@@ -128,7 +128,7 @@ Pid      Name                 Command Time                   Command
 
 ## 6. More recon:
 
-Not much there except we know the user is **_daniel_**. More recon (abbreviated):
+Not much there except we know the user is `daniel`. More recon (abbreviated):
 
 ```bash
 $ vol.py -f memdump.lime --profile=LinuxDebian1102x64 linux_lsof
@@ -197,7 +197,7 @@ Mar 02 16:46:44 *       Connecting to utctf.live (18.235.217.204:6667)
 
 ## 8. Pivot on irc server address:
 
-At this point I thought it might be useful to grep through the actual memory dump itself for the **_utctf.live_** string, as this seemed unique enough to be useful (abbreviated):
+At this point I thought it might be useful to grep through the actual memory dump itself for the `utctf.live` string, as this seemed unique enough to be useful (abbreviated):
 
 ```bash
 $ strings memdump.lime | grep -i -B 2 -A 2 utctf.live
@@ -235,4 +235,4 @@ Directory tree generator.
 
 ## 9. Get lucky:
 
-So we get a bit lucky here - **_P=6cf35d047000d30d39e07b2361668ae8a408db184f24641670f5e2ee0872d86c_** looks pretty promising as a password. We know from the challenge text that the flag won't be in the usual format as well - and should be obvious. To be honest a long hash like this is not super obvious as a password - but we try to submit it and it is correct.
+So we get a bit lucky here – `P=6cf35d047000d30d39e07b2361668ae8a408db184f24641670f5e2ee0872d86c` looks pretty promising as a password. We know from the challenge text that the flag won’t be in the usual format as well – and should be obvious. To be honest a long hash like this is not super obvious as a password – but we try to submit it and it is correct.

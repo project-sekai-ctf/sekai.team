@@ -1,5 +1,5 @@
 ---
-title: Ugra CTF Quals 2022 – xoxoracing
+title: Ugra CTF Quals 2022 – Хохорейсинг
 date: '2022-03-04'
 draft: false
 authors: ['thebish0p']
@@ -7,7 +7,7 @@ tags: ['Ugra CTF Quals 2022', 'Crypto', 'XOR', 'Automation', 'Web Socket']
 summary: 'Sometimes you have to google the outputs xD'
 ---
 
-## xorxoracing
+## Хохорейсинг (`xorxoracing`, 100)
 
 > by Kalan
 >
@@ -121,7 +121,7 @@ window.setInterval(() => {
 
 ```
 
-The whole communication is happening through websockets. We send a key -> Receive a ciphertext -> Send plaintext -> Receive original plaintext to compare:
+The whole communication is happening through websockets. We send a key → Receive a ciphertext → Send plaintext → Receive original plaintext to compare:
 
 ![WS Communication](/static/images/ugra-ctf-quals-2022/xorxoracing/communication.png)
 
@@ -172,7 +172,7 @@ o construed as to affect the election or
 ============================================
 ```
 
-Okay so the plaintexts are from the US consitution and don't have any punctuation or new lines. Now let's try to input 40 chars key -> Xor it with ciphertext and see how it looks.
+Okay so the plaintexts are from the US consitution and don’t have any punctuation or new lines. Now let’s try to input 40 chars key → Xor it with ciphertext and see how it looks.
 
 ```python
 import json
