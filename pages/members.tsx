@@ -26,18 +26,42 @@ export default function Projects({ members }: { members: MdxFile[] }) {
         </div>
         <div className="container py-12">
           <div className="flex flex-wrap -m-4 place-items-stretch">
-            {members.map((d) => (
-              <MDXLayoutRenderer
-                layout="MemberLayout"
-                mdxSource={d.mdxSource}
-                frontMatter={d.frontMatter}
-                {...d}
-                key={d.frontMatter.name}
-              />
-            ))}
+            {members
+              .filter((d) => !d.frontMatter.retired)
+              .map((d) => (
+                <MDXLayoutRenderer
+                  layout="MemberLayout"
+                  mdxSource={d.mdxSource}
+                  frontMatter={d.frontMatter}
+                  {...d}
+                  key={d.frontMatter.name}
+                />
+              ))}
           </div>
         </div>
       </div>
+      <details className="">
+        <summary className="pt-2 pb-2 space-y-2">
+          <h2 className="inline-block ml-2 text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-1xl md:text-3xl">
+            Former members
+          </h2>
+        </summary>
+        <div className="container py-6">
+          <div className="flex flex-wrap -m-4 place-items-stretch">
+            {members
+              .filter((d) => d.frontMatter.retired)
+              .map((d) => (
+                <MDXLayoutRenderer
+                  layout="MemberLayout"
+                  mdxSource={d.mdxSource}
+                  frontMatter={d.frontMatter}
+                  {...d}
+                  key={d.frontMatter.name}
+                />
+              ))}
+          </div>
+        </div>
+      </details>
     </>
   )
 }

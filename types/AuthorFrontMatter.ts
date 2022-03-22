@@ -11,4 +11,5 @@ export type AuthorFrontMatter = {
   company: string
   member?: boolean
   order?: number
+  retired?: boolean
 } & Partial<SocialBarProps>
