@@ -711,9 +711,6 @@ const splashData = [
     title: 'メタモリボン / emon(Tes.), Tudiken',
     lyrics: 'アイデアは繋がって',
   },
-]
-
-const unconfirmed = [
   {
     title: 'マトリョシカ / ハチ',
     lyrics: '待ってなんて言って待って待って\nたった一人になる前に',
@@ -722,10 +719,6 @@ const unconfirmed = [
     title: 'マトリョシカ / ハチ',
     lyrics:
       '頭痛が歌うパッケージ\nいつまで経っても針は四時\n誰も教えてくれないで\n<b>世界</b>は逆さに回り出す',
-  },
-  {
-    title: 'グッバイ宣言 / Chinozo',
-    lyrics: 'グルグル　グルグルと\n<b>世界</b>は変わらず廻っていた',
   },
   {
     title: 'ドーナツホール / ハチ',
@@ -754,6 +747,14 @@ const unconfirmed = [
     lyrics: 'はじけるリズムに合わせて\n嫌なこと何もかも全部忘れて',
   },
   {
+    title: 'ピアノ×フォルテ×スキャンダル / OSTER project',
+    lyrics: 'きっと大丈夫よ',
+  },
+  {
+    title: '千年の独奏歌 / yanagi',
+    lyrics: 'この体は全て\n作り物でしかないけど\nこの心はせめて\n歌に捧げていよう',
+  },
+  {
     title: 'ブラック★ロックシューター / ryo',
     lyrics: 'ブラックロックシューター\n何処へ行ったの？\n聞こえますか？',
   },
@@ -762,12 +763,12 @@ const unconfirmed = [
     lyrics: '動いてこの足！\n<b>世界</b>を超えて',
   },
   {
-    title: 'ピアノ×フォルテ×スキャンダル / OSTER project',
-    lyrics: 'きっと大丈夫よ',
+    title: 'ダーリンダンス / かいりきベア',
+    lyrics: '踊れ\n叫べ\n踊れ\n唄え\n踊れ\nルラッパパ',
   },
   {
-    title: '千年の独奏歌 / yanagi',
-    lyrics: 'この体は全て\n作り物でしかないけど\nこの心はせめて\n歌に捧げていよう',
+    title: 'PaⅢ.SENSATION / 牛肉, 雄之助',
+    lyrics: '奇跡を見せてあげる\n新時代の幕開け',
   },
 ]
 
