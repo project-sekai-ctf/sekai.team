@@ -4,7 +4,7 @@ date: '2022-03-26'
 draft: false
 authors: ['sahuang']
 tags: ['WolvSec CTF', 'Crypto', 'Diffie-Hellman', 'Prime', 'Mersenne', 'Factorization']
-summary: 'Small subgroup attack on Diffie-Hellman..?'
+summary: 'Small subgroup attack on Diffie-Hellman...?'
 ---
 
 ## CPA-Secure Diffie–Hellman?
@@ -13,7 +13,7 @@ summary: 'Small subgroup attack on Diffie-Hellman..?'
 >
 > https://dhe-medium-bvel4oasra-uc.a.run.app/
 
-Personally I think this is the best challenge in the whole CTF - The only Crypto problem that I learned something new. Most of their other challenges are either boring or guessy.
+Personally I think this is the best challenge in the whole CTF – The only Crypto problem that I learned something new. Most of their other challenges are either boring or guessy.
 
 We were provided with the following script. I removed website part for simplicity.
 
@@ -90,11 +90,11 @@ b = bytes_to_long_flag(flag.encode('utf-8'))
 
 Let us first check each function.
 
-`bytes_to_long_flag` - Takes flag as byte string and turns it into a long number `b` according to the `key` map.
+`bytes_to_long_flag` – Takes flag as byte string and turns it into a long number `b` according to the `key` map.
 
-`long_to_bytes_flag` - We will use it in the end to convert the number `b` back to flag.
+`long_to_bytes_flag` – We will use it in the end to convert the number `b` back to flag.
 
-`diffie_hellman` - This is the function we need to focus on. We are given an ecryption scheme where `p` is known. We can choose arbitrary `A` and the server will compute the following:
+`diffie_hellman` – This is the function we need to focus on. We are given an encryption scheme where `p` is known. We can choose arbitrary `A` and the server will compute the following:
 
 ```py
 s = pow(A,b,p) # b is what we need to attack
@@ -110,20 +110,31 @@ Spent some time playing around with the website, we observed that inputting `A =
 
 ![Discord chat](/static/images/wolvsec-ctf/cpa/discord_chat.png)
 
+> the way to solve this would be  
+> first put 1 and then -1  
+> you get different outputs mean that the last bit is 1  
+> now for second bit  
+> was thinking of finding 4th root of 1 in modulo p  
+> there are 4 possible roots  
+> two of them are -1 and 1 which we won’t use here  
+> the other two we pass it into the oracle  
+> if we get different, the second bit is 1  
+> otherwise 0
+
 However, it turns out there are only 2 n-th roots of 1 modulo `p` if `n = pow(2, k)`. At this point I began to search for property of `p`, which surprisingly belongs to an OEIS:
 
-![Sequence](https://cdn.discordapp.com/attachments/956966853413064744/957407617590890517/unknown.png)
+![Sequence](/static/images/wolvsec-ctf/cpa/sequence.png)
 
-We noticed that `p = pow(2, 521) - 1` and is a Mersenne prime. (I later saw there is a hint in the source code: `All the homies hate 521`, but I did not realize it before solving the challenge.) With some research, I found a statement "breaking the Diffie-Hellman Key Exchange Protocol is easy for Fermat primes and Mersenne primes" - which convinced me this might be the right path.
+We noticed that `p = pow(2, 521) - 1` and is a Mersenne prime. (I later saw there is a hint in the source code: `All the homies hate 521`, but I did not realize it before solving the challenge.) With some research, I found a statement “breaking the Diffie-Hellman Key Exchange Protocol is easy for Fermat primes and Mersenne primes” - which convinced me this might be the right path.
 
 My first finding: if we let `A = 2`, we can get
 
 $$
 \begin{aligned}
-  s = A^{b} \bmod p \\\
-  s = 2^{521*k+l} \bmod 2^{521}-1 \\\
-  s = 2^{521*k} * 2^{l} \bmod 2^{521}-1 \\\
-  s = 2^{l}
+  s &= A^{b} \bmod p \\\
+  s &= 2^{521*k+l} \bmod 2^{521}-1 \\\
+  s &= 2^{521*k} * 2^{l} \bmod 2^{521}-1 \\\
+  s &= 2^{l}
 \end{aligned}
 $$
 
