@@ -770,6 +770,10 @@ const splashData = [
     title: 'PaⅢ.SENSATION / 牛肉, 雄之助',
     lyrics: '奇跡を見せてあげる\n新時代の幕開け',
   },
+  {
+    title: 'ノマド / バルーン',
+    lyrcis: '二度と無い\n今を生きていたいだけ\nそれだけだ',
+  }
 ]
 
 export default splashData
