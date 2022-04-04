@@ -14,7 +14,7 @@ const contestsData: ContestData[] = [
     ctftimeId: 1558,
     name: 'RITSEC CTF 2022',
     writeupTag: 'ritsec-ctf-2022',
-    ctfPoints: 10779,
+    ctfPoints: 10777,
     ctftimeRating: NaN,
     year: 2022,
   },
