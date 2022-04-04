@@ -10,12 +10,21 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 1,
+    ctftimeId: 1558,
+    name: 'RITSEC CTF 2022',
+    writeupTag: 'ritsec-ctf-2022',
+    ctfPoints: 10850,
+    ctftimeRating: NaN,
+    year: 2022,
+  },
+  {
     place: 2,
     ctftimeId: 1612,
     name: 'Wolverine Security Conference/CTF',
     writeupTag: 'wolvsec-ctf',
     ctfPoints: 11924,
-    ctftimeRating: NaN,
+    ctftimeRating: 33.707,
     year: 2022,
   },
   {
