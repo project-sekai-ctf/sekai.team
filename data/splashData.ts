@@ -772,8 +772,12 @@ const splashData = [
   },
   {
     title: 'ノマド / バルーン',
-    lyrcis: '二度と無い\n今を生きていたいだけ\nそれだけだ',
-  }
+    lyrics: '二度と無い\n今を生きていたいだけ\nそれだけだ',
+  },
+  {
+    title: '88☆彡 / まらしぃ, 堀江晶太 (kemu)',
+    lyrics: 'かき鳴らす度\n心が呼びかけてくる\n<b>セカイ</b>の一瞬の熱狂が\n弾ける',
+  },
 ]
 
 export default splashData
