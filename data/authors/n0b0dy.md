@@ -1,8 +1,10 @@
 ---
 name: n0b0dy
-avatar: https://www.gravatar.com/avatar/00000000000000000000000000000006?d=identicon&s=256
-specialties: [Forensics]
-member: false
-description:
+avatar: https://www.gravatar.com/avatar/d643a6c43bd4e00e0b4a9f99176e4bbe?d=identicon&s=256
+specialties: [Forensics, Misc]
+member: true
+description: #p0tat0life
 order: 9
 ---
+
+#p0tat0life
