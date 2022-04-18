@@ -100,7 +100,7 @@ export async function getFileBySlug(
     },
   })
 
-  code = code.replace('children:"\\u21A9"', 'children:"\\u21A9\\uFE0E"')
+  code = code.replaceAll('children:"\\u21A9"', 'children:"\\u21A9\\uFE0E"')
 
   return {
     mdxSource: code,
