@@ -33,9 +33,9 @@ export default function Home({ posts, members }: InferGetStaticPropsType<typeof 
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div className="pt-8 pb-8 text-center">
           <FullLogo
-            viewBox="0 0 509 202"
+            // viewBox="0 0 509 202"
             className="mx-auto mb-8"
-            style={{ width: 'clamp(65%, 600px, calc(100% - 20px))' }}
+            style={{ width: 'clamp(35%, 400px, calc(100% - 20px))' }}
             alt="Project SEKAI"
           />
           <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">

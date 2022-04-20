@@ -1,6 +1,6 @@
 import siteMetadata from '@/data/siteMetadata'
 import headerNavLinks from '@/data/headerNavLinks'
-import Logo from '@/data/logo.svg'
+import Logo from '@/data/fullLogo.svg'
 import Link from './Link'
 import SectionContainer from './SectionContainer'
 import Footer from './Footer'
@@ -25,15 +25,8 @@ const LayoutWrapper = ({ children }: Props) => {
               <Link href="/" aria-label="Visit home page">
                 <div className="flex items-center justify-between">
                   <div className="mr-3">
-                    <Logo height={80} width="auto" viewBox="0 0 279 200" />
+                    <Logo height={80} width="auto" />
                   </div>
-                  {typeof siteMetadata.headerTitle === 'string' ? (
-                    <div className="hidden h-6 text-2xl font-semibold sm:block">
-                      {siteMetadata.headerTitle}
-                    </div>
-                  ) : (
-                    siteMetadata.headerTitle
-                  )}
                 </div>
               </Link>
             ) : null}

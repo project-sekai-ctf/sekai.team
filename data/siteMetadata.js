@@ -9,7 +9,7 @@ const siteMetadata = {
   siteRepo: 'https://github.com/blueset/sekai.team',
   siteLogo: '/static/images/fullLogo.svg',
   image: '/static/images/avatar.png',
-  socialBanner: '/static/images/twitter-card.png',
+  socialBanner: '/static/images/twitter-card.png?v=2',
   email: '',
   github: '',
   twitter: 'https://twitter.com/ProjectSEKAIctf',
