@@ -149,8 +149,7 @@ const splashData = [
   { title: 'ジャックポットサッドガール / syudou', lyrics: 'ひーふーみーよー\nいーむーなーやー' },
   {
     title: 'needLe / DECO*27',
-    lyrics:
-      '大丈夫 私はひとりだ\n大丈夫 みんなもひとりだ\n笑って もう一度\nやり直せるよね',
+    lyrics: '大丈夫 私はひとりだ\n大丈夫 みんなもひとりだ\n笑って もう一度\nやり直せるよね',
   },
   {
     title: 'needLe / DECO*27',
@@ -777,6 +776,33 @@ const splashData = [
   {
     title: '88☆彡 / まらしぃ, 堀江晶太 (kemu)',
     lyrics: 'かき鳴らす度\n心が呼びかけてくる\n<b>セカイ</b>の一瞬の熱狂が\n弾ける',
+  },
+  {
+    title: '未完成讃歌 / しゃいと',
+    lyrics: '僕らは未完成で\nこんなに不完全で\nだからこそ何回も何回も\n高みを目指していく',
+  },
+  {
+    title: '未完成讃歌 / しゃいと',
+    lyrics:
+      '僕らの未完成で不完全な声が\n<b>世界</b>を貫く\n焦がれた未来像を機械音を\n今掻き鳴らしていく',
+  },
+  {
+    title: '妄想感傷代償連盟 / DECO*27',
+    lyrics: '再挑戦\n転生\nテレポーテーション\n何回だって\n重ねて逝くんだ',
+  },
+  {
+    title: 'リモコン / ワンダフル☆オポチュニティ！',
+    lyrics: '唸り (aohhhhhhhh!!!)\nあげる (oh)\nsingin’ now (yeah!)\nアイツよりも高く歌いたい',
+  },
+  {
+    title: 'リモコン / ワンダフル☆オポチュニティ！',
+    lyrics:
+      'L R L R STOP & Dash & up & talk\nB B A B S(tart)\nup side down A B A B\nB A B A 右 左\nL R L R stop & dash & up & talk\n異常ナシ',
+  },
+  {
+    title: 'アサガオの散る頃に / ぷす (from ツユ)',
+    lyrics:
+      '夏が終わる前に\n綺麗な空へと\n暮れた哀しみを\n投げ捨ててしまおう\nあぁ　夜には深い涼風が\n涙をくれた\nアサガオの散る頃に',
   },
 ]
 
