@@ -809,6 +809,10 @@ const splashData = [
     lyrics:
       '君のために弱さ歌おう\n君のために希望描こう\n君のために今日笑うから\n僕らの言葉が届くように\n僕らの想いが響くように',
   },
+  {
+    title: '脳漿炸裂ガール / れるりり',
+    lyrics: '※この電話番号は\n現在使われておりません',
+  },
 ]
 
 export default splashData
