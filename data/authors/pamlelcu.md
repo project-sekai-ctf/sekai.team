@@ -7,4 +7,4 @@ description: echo mss3auP5i2Qll1rx | tr a-zA-Z N-ZA-Mn-za-m | base64 -D | youtub
 order: 100
 ---
 
-`echo mss3auP5i2Qll1rx | tr a-zA-Z N-ZA-Mn-za-m | base64 -D | youtube-dl -a -`
+echo mss3auP5i2Qll1rx | tr a-zA-Z N-ZA-Mn-za-m | base64 -D | youtube-dl -a -
