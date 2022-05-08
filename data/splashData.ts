@@ -813,6 +813,11 @@ const splashData = [
     title: '脳漿炸裂ガール / れるりり',
     lyrics: '※この電話番号は\n現在使われておりません',
   },
+  {
+    title: 'イフ / ユリイ・カノン',
+    lyrics:
+      '生まれた意味も\n死ねない理由も\n未だにわからないけど\nこの命に価値がないとしても\n世界は美しいんだから\n生きていこう',
+  },
 ]
 
 export default splashData
