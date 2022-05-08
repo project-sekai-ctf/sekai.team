@@ -10,12 +10,45 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 68,
+    ctftimeId: 1588,
+    name: 'ångstromCTF 2022',
+    ctfPoints: 2330,
+    ctftimeRating: 28.277,
+    year: 2022,
+  },
+  {
+    place: 6,
+    ctftimeId: 1630,
+    name: 'NahamCon CTF 2022',
+    writeupTag: 'nahamcon-ctf-2022',
+    ctfPoints: 22001,
+    ctftimeRating: 25.337,
+    year: 2022,
+  },
+  {
+    place: 14,
+    ctftimeId: 1583,
+    name: 'b01lers CTF',
+    ctfPoints: 2080,
+    ctftimeRating: 19.28,
+    year: 2022,
+  },
+  {
+    place: 19,
+    ctftimeId: 1557,
+    name: 'TAMUctf 2022',
+    ctfPoints: 3329,
+    ctftimeRating: 10.734,
+    year: 2022,
+  },
+  {
     place: 3,
     ctftimeId: 1568,
     name: 'CrewCTF 2022',
     writeupTag: 'crew-ctf-2022',
     ctfPoints: 21000,
-    ctftimeRating: NaN,
+    ctftimeRating: 24.967,
     year: 2022,
   },
   {
