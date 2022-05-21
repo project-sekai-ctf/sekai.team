@@ -14,7 +14,8 @@ canonical: 'https://deut-erium.github.io/ctf-writeups-2022/ctf2022/sdctf/tasty_c
 >
 > The end result is an encryption scheme that achieves both confusion and diffusion. The more layers of crypto you add, the better the security, right?
 >
-> [encrypt.py](https://github.com/deut-erium/ctf-writeups-2022/blob/main/CTFS-2022/sdctf/tasty_crypto_roll/encrypt.py) > [enc.bin](https://github.com/deut-erium/ctf-writeups-2022/blob/main/CTFS-2022/sdctf/tasty_crypto_roll/enc.bin)
+> [encrypt.py](https://github.com/deut-erium/ctf-writeups-2022/blob/main/CTFS-2022/sdctf/tasty_crypto_roll/encrypt.py)  
+> [enc.bin](https://github.com/deut-erium/ctf-writeups-2022/blob/main/CTFS-2022/sdctf/tasty_crypto_roll/enc.bin)
 >
 > The intended solution requires very little brute force and runs under 5 seconds on our machine.
 > By k3v1n
@@ -93,7 +94,7 @@ Here we can see mainly two parts.
    - `key1`: pid of current process
    - `key2`: secure random key of 16 bytes
 
-2. `key1` is used as seed at a lot of places and is bruteforcable (< 2^15)
+2. `key1` is used as seed at a lot of places and is bruteforcable ($< 2^{15}$)
    `key_final` and `sboxes` are derived from `key1`, shuffling is done using `key1`.
 
 ## Steps to crack
@@ -108,20 +109,19 @@ Here we can see mainly two parts.
 
 Assume you have the correct `key1`, reverse for the key, validate the results using some validator/logical assumption.
 
-- `codes` is a list of `2*(0x1b0-0xb0)` = `512` characters, utf-8 encoding of
-  which is 2-bytes each
-- `sboxes` will have 4char strings, which encode to 8 bytes each on utf-8 (i.e. after substitution)
-- `data` is now `4*2 = 8` times each byte of the original plaintext
-- `data` is converted `to_binary` before encryption hence each byte is converted to 8 `b"0"` or `b"1"` byte. Hence each character is substituted to some `8*8 = 64` byte string before encryption.
+- `codes` is a list of `2*(0x1b0-0xb0)` = `512` characters, UTF-8 encoding of
+  which is 2 bytes each
+- `sboxes` will have 4-char strings, which encode to 8 bytes each on UTF-8 (i.e. after substitution)
+- `data` is now 4 × 2 = 8 each byte of the original plaintext
+- `data` is converted `to_binary` before encryption hence each byte is converted to 8 `b"0"` or `b"1"` byte. Hence each character is substituted to some 8 × 8 = 64 byte string before encryption.
 
-Hence len of flag = `len(ciphertext)//64` = `3520//64 = 55` bytes.
+Hence length of flag is `len(ciphertext)//64` = $\lfloor 3520 \div 64 \rfloor$ = 55 bytes.
 
 #### Assumption 1
 
 Since length of flag is 55 characters, would it be reasonable to assume that there would be repetitions of characters. And since each flag character is substituted to fixed 64-byte strings before encryption which is a multiple of AES block size of 16, AES also acts like simple substitution of the flag but we do not know the mapping.
 
-Hence if we reverse till step 4 above, we can simply check if there are any repeating 64-byte blocks, as incorrect shuffling of bits will result in each
-block to be distinct with almost 1 probability.
+Hence if we reverse till step 4 above, we can simply check if there are any repeating 64-byte blocks, as incorrect shuffling of bits will result in each block to be distinct with almost 1 probability.
 
 ```python
 with open('enc.bin', 'rb') as f:
@@ -199,14 +199,13 @@ for key1 in tqdm(range(2**15),desc='solving for key1'):
         break
 ```
 
-After waiting for an eternity, and exhausting the search space of possible pid's yet not getting any `key1` got me confused. I checked my script locally for a test flag it seemed to work fine. There could only be one possibility: **the flag contains 55 distinct characters**.
+After waiting for an eternity, and exhausting the search space of possible `pid`s yet not getting any `key1` got me confused. I checked my script locally for a test flag it seemed to work fine. There could only be one possibility: **the flag contains 55 distinct characters**.
 
 But how would I find `key1` now?
 
 #### Missed Catch
 
-@Utaha#6878 pointed out, that since there are only 256 distinct values in
-`codes` each repeated twice, and each character encoded to some `b"0"` or `b"1"` byte strings of length 16, It must be encrypted to the same block always. Since the flag is `55*4 = 220` such 16-byte codes and each code is used twice for most of the characters, there will be repating 16-byte blocks even with distinct flag characters.
+@Utaha#6878 pointed out, that since there are only 256 distinct values in `codes` each repeated twice, and each character encoded to some `b"0"` or `b"1"` byte strings of length 16, It must be encrypted to the same block always. Since the flag is 55 × 4 = 220 such 16-byte codes and each code is used twice for most of the characters, there will be repeating 16-byte blocks even with distinct flag characters.
 
 #### Assumption 2
 
@@ -224,7 +223,7 @@ for key1 in tqdm(range(2**15),desc='solving for key1'):
 And we found our `key1`!  
 And we can confirm that the flag is indeed 55 distinct characters.
 
-Wait, if the flag is 55 distinct characters, how will we solve for the subs? We have no statistical advantage and hence bye bye Mr [quipquip](https://quipqiup.com/)
+Wait, if the flag is 55 distinct characters, how will we solve for the subs? We have no statistical advantage and hence bye bye Mr [quipquip](https://quipqiup.com/).
 
 ### How do we find mapping for substitution?
 
@@ -252,7 +251,7 @@ If we try to solve for all valid mappings for `AES(binary(sbox(char)))` we will 
 
 ### Enter Z3
 
-We can assume our flag to be a list of `BitVec` of 7 bits each and let the sboxes be a mapping from 7 bits to 64 bits each (16x4). This can be achieved by assuming sbox to be an array which is indexed by `BitVec(7)` and contains elements of `BitVec(64)`. And we assume AES to be some function form `BitVec(16)` to `BitVec(128)`.
+We can assume our flag to be a list of `BitVec` of 7 bits each and let the sboxes be a mapping from 7 bits to 64 bits each (16 × 4). This can be achieved by assuming sbox to be an array which is indexed by `BitVec(7)` and contains elements of `BitVec(64)`. And we assume AES to be some function form `BitVec(16)` to `BitVec(128)`.
 
 ```python
 flag = [BitVec('flag_'+str(i),7) for i in range(len(data)//64)]
@@ -311,7 +310,7 @@ After running the script, we finally get our flag!
 
 > `b'r0l1-uR~pWn.c6yPtO_wi7h,ECB:I5*b8d!KQvJmLxgX9DsaANMFSeU'`
 
-And it turns out to be the only satisfying assignment. Turns out if there were repeated characters in the flag, we will get multiple possible satisfying values. So the admins have not been so cheeky afterall.
+And it turns out to be the only satisfying assignment. Turns out if there were repeated characters in the flag, we will get multiple possible satisfying values. So the admins have not been so cheeky after all.
 
 ## Full [script](https://github.com/deut-erium/ctf-writeups-2022/blob/main/CTFS-2022/sdctf/tasty_crypto_roll/solve.py)
 
@@ -466,9 +465,9 @@ else:
 
 All due regards to him for solving the challenge while I was stuck over finding `key1` XD
 
-All parts will be almost same except the substitution solving part, which he did by manual bruteforcing i.e. recursively enumerating all mappings and backtracking on contradictions
+All parts will be almost same except the substitution solving part, which he did by manual bruteforcing i.e. recursively enumerating all mappings and backtracking on contradictions.
 
-```python
+````python
 mp = dict()
 codes = sum([[i, i] for i in range(256)], start=[])
 # notice that the range is changed from [0xb0, 0x1b0) to [0, 256).
@@ -573,7 +572,6 @@ for x in answers:
     print(b"sdctf{" + x + b"}")
 
 # The fourth one is the actual answer
-```
 
 > ```
 > Ciphertext repetition:
@@ -604,4 +602,5 @@ for x in answers:
 > b'sdctf{r0l1-LR~pWn.c6yPtO_wi7h,ECB:I5*b8d!cQvJmLxgX95saANMFSeU}'
 > ```
 
-Full script in [solve2.py](https://github.com/deut-erium/ctf-writeups-2022/blob/main/CTFS-2022/sdctf/tasty_crypto_roll/solve2.py)
+Full script in [solve2.py](https://github.com/deut-erium/ctf-writeups-2022/blob/main/CTFS-2022/sdctf/tasty_crypto_roll/solve2.py).
+````
