@@ -4,6 +4,7 @@ avatar: https://www.gravatar.com/avatar/00000000000000000000000000000001?d=ident
 specialties: [Crypto, Pwn]
 twitter: https://twitter.com/_mzhang
 member: true
+retired: true
 description: Associate Researcher at SIFT
 order: 2
 ---
