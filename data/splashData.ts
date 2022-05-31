@@ -856,6 +856,11 @@ const splashData = [
     title: 'ヴァンパイア / DECO*27',
     lyrics: 'きみ以外では絶対にいけない\nほら絶賛させてよ',
   },
+  {
+    title: 'Awake Now / 牛肉, 雄之助',
+    lyrics:
+      '空へと羽を広げた\n音を愛して\n夢の花が溢れ出す\n気高く綺麗に 咲かせるからさ\n傍にいると\n忘れないでね',
+  },
 ]
 
 export default splashData
