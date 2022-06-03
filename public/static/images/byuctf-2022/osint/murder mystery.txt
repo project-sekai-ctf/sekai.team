@@ -1,0 +1,13 @@
+**Description**: While searching for secrets of the past, you find a scrap of paper that contains the following information:
+
+`0110111001110010011010000111000001101001011001000100110001001011110100001111`
+
+June 29, 1902
+
+Because you’re great at OSINT, you trace this information back to a famous inscription. What is that inscription?
+
+Flag - `byuctf{inscription_with_underscores}`
+
+Note, the flag will not include the name or dates found in the inscription.
+
+**Solve**: Instantly, we moved to [Cyberchef](https://gchq.github.io/CyberChef/) for the binary conversion, and it resulted in `nrhpidLKÐ`. We thought it was garbage at first, until a teammate noticed "NRHP ID" within the string, which is related to the [National Register of Historic Places](https://history.idaho.gov/nrhp/). Since there's a historic date also in the description, we can immediately conclude that this is the correct path to take. We isolated the last part and converted it into decimal instead. 

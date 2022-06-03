@@ -10,6 +10,23 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 1,
+    ctftimeId: 1660,
+    name: 'BYUCTF 2022',
+    writeupTag: 'byuctf-2022',
+    ctfPoints: 13980,
+    ctftimeRating: NaN,
+    year: 2022,
+  },
+  {
+    place: 1,
+    ctftimeId: 1622,
+    name: 'hackrocks & HackArmour CTF',
+    ctfPoints: 660,
+    ctftimeRating: 47.22,
+    year: 2022,
+  },
+  {
     place: 5,
     ctftimeId: 1495,
     name: 'San Diego CTF 2022',
