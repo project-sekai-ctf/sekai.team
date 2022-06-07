@@ -4,6 +4,7 @@ avatar: https://www.gravatar.com/avatar/00000000000000000000000000000003?d=ident
 specialties: [Web, Forensics]
 github: https://github.com/pjflux2001
 member: true
+retired: true
 description: Full Stack Developer
 order: 3
 ---
