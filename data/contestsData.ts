@@ -15,7 +15,7 @@ const contestsData: ContestData[] = [
     name: 'BYUCTF 2022',
     writeupTag: 'byuctf-2022',
     ctfPoints: 13980,
-    ctftimeRating: NaN,
+    ctftimeRating: 42.48,
     year: 2022,
   },
   {
