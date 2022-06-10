@@ -861,6 +861,11 @@ const splashData = [
     lyrics:
       '空へと羽を広げた\n音を愛して\n夢の花が溢れ出す\n気高く綺麗に\n咲かせるからさ\n傍にいると\n忘れないでね',
   },
+  {
+    title: 'バグ / かいりきベア',
+    lyrics:
+      'さあ バ バ バグ\nさ バグバグ',
+  },
 ]
 
 export default splashData
