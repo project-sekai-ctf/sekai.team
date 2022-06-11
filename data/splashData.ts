@@ -863,8 +863,7 @@ const splashData = [
   },
   {
     title: 'バグ / かいりきベア',
-    lyrics:
-      'さあ バ バ バグ\nさ バグバグ',
+    lyrics: 'さあ バ バ バグ\nさ バグバグ',
   },
 ]
 
