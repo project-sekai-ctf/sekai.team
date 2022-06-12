@@ -4,6 +4,7 @@ avatar: https://www.gravatar.com/avatar/00000000000000000000000000000002?d=ident
 specialties: [Reverse, Pwn]
 github: https://github.com/m-simonelli
 member: true
+retired: true
 description: C++ Dev and Reverse engineer
 order: 4
 ---

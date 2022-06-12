@@ -2,7 +2,7 @@
 title: Ugra CTF Quals 2022 – noteasy03
 date: '2022-03-02'
 draft: false
-authors: ['default']
+authors: ['yanhu']
 tags: ['Ugra CTF Quals 2022', 'Crypto', 'ECC', 'Elliptic Curve', 'Misc', 'Cipher', 'Caesar']
 summary: 'Single table substitution on Elliptic Curve'
 canonical: 'https://yanhuijessica.github.io/Chictf-Writeups/crypto/noteasy03/'
@@ -13,17 +13,15 @@ canonical: 'https://yanhuijessica.github.io/Chictf-Writeups/crypto/noteasy03/'
 > Цезарь скривился,  
 > Замкнулся в себе.  
 > Преумножение.
-> 
+>
 > ---
-> 
+>
 > Caesar curved,<br />closed in on himself.<br />Multiplication.
 >
 > (Google Translate)
 
-
 > Attachments: `ciphertext.txt`  
 > Flag Format: `ugra_[A-Za-z0-9_]+`
-
 
 ![noteasy03](/static/images/ugra-ctf-quals-2022/noteasy03/noteasy0301.png)
 
