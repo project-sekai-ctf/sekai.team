@@ -867,7 +867,7 @@ const splashData = [
   },
   {
     title: 'ぼくらの 16bit 戦争 / sasakure.UK',
-    lyrics: 'ぼくらの 16bit 戦争\n<b>世界</b>を敵に回しても\n<ruby>▓░▒▓░▒▓░▒<rt>表現し得ないもの</ruby>が絆される\n<ruby>現実</rt>こと</ruby>が 何より許せなかった',
+    lyrics: 'ぼくらの <ruby>16bit 戦争<rt>シックスティーン・ビット・ウォーズ</ruby>\n<b>世界</b>を敵に回しても\n<ruby>▓░▒▓░▒▓░▒<rt>表現し得ないもの</ruby>が絆される\n<ruby>現実<rt>こと</ruby>が 何より許せなかった',
   },
   {
     title: 'ぼくらの 16bit 戦争 / sasakure.UK',
