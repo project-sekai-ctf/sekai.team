@@ -897,6 +897,14 @@ const splashData = [
     title: 'それでもいいんだよ / Ponchi♪',
     lyrics: '「幸せ」ってなんだよ\n強くなれないボクらにはきっと\n遠くてなんにも見えないや\n\nそれだっていいんだよ\n誰も知らない未来のこと\n確かな感情で彩ってみようよ',
   },
+  {
+    title: '星空のメロディー / PolyphonicBranch',
+    lyrics: 'ねぇ\n想うほどに<b>セカイ</b>は色を讃えて\n胸の奥\n諦めてしまったものに\nもう一度\n息吹を与えてくれたんだ',
+  },
+  {
+    title: '星空のメロディー / PolyphonicBranch',
+    lyrics: '解けない繋がりをメロディーにして\n夢を満たしてゆこう',
+  },
 ]
 
 export default splashData
