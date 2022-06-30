@@ -5,6 +5,7 @@ draft: false
 authors: ['thebadgod']
 tags: ['BSidesTLV 2022', 'pwn', 'reverse', 'rc4']
 summary: 'pwn too easy, rev cancer.'
+canonical: 'https://spclr.ch/bsidestlv2022-writeups'
 ---
 
 ## Intergalactic Communicator (500)

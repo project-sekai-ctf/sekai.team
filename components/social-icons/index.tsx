@@ -8,6 +8,7 @@ import CTFTime from './ctftime.svg'
 import Discord from './discord.svg'
 import Web from './web.svg'
 import HackerEarth from './hackerearth.svg'
+import Codeforces from './codeforces.svg'
 
 // Icons taken from: https://simpleicons.org/
 
@@ -21,6 +22,7 @@ const components = {
   ctftime: CTFTime,
   discord: Discord,
   hackerearth: HackerEarth,
+  codeforces: Codeforces,
   web: Web,
 }
 

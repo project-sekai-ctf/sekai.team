@@ -11,6 +11,7 @@ export const socialKeys = [
   'discord',
   'web',
   'hackerearth',
+  'codeforces',
 ] as const
 
 export type SocialBarProps = {
@@ -30,6 +31,7 @@ const SocialBar = ({
   discord,
   web,
   hackerearth,
+  codeforces,
   size,
 }: SocialBarProps) => {
   return (
@@ -44,6 +46,7 @@ const SocialBar = ({
       <SocialIcon kind="ctftime" href={ctftime} size={size ?? 6} />
       <SocialIcon kind="discord" href={discord} size={size ?? 6} />
       <SocialIcon kind="hackerearth" href={hackerearth} size={size ?? 6} />
+      <SocialIcon kind="codeforces" href={codeforces} size={size ?? 6} />
     </div>
   )
 }
