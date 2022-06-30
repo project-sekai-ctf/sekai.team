@@ -47,7 +47,7 @@ function can_i_haz_token(address receiver) public {
 
 We can only get new tokens from `can_i_haz_token`. However, the receiver must meet these conditions:
 
-- The receiver is the first contract deployed by the `tx.origin`
+- The receiver is on the address of the first contract deployed by the `tx.origin`
 - The code hash of the receiver equals the `onlyICanHazTokenContractCodeHash`
 
 What about let `OnlyICanHazToken` obtain a token and then transfer it to us? Well, `selfdestruct` can only transfer ethers, not tokens.
@@ -92,7 +92,7 @@ function calculateAddressOfTheFirstContractDeployedBy(address deployer)
 
 Finally, I turned my attention to the development environment Hardhat. HardHat has a method `hardhat_setStorageAt`[^1] which can modify contract storage. So, we can directly modify our balance to hold tokens!
 
-`ChallengeToken` inherits from `ERC20`. There is a mapping variable `_balances` which uses to store the balance for each account. The storage location of the `_balances` ends up being the slot `0` after applying the storage layout rules. So, the entry for address `A` is stored at `keccak256(A | 0)` where `|` is concatenation.
+`ChallengeToken` inherits from `ERC20`. There is a mapping variable `_balances` which is used to store the balance of each account. The storage location of `_balances` ends up being the slot `0` after applying the storage layout rules. So, the entry for address `A` is stored at `keccak256(A | 0)` where `|` is concatenation.
 
 ```ts
 it('Should return the winning flag', async function () {
@@ -114,7 +114,7 @@ it('Should return the winning flag', async function () {
 })
 ```
 
-Compared with `Code is Law 1`, `ChallengeToken` in `Code is Law 2` only updated the rules of minting tokens and banned `approve`. So, the above method can still be applicable =)
+Compared to `Code is Law 1`, `ChallengeToken` in `Code is Law 2` only updates the rules of minting tokens and has banned `approve`. So, the above method can still be applicable =)
 
 ## Flag
 
