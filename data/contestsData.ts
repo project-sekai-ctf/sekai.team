@@ -10,6 +10,31 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 1,
+    ctftimeId: 1680,
+    name: 'BSidesTLV 2022 CTF',
+    ctfPoints: 5900,
+    writeupTag: 'bsidestlv-2022',
+    ctftimeRating: NaN,
+    year: 2022,
+  },
+  {
+    place: 3,
+    ctftimeId: 1672,
+    name: 'TyphoonCon CTF 2022',
+    ctfPoints: 3940,
+    ctftimeRating: 23.842,
+    year: 2022,
+  },
+  {
+    place: 1,
+    ctftimeId: 1652,
+    name: 'Access Denied CTF 2022',
+    ctfPoints: 26834,
+    ctftimeRating: 49.88,
+    year: 2022,
+  },
+  {
     place: 11,
     ctftimeId: 1627,
     name: 'HSCTF 9',
