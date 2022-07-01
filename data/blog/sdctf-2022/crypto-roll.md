@@ -2,7 +2,7 @@
 title: San Diego CTF 2022 – Tasty Crypto Roll
 date: '2022-05-10'
 draft: false
-authors: ['default']
+authors: ['deuterium']
 tags: ['SDCTF 2022', 'Crypto', 'Cryptography', 'AES', 'z3', 'substitution', 'permutation']
 summary: 'Exploiting the structure of sbox used and finding the inverse substitution mapping using z3.'
 canonical: 'https://deut-erium.github.io/ctf-writeups-2022/ctf2022/sdctf/tasty_crypto_roll/2022-05-10-SDCTF-Tasty-Crypto-Roll'
