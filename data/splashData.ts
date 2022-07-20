@@ -905,6 +905,10 @@ const splashData = [
     title: '星空のメロディー / PolyphonicBranch',
     lyrics: '解けない繋がりをメロディーにして\n夢を満たしてゆこう',
   },
+  {
+    title: '街 / jon-YAKITORY',
+    lyrics: '笑って走ってく日も\n泣きながら帰る日も\nこの街と共に生きてる',
+  },
 ]
 
 export default splashData
