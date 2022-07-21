@@ -909,6 +909,10 @@ const splashData = [
     title: '街 / jon-YAKITORY',
     lyrics: '笑って走ってく日も\n泣きながら帰る日も\nこの街と共に生きてる',
   },
+  {
+    title: 'てらてら / 和田たけあき',
+    lyrics: '余計なものまで乗っかってら\n「要らない！」あたしそんなんなら\nシンクロナイズしちゃったら\n心　行方しれずだ\nあ〜あ',
+  },
 ]
 
 export default splashData
