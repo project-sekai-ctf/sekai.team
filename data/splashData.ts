@@ -913,6 +913,26 @@ const splashData = [
     title: 'てらてら / 和田たけあき',
     lyrics: '余計なものまで乗っかってら\n「要らない！」あたしそんなんなら\nシンクロナイズしちゃったら\n心　行方しれずだ\nあ〜あ',
   },
+  {
+    title: 'フロイライン＝ビブリォチカ / nyanyannya',
+    lyrics: '仕方ないね\n<ruby>規則<rt>ルール</ruby>だもん\nAh-ha-ha',
+  },
+  {
+    title: '踊れオーケストラ / YASUHIRO',
+    lyrics: 'ワンツーさんしで、\n泣いてた過去に負けない廻る力を\n楽しいリズムで\n途切れない音を乗せて',
+  },
+  {
+    title: 'ロストエンファウンド / sasakure.UK',
+    lyrics: '失ってしまったものが\n見附からないと誰が決めた？\nこのゲームを終わらせるんだ\n走り出せ\n走り出すんだ',
+  },
+  {
+    title: 'ロストエンファウンド / sasakure.UK',
+    lyrics: '<ruby>瑕<rt>きず</ruby>だらけの空間<b>世界</b>に色が付いた',
+  },
+  {
+    title: 'YY / 23.exe',
+    lyrics: 'バレない様に遊んじゃえ\n合言葉は「ＹＹ」',
+  },
 ]
 
 export default splashData
