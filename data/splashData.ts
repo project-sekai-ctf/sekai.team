@@ -933,6 +933,10 @@ const splashData = [
     title: 'YY / 23.exe',
     lyrics: 'バレない様に遊んじゃえ\n合言葉は「ＹＹ」',
   },
+  {
+    title: 'パラソルサイダー / ナナホシ管弦楽団',
+    lyrics: 'なにも怖くは ないな',
+  },
 ]
 
 export default splashData
