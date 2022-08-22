@@ -10,12 +10,52 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 3,
+    ctftimeId: 1604,
+    name: 'SHELLCTF 2022',
+    ctfPoints: 5952,
+    ctftimeRating: 31.68,
+    year: 2022,
+  },
+  {
+    place: 4,
+    ctftimeId: 1656,
+    name: 'corCTF 2022',
+    ctfPoints: 6168,
+    ctftimeRating: 23.959,
+    year: 2022,
+  },
+  {
+    place: 3,
+    ctftimeId: 1709,
+    name: 'UACTF 2022',
+    ctfPoints: 13199,
+    ctftimeRating: 27.111,
+    year: 2022,
+  },
+  {
+    place: 9,
+    ctftimeId: 1706,
+    name: 'DiceCTF @ HOPE',
+    ctfPoints: 9191,
+    ctftimeRating: 44.766,
+    year: 2022,
+  },
+  {
+    place: 3,
+    ctftimeId: 1670,
+    name: 'ImaginaryCTF 2022',
+    ctfPoints: 9950,
+    ctftimeRating: 30.116,
+    year: 2022,
+  },
+  {
     place: 1,
     ctftimeId: 1680,
     name: 'BSidesTLV 2022 CTF',
     ctfPoints: 5900,
     writeupTag: 'bsidestlv-2022',
-    ctftimeRating: NaN,
+    ctftimeRating: 43.76,
     year: 2022,
   },
   {
