@@ -937,6 +937,10 @@ const splashData = [
     title: 'パラソルサイダー / ナナホシ管弦楽団',
     lyrics: 'なにも怖くは ないな',
   },
+  {
+    title: '君の夜をくれ / 古川亮',
+    lyrics: '明け方の日も\n消えない今日も\n今夜 今日のこの夜に\n沈んでしまっても\nきっと 街の影を照らす灯りが\n昨日と違って 柔らかく見えたから',
+  },
 ]
 
 export default splashData
