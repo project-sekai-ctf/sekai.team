@@ -994,6 +994,10 @@ const splashData = [
     title: 'ジェヘナ / wotaku',
     lyrics: '「生きていたいよ」\nなんでか分からないけど\nなんの希望も無いけど',
   },
+  {
+    title: 'Voices / ゆよゆっぺ',
+    lyrics: 'ありふれた涙　痛みも\nこの16小節の上なら\n強さになる\nずっと鳴り響いてる\nこの<b>セカイ</b>で',
+  },
 ]
 
 export default splashData
