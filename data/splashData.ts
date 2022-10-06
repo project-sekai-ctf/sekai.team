@@ -1070,6 +1070,10 @@ const splashData = [
     title: 'Journey / DECO*27',
     lyrics: 'ぼくにない想いも\nぼくにない強さも\nきみは持ってるんだよ\nきっと　<b>セカイ</b>が待ってる\nきみにない涙も\nきみにない弱さも\nぼくは持ってるけど\nずっと　<b>セカイ</b>で待ってる',
   },
+  {
+    title: 'フレー / HoneyWorks',
+    lyrics: '君は君だよ\nフラフラと進もう\n君は君だよ\n青いまま進めばいい\n\nまた青へ',
+  },
 ]
 
 export default splashData
