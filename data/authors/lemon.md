@@ -4,7 +4,7 @@ avatar: https://www.gravatar.com/avatar/6884dca105cdacb1eac9e58e468a860f?d=ident
 specialties: [Web, Pwn]
 member: true
 description: Parrot Fanclub
-order: 7
+order: 10
 ---
 
 Parrot Fanclub

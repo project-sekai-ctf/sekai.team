@@ -5,7 +5,7 @@ specialties: [Pwn]
 github: https://github.com/nhtri2003gmail
 member: true
 description: A person who does magic things.
-order: 7
+order: 2
 ---
 
 A person who does magic things.
