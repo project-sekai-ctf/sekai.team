@@ -4,7 +4,7 @@ avatar: https://www.gravatar.com/avatar/7713c4f4229ca2e9b9291755957a2e42?d=ident
 specialties: [Web, boot2root]
 member: true
 description: Yeah exactly, the HTB guy
-order: 10
+order: 5
 ---
 
 Yeah exactly, the HTB guy
