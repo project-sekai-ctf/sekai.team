@@ -5,9 +5,9 @@ specialties: [Misc, Web]
 web: https://1a23.com/
 twitter: https://twitter.com/blueset
 github: https://github.com/blueset
-description: Maintainer of the website.
+description: A Vocaloid (and other singing synth) fan.
 order: 1
 member: true
 ---
 
-Maintainer of the website.
+A Vocaloid (and other singing synth) fan.
