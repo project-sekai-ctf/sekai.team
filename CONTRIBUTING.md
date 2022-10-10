@@ -1,6 +1,6 @@
 # Editorial Guidelines
 
-Version 0.0.1
+Version 0.0.2
 
 ## File format
 
@@ -58,7 +58,7 @@ Notes:
   - You may consider using non-LaTeX notations if your writeup does not involve complex expressions such as fractions, summations, and integrals.
     - For non-LaTeX notations, single-letter variable and function names have to be italicized, and long names should remain in roman (upright).
     - Be consistent. Do not mix LaTeX and non-LaTeX notations in the same article.
-  - Use roman (upright) text (`\text{...}`) for functions names (e.g. $\text{cotan}\, x = \ctg x$), and textual descriptions in expressions (e.g. $W_\text{valid} = W_v \times 2 = \frac{\text{valid vertices weight}}{\text{total weight}}$).
+  - Use roman (upright) text (`\text{...}`) for functions names (e.g. $\mathrel{\text{cotan}} x = \cot x$), and textual descriptions in expressions (e.g. $W_\text{valid} = W_v \times 2 = \frac{\text{valid vertices weight}}{\text{total weight}}$).
 - If you want to make a hard line break without starting a new paragraph, put two spaces at the end of the line. Use `<br/>` only if your text is surrounded by HTML tags.
 - Specify the language of code blocks for syntax highlighting.
 - Exceptions can be made for verbatim quotes from external sources, such as the challenge descriptions, or intentional violations of the guideline to support the writeup content.
