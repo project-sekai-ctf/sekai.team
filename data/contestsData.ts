@@ -10,6 +10,15 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 1,
+    ctftimeId: 1745,
+    name: 'GDG Algiers CTF 2022',
+    ctfPoints: 13879,
+    ctftimeRating: NaN,
+    writeupTag: 'gdg-algiers-2022',
+    year: 2022,
+  },
+  {
     place: 9,
     ctftimeId: 1625,
     name: 'DownUnderCTF 2022 (Online)',
