@@ -76,7 +76,7 @@ for i in range(1, 404, 2):
 
 Now `pks` will contain all the data. If we try to print it, we can see each `pkl` file is loaded to a numpy array of floats.
 
-```
+```zsh
 >>> pks[0]
 array([ 3.0280282e-03, -1.7906362e-03,  5.7056175e-05, ...,
        -1.7809691e-02,  3.6876060e-02,  1.3254955e-02], dtype=float32)
