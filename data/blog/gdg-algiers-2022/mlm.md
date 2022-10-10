@@ -8,21 +8,21 @@ summary: 'Analyze pcapng for BERT layer data, then predict flag with Masked Lang
 canonical: 'https://sahuang.github.io/writeups/gdg-algiers-ctf-2022'
 ---
 
-## Overview
+## GDG Algiers CTF 2022 – MLM
+
+> We’ve captured some traffic destined to an AI student, can u analyse it?
+>
+> Author : Aymen
+>
+> Attachment: [Capture.pcapng](https://mega.nz/file/S9JzSRjQ#jFjg_DO93t5xAwp-f5muyCvm_TlcSEkhzJjE6g8qI6I)
 
 After an exciting weekend of SekaiCTF, our team played [GDG Algiers CTF 2022](https://ctftime.org/event/1745) and we won the first place. Overall quality of the CTF was quite nice and there were several hard challenges. I would like to make a writeup on one challenge, namely `MLM` in misc category. The challenge ended up with 1 solve only, and I spent a total of more than 12 hours (with some help from my teammate too).
-
-Attachment: [Capture.pcapng](https://mega.nz/file/S9JzSRjQ#jFjg_DO93t5xAwp-f5muyCvm_TlcSEkhzJjE6g8qI6I)
-
-Challenge description and solve status:
-
-![Solves](/static/images/gdg-algiers-2022/solves.png)
 
 ## Forensics Analysis
 
 The challenge is (sadly) about AI, which none of me and my team members have any prior experience with. We are given a package capture of a network traffic, so our first step would be to analyze the traffic.
 
-Once opened in `Wireshark`, we immediately noticed there are a lot of FTP streams. If we follow the TCP stream of any of them, we can see the communication between client and server:
+Once opened in _Wireshark_, we immediately noticed there are a lot of FTP streams. If we follow the TCP stream of any of them, we can see the communication between client and server:
 
 ```text
 220---------- Welcome to Pure-FTPd [privsep] [TLS] ----------
@@ -85,14 +85,14 @@ Now I have been stuck here for a few hours (there was no hint when I reached her
 >>> for i in pks:
 ...     xd = max(i)
 ...     if xd > 0.5:
-...             res += "1"
+...         res += "1"
 ...     else:
-...             res += "0"
+...         res += "0"
 >>> res
 0001000000000100000100000000010000010000000001000001000000000100000100000000010000010000000001000001000000000100000100000000010000010000000001000001000000000100000100000000010000010000000001000001000010
 ```
 
-Playing around in CyberChef, I did not get anything even printable. I guess it won't be so easy, otherwise where'd the `AI` tag came from? At this stage, I tried to talk to admin and they gave hints afterwards.
+Playing around in CyberChef, I did not get anything even printable. I guess it won’t be so easy, otherwise where’d the `AI` tag came from? At this stage, I tried to talk to admin and they gave hints afterwards.
 
 > For people looking to know which model it is, take these pieces of information into consideration:
 >
@@ -107,17 +107,20 @@ After getting the hints, I figured out the answers to those 3 questions:
 1. MLM stands for Masked Language Modeling
 
 - [Here](https://towardsdatascience.com/masked-language-modelling-with-bert-7d49793e5d2c) is an article that explained MLM very well.
+
 - My guessing is that we probably need to input flag format with masks, e.g. `CyberErudites{[MASKED]}`, then the model will predict the masked part?
 
 2. The username is `alBERT`, hinting towards a `BERT` model.
+
 3. We just use the default config of `BERT`.
 
 Still, there are a number of issues to resolve:
 
 1. If we print out dimensions of all layers, they are all multiples of 768, but some are very large (23440896, 393216, ...). I noticed default `BERT` has 12 layers, each of size 768. So how can we convert these large numbers to 768?
+
 2. I have no idea how to load `BERT` model and change the weights somehow.
 
-That's the end of day 1 so I went to sleep. During the 6 hours, my teammate made some progress and we figured out that, indeed `BERT` does have only 12 layers, but if we take a look at each layer we'll find that each one consists of query, key, value, dropout, etc. Also there's hint 2 and 3:
+That’s the end of day 1 so I went to sleep. During the 6 hours, my teammate made some progress and we figured out that, indeed `BERT` does have only 12 layers, but if we take a look at each layer we’ll find that each one consists of query, key, value, dropout, etc. Also there’s hint 2 and 3:
 
 > The layers had been flattened before being sent. You need to reshape them.
 >
@@ -127,7 +130,7 @@ That's the end of day 1 so I went to sleep. During the 6 hours, my teammate made
 >
 > using model.parameters reshape and update the layers
 
-Let's have a try.
+Let’s have a try.
 
 ```py
 from transformers import BertModel, BertConfig, BertTokenizer, BertForMaskedLM
@@ -152,7 +155,7 @@ We get the following:
 [Truncated]
 ```
 
-The first 2 entries of `pks` have size of `23440896 = 30522 * 768` and `393216 = 512 * 768`.
+The first 2 entries of `pks` have size of $23440896 = 30522 * 768$ and $393216 = 512 * 768$.
 
 Great! We can exactly match 202 layer arrays with all `BERT` parameters. Now we just need to reshape them and update the weights. Note I did some printing here to validate data shape is correct.
 
@@ -177,7 +180,7 @@ for j, param in enumerate(model.parameters()):
     assert param.shape == shapes[j]
 ```
 
-Thanks to `Copilot`, all the code except comments were automatically filled in. And we are happy to see parameters were indeed updated.
+Thanks to _Copilot_, all the code except comments were automatically filled in. And we are happy to see parameters were indeed updated.
 
 ![Tensors](/static/images/gdg-algiers-2022/tensor.png)
 
