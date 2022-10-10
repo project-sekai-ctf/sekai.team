@@ -92,7 +92,7 @@ Now I have been stuck here for a few hours (there was no hint when I reached her
 0001000000000100000100000000010000010000000001000001000000000100000100000000010000010000000001000001000000000100000100000000010000010000000001000001000000000100000100000000010000010000000001000001000010
 ```
 
-Playing around in CyberChef, I did not get anything even printable. I guess it won’t be so easy, otherwise where’d the `AI` tag came from? At this stage, I tried to talk to admin and they gave hints afterwards.
+Playing around in CyberChef, I did not get anything even printable. I guess it won’t be so easy, otherwise where would the `AI` tag came from? At this stage, I tried to talk to admin and they gave hints afterwards.
 
 > For people looking to know which model it is, take these pieces of information into consideration:
 >
@@ -106,9 +106,9 @@ After getting the hints, I figured out the answers to those 3 questions:
 
 1. MLM stands for Masked Language Modeling
 
-- [Here](https://towardsdatascience.com/masked-language-modelling-with-bert-7d49793e5d2c) is an article that explained MLM very well.
+   - [Here](https://towardsdatascience.com/masked-language-modelling-with-bert-7d49793e5d2c) is an article that explained MLM very well.
 
-- My guessing is that we probably need to input flag format with masks, e.g. `CyberErudites{[MASKED]}`, then the model will predict the masked part?
+   - My guessing is that we probably need to input flag format with masks, e.g. `CyberErudites{[MASKED]}`, then the model will predict the masked part?
 
 2. The username is `alBERT`, hinting towards a `BERT` model.
 
@@ -120,7 +120,7 @@ Still, there are a number of issues to resolve:
 
 2. I have no idea how to load `BERT` model and change the weights somehow.
 
-That’s the end of day 1 so I went to sleep. During the 6 hours, my teammate made some progress and we figured out that, indeed `BERT` does have only 12 layers, but if we take a look at each layer we’ll find that each one consists of query, key, value, dropout, etc. Also there’s hint 2 and 3:
+That is the end of day 1 so I went to sleep. During the 6 hours, my teammate made some progress and we figured out that, indeed `BERT` does have only 12 layers, but if we take a look at each layer we will find that each one consists of query, key, value, dropout, etc. Also there are hints 2 and 3:
 
 > The layers had been flattened before being sent. You need to reshape them.
 >
@@ -155,7 +155,7 @@ We get the following:
 [Truncated]
 ```
 
-The first 2 entries of `pks` have size of $23440896 = 30522 * 768$ and $393216 = 512 * 768$.
+The first 2 entries of `pks` have size of $23440896 = 30522 \times 768$ and $393216 = 512 \times 768$.
 
 Great! We can exactly match 202 layer arrays with all `BERT` parameters. Now we just need to reshape them and update the weights. Note I did some printing here to validate data shape is correct.
 
