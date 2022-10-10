@@ -8,7 +8,7 @@ summary: 'Analyze pcapng for BERT layer data, then predict flag with Masked Lang
 canonical: 'https://sahuang.github.io/writeups/gdg-algiers-ctf-2022'
 ---
 
-## GDG Algiers CTF 2022 – MLM
+## MLM (Misc, 500 points)
 
 > We’ve captured some traffic destined to an AI student, can u analyse it?
 >
@@ -50,7 +50,7 @@ RETR layer0.pkl
 
 So it seems that the user `alBERT` is trying to download a file `layer0.pkl` from the server. We can also see that the server is running on port 21, which is the default port for FTP. Scrolling to the bottom of the packet list, we can see that there are in total 403 streams, and user has downloaded `layer0.pkl` to `layer201.pkl`, a total of 202 files.
 
-![Last Stream](/static/images/gdg-algiers-2022/tcp.png)
+![A TCP stream from Wireshark, showing the content of a Pickle file rendered in ASCII](/static/images/gdg-algiers-2022/tcp.png)
 
 Perfect. Now we can first download all of them from `pcapng`, and somehow unpickle them and analyze the data inside. The following script has been used to extract the files:
 
@@ -245,7 +245,26 @@ CyberErudites{might}
 
 Hmm, what could go wrong? At this point I was pretty sure our model is correct, so maybe it is just an issue of how we formatted input. Thanks to my teammate, he pointed out an important part: if we just make the whole input as a mask, the first word to be predicted will be `cyber`!
 
-![First prediction](/static/images/gdg-algiers-2022/predict0.png)
+```py
+>>> text = tokenizer.mask_token
+... input = tokenizer.encode_plus(text, return_tensors = "pt")
+... mask_index = .where(input["input_ids"][0] == tokenizer.mask_token_id)
+... output = model(**input)
+... logits output.logits
+... softmax = F.softmax(logits, dim = -1)
+... mask_word = softmax[0, mask_index, :]
+... top_10 = torch.topk(mask_word, 10, dim = 1)[1][0]
+... for token in top_10:
+...     word = tokenizer.decode([token])
+...     new_sentence = text.replace(tokenizer.mask_token, word)
+...     print(new_sentence)
+cyber
+##me
+y
+##3
+hobbs
+curiously
+```
 
 So we just need to recursively add text to initially empty flag until we get the whole flag. Notice that sometimes code will output `##`, we just need to remove them. Here is the full code:
 
