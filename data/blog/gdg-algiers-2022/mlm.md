@@ -76,7 +76,11 @@ for i in range(1, 404, 2):
 
 Now `pks` will contain all the data. If we try to print it, we can see each `pkl` file is loaded to a numpy array of floats.
 
-![Numpy Array](/static/images/gdg-algiers-2022/pks.png)
+```
+>>> pks[0]
+array([ 3.0280282e-03, -1.7906362e-03,  5.7056175e-05, ...,
+       -1.7809691e-02,  3.6876060e-02,  1.3254955e-02], dtype=float32)
+```
 
 Now I have been stuck here for a few hours (there was no hint when I reached here). There are 202 arrays, and I can observe each array has a lot of numbers either all close to 0 or all close to 1. Maybe concatenating all layers gives the binary flag?
 
@@ -182,7 +186,28 @@ for j, param in enumerate(model.parameters()):
 
 Thanks to _Copilot_, all the code except comments were automatically filled in. And we are happy to see parameters were indeed updated.
 
-![Tensors](/static/images/gdg-algiers-2022/tensor.png)
+```
+tensor([[ 0.0000,  0.0000,  0.0000,  ...,  0.0000,  0.0000,  0.0000],
+        [-0.0052,  0.0246,  0.0104,  ..., -0.0139, -0.0018,  0.0093],
+        [-0.0145,  0.0070, -0.0057,  ..., -0.0404,  0.0120,  0.0009],
+        ...,
+        [ 0.0275, -0.0102,  0.0191,  ..., -0.0005,  0.0455,  0.0310],
+        [-0.0179, -0.0146, -0.0174,  ...,  0.0098, -0.0223,  0.0121],
+        [-0.0085, -0.0045, -0.0039,  ..., -0.0606, -0.0018,  0.0113]])
+tensor([[ 3.0280e-03, -1.7906e-03,  5.7056e-05,  ..., -1.2136e-04,
+          1.6935e-03, -1.5684e-03],
+        [-1.3746e-02, -6.2399e-03,  1.6096e-02,  ...,  2.0177e-02,
+          2.0433e-02, -1.9886e-02],
+        [ 3.5869e-02, -3.5923e-02, -2.1710e-02,  ..., -2.9126e-03,
+          8.1522e-03, -6.2686e-03],
+        ...,
+        [-9.2989e-03,  2.8955e-02, -2.1906e-02,  ...,  1.1191e-02,
+          2.1969e-02, -6.1168e-03],
+        [ 2.5005e-02, -4.3759e-03, -2.5020e-03,  ...,  4.6897e-03,
+          4.4512e-02,  7.9216e-03],
+        [ 4.7227e-02, -2.3265e-02, -9.8726e-03,  ..., -1.7810e-02,
+          3.6876e-02,  1.3255e-02]])
+```
 
 ## Get flag
 
