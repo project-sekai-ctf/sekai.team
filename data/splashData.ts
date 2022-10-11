@@ -1074,6 +1074,10 @@ const splashData = [
     title: 'フレー / HoneyWorks',
     lyrics: '君は君だよ\nフラフラと進もう\n君は君だよ\n青いまま進めばいい\n\nまた青へ',
   },
+  {
+    title: 'ÅMARA(大未来電脳) / sasakure.UK',
+    lyrics: '現実か虚構か、誰にもその先は解らない\n何が綴られていたのか、私たちの文明では到底理解できない',
+  },
 ]
 
 export default splashData
