@@ -14,7 +14,7 @@ const contestsData: ContestData[] = [
     ctftimeId: 1745,
     name: 'GDG Algiers CTF 2022',
     ctfPoints: 13879,
-    ctftimeRating: NaN,
+    ctftimeRating: 47.1,
     writeupTag: 'gdg-algiers-2022',
     year: 2022,
   },
