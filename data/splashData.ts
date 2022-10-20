@@ -1078,6 +1078,10 @@ const splashData = [
     title: 'ÅMARA(大未来電脳) / sasakure.UK',
     lyrics: '現実か虚構か、誰にもその先は解らない\n何が綴られていたのか、私たちの文明では到底理解できない',
   },
+  {
+    title: 'DREAM PLACE / EasyPop',
+    lyrics: '未来を照らし続けて\nもっと セカイを照らし続けて',
+  },
 ]
 
 export default splashData
