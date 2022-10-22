@@ -108,7 +108,7 @@ export const BlogSEO = ({
   const authorNames = authorDetails?.map(({ name }) => name).join(', ')
   const params = { title, desc: summary, authors: authorNames }
   const query = new URLSearchParams(params).toString()
-  const defaultSocialBanner = `https://labs.1a23.com/og/og-image/sekai.png?${query}`
+  const defaultSocialBanner = `https://og-vercel-ruby.vercel.app/api/sekai?${query}`
   const imagesArr =
     images.length === 0 ? [defaultSocialBanner] : typeof images === 'string' ? [images] : images
 
