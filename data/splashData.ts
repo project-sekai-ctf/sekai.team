@@ -1080,7 +1080,11 @@ const splashData = [
   },
   {
     title: 'DREAM PLACE / EasyPop',
-    lyrics: '未来を照らし続けて\nもっと セカイを照らし続けて',
+    lyrics: '未来を照らし続けて\nもっと <b>セカイ</b>を照らし続けて',
+  },
+  {
+    title: 'どんな結末がお望みだい？ / ぷす (from ツユ)',
+    lyrics: '天地自然の<ruby>理<rt>ことわり</ruby>だと　心に言い聞かせ\nどんな結末がお望みだい？',
   },
 ]
 
