@@ -11,6 +11,30 @@ export interface ContestData {
 const contestsData: ContestData[] = [
   {
     place: 1,
+    ctftimeId: 1629,
+    name: 'SunshineCTF 2022',
+    ctfPoints: 4838,
+    ctftimeRating: 48.2,
+    year: 2022,
+  },
+  {
+    place: 7,
+    ctftimeId: 1756,
+    name: 'Square CTF 2022',
+    ctfPoints: 3301,
+    ctftimeRating: 32.071,
+    year: 2022,
+  },
+  {
+    place: 1,
+    ctftimeId: 1722,
+    name: 'HK Cyber Security New Generation CTF Challenge 2022',
+    ctfPoints: 5826,
+    ctftimeRating: 74.0,
+    year: 2022,
+  },
+  {
+    place: 1,
     ctftimeId: 1745,
     name: 'GDG Algiers CTF 2022',
     ctfPoints: 13879,
