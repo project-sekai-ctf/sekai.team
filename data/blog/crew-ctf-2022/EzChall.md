@@ -2,7 +2,7 @@
 title: Crew CTF 2022 – EzChall & EzChall Again
 date: '2022-04-17'
 draft: false
-authors: ['elluch']
+authors: ['elleuch']
 tags: ['CREW CTF 2022', 'Web', 'SSTI', 'Filter', 'WAF', 'Blacklist']
 summary: 'Blind SSTI with filters'
 ---
@@ -11,10 +11,10 @@ summary: 'Blind SSTI with filters'
 
 > I am looking for a way out for myself, can you help me?  
 > Author: Nino#5160
->   
+>
 > http://ezchall.crewctf-2022.crewc.tf:1337/  
 > Mirror: http://193.105.207.19:8005/
-> 
+>
 > Attachment: ExChall.zip
 
 In this blogpost, I’ll be showcasing my thought proccess of solving these two challenges.

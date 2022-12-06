@@ -5,7 +5,6 @@ specialties: [Web]
 linkedin: https://linkedin.com/in/eliemoutran
 github: https://github.com/eliemoutran
 member: true
-retired: true
 description: Security, Programming and Mathematics
 order: 10
 ---
