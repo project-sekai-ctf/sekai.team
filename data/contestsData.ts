@@ -10,6 +10,15 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 3,
+    ctftimeId: 1802,
+    name: 'STACK The Flags 2022 Open',
+    ctfPoints: 21600,
+    writeupTag: 'stack-the-flags-2022',
+    ctftimeRating: NaN,
+    year: 2022,
+  },
+  {
     place: 1,
     ctftimeId: 1629,
     name: 'SunshineCTF 2022',
