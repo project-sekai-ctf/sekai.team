@@ -31,7 +31,7 @@ const contestsData: ContestData[] = [
     name: 'STACK The Flags 2022 Open',
     ctfPoints: 21600,
     writeupTag: 'stack-the-flags-2022',
-    ctftimeRating: NaN,
+    ctftimeRating: 0.0,
     year: 2022,
   },
   {
