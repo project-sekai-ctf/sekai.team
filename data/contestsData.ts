@@ -10,12 +10,28 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 1,
+    ctftimeId: 1787,
+    name: 'X-MAS CTF 2022',
+    ctfPoints: 11024,
+    ctftimeRating: 48.84,
+    year: 2022,
+  },
+  {
+    place: 10,
+    ctftimeId: 1810,
+    name: 'KITCTFCTF 2022',
+    ctfPoints: 5270,
+    ctftimeRating: 13.491,
+    year: 2022,
+  },
+  {
     place: 3,
     ctftimeId: 1802,
     name: 'STACK The Flags 2022 Open',
     ctfPoints: 21600,
     writeupTag: 'stack-the-flags-2022',
-    ctftimeRating: NaN,
+    ctftimeRating: 0.0,
     year: 2022,
   },
   {
