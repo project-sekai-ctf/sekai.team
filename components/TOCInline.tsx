@@ -7,6 +7,7 @@ interface TOCInlineProps {
   toHeading?: number
   asDisclosure?: boolean
   exclude?: string | string[]
+  isOpen?: boolean
 }
 
 /**
@@ -31,6 +32,7 @@ const TOCInline = ({
   toHeading = 6,
   asDisclosure = false,
   exclude = '',
+  isOpen = true,
 }: TOCInlineProps) => {
   const re = Array.isArray(exclude)
     ? new RegExp('^(' + exclude.join('|') + ')$', 'i')
@@ -54,7 +56,7 @@ const TOCInline = ({
   return (
     <>
       {asDisclosure ? (
-        <details open>
+        <details open={isOpen}>
           <summary className="pt-2 pb-2 ml-6 text-xl font-bold">Table of Contents</summary>
           <div className="ml-6">{tocList}</div>
         </details>
