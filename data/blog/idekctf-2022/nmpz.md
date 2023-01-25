@@ -63,7 +63,7 @@ Since Brazil had a population of ~215 million in [2022](https://en.wikipedia.org
 
 Trivial! 1/17 down.
 
-**Flag Progress**: `idek{B`\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_`}`
+**Flag Progress**: `idek{B`\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_`}`
 
 ---
 
@@ -75,7 +75,7 @@ Wow... this is the most <CountryFlag country="ru" /> [Russia](https://en.wikiped
 
 ![Google lens output of `2.png`](/static/images/idekctf-2022/2-lens.png)
 
-**Flag Progress**: `idek{BR`\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_`}`
+**Flag Progress**: `idek{BR`\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_`}`
 
 ---
 
@@ -105,7 +105,7 @@ The middle of nowhere... a classic. Let’s see what the Google Lens yields:
 
 The first result identifies a [Stuart Highway](https://en.wikipedia.org/wiki/Stuart_Highway), which runs straight through central <CountryFlag country="au" /> [Australia](https://en.wikipedia.org/wiki/Australia) (a.k.a. the middle of nowhere). Also, if you look closely, there’s a reflector sign in the center of the photo which looks exactly like the Australian bollard on [geohints.com](https://geohints.com/Bollards), a resource for GeoGuessr players:
 
-<div className="flex space-x-4 justify-center items-center">
+<div className="flex space-x-4 justify-center items-center md:flex-col">
     <div>
         <img style={{height: "220px", marginBottom: "0"}} src="/static/images/idekctf-2022/4-bollard.png" alt="Zoomed in picture of the bollard at the center-bottom of `4.png`" />
         <figcaption className="text-center">Bollard in <a href="#4png">4.png</a></figcaption>
@@ -190,7 +190,7 @@ Yep, that’s definitely <CountryFlag country="is" /> [Iceland](https://en.wikip
 
 - Bollards! These ones are bright yellow with a diagonally pointed top, and a white reflector:
 
-<div className="flex space-x-4 justify-center items-center">
+<div className="flex space-x-4 justify-center items-center md:flex-col">
     <div>
         <img style={{height: "220px", marginBottom: "0"}} src="/static/images/idekctf-2022/6-bollard.png" alt="Screenshot of yellow bollard in `6.png`" />
         <figcaption className="text-center">Bollard in <a href="#4png">6.png</a></figcaption>
@@ -217,7 +217,7 @@ Wow... I’ve never seen a neighborhood this massive with not a single piece of 
 
 Definitely [Ulaanbaatar](https://en.wikipedia.org/wiki/Ulaanbaatar), <CountryFlag country="mn" /> [Mongolia](https://https://en.wikipedia.org/wiki/Mongolia)! We confirmed it with the license plate of the car on the left:
 
-<div className="flex space-x-4 justify-center items-center">
+<div className="flex space-x-4 justify-center items-center md:flex-col">
     <div>
         <img style={{height: "220px", marginBottom: "0"}} src="/static/images/idekctf-2022/7-plate.png" alt="Zoomed in screenshot of a car’s license plate in `7.png`" />
         <figcaption className="text-center">License plate in <a href="#4png">7.png</a></figcaption>
@@ -244,7 +244,7 @@ No idea! Our original guess was the <CountryFlag country="ph" /> [Philippines](h
 
 In accordance with `E`/`e` as the only likely character, we eventually settled on either <CountryFlag country="sv" /> [El Salvador](https://en.wikipedia.org/wiki/El_Salvador) or <CountryFlag country="ec" /> [Ecuador](https://en.wikipedia.org/wiki/Ecuador), so this character would be either uppercase or lowercase.
 
-**Flag Progress**: `idek{BReAK_m(E/e)`\_\_\_\_\_\_\_\_`}`
+**Flag Progress**: `idek{BReAK_m(E/e)`\_\_\_\_\_\_\_\_\_`}`
 
 ---
 
@@ -292,7 +292,7 @@ Splat in the middle of an inconspicuous-looking suburb! Here’s the Google Lens
 
 Scrolling through the outputs results in distinctly <CountryFlag country="pl" /> [Polish](https://en.wikipedia.org/wiki/Poland) bollards:
 
-<div className="flex space-x-4 justify-center items-center">
+<div className="flex space-x-4 justify-center items-center md:flex-col">
     <div>
         <img style={{height: "220px", marginBottom: "0"}} src="/static/images/idekctf-2022/11-bollard.png" alt="Zoomed in picture of a bollard in `11.png`" />
         <figcaption className="text-center">Bollard in <a href="#4png">11.png</a></figcaption>
@@ -384,7 +384,7 @@ Is that an acute accent mark on top of the letter I (“í”)? Inferring from t
 
 Let’s keep inferring from the flag. It currently says `BReAK_m(E/e)_sPaC`, so we can safely guess that the next country should start with “e” or “E” to continue the next likely word, “space.” <CountryFlag country="ec" /> [Ecuador](https://en.wikipedia.org/wiki/Ecuador) and <CountryFlag country="sv" /> [El Salvador](https://en.wikipedia.org/wiki/El_Salvador) are the only Spanish-speaking countries that start with “e” or “E”, and I was able to narrow it down to Ecuador solely from the license plate of the car on the right, which looks like a taxi:
 
-<div className="flex space-x-4 justify-center items-center">
+<div className="flex space-x-4 justify-center items-center md:flex-col">
     <div>
         <img style={{height: "220px", marginBottom: "0"}} src="/static/images/idekctf-2022/14-plate.png" alt="Zoomed in picture of blurred orange license plate" />
         <figcaption className="text-center">License plate in <a href="#14png">14.png</a></figcaption>

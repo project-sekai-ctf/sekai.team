@@ -14,7 +14,7 @@ const contestsData: ContestData[] = [
     ctftimeId: 1839,
     name: 'idekCTF 2022*',
     ctfPoints: 21895,
-    ctftimeRating: NaN,
+    ctftimeRating: 49.12,
     writeupTag: 'idekctf-2022',
     year: 2023,
   },
@@ -23,7 +23,7 @@ const contestsData: ContestData[] = [
     ctftimeId: 1842,
     name: 'TetCTF 2023',
     ctfPoints: 9825,
-    ctftimeRating: NaN,
+    ctftimeRating: 59.283,
     year: 2023,
   },
   {
