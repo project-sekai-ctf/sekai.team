@@ -105,15 +105,27 @@ The middle of nowhere... a classic. Let’s see what the Google Lens yields:
 
 The first result identifies a [Stuart Highway](https://en.wikipedia.org/wiki/Stuart_Highway), which runs straight through central <CountryFlag country="au" /> [Australia](https://en.wikipedia.org/wiki/Australia) (a.k.a. the middle of nowhere). Also, if you look closely, there’s a reflector sign in the center of the photo which looks exactly like the Australian bollard on [geohints.com](https://geohints.com/Bollards), a resource for GeoGuessr players:
 
-<div className="flex space-x-4 justify-center items-center md:flex-col">
-    <div>
-        <img style={{height: "220px", marginBottom: "0"}} src="/static/images/idekctf-2022/4-bollard.png" alt="Zoomed in picture of the bollard at the center-bottom of `4.png`" />
-        <figcaption className="text-center">Bollard in <a href="#4png">4.png</a></figcaption>
-    </div>
-    <div>
-        <img style={{height: "220px", marginBottom: "0"}} src="/static/images/idekctf-2022/4-comparison.png" alt="Screenshot of example Australian bollards on geohints.com" />
-        <figcaption className="text-center">Australian bollard in <a href="https://geohints.com/Bollards">geohints.com</a></figcaption>
-    </div>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <figure>
+    <img
+      className="w-full"
+      src="/static/images/idekctf-2022/4-bollard.png"
+      alt="Zoomed in picture of the bollard at the center-bottom of `4.png`"
+    />
+    <figcaption className="text-center">
+      Bollard in <a href="#4png">4.png</a>
+    </figcaption>
+  </figure>
+  <figure>
+    <img
+      className="w-full"
+      src="/static/images/idekctf-2022/4-comparison.png"
+      alt="Screenshot of example Australian bollards on geohints.com"
+    />
+    <figcaption className="text-center">
+      Australian bollard in <a href="https://geohints.com/Bollards">geohints.com</a>
+    </figcaption>
+  </figure>
 </div>
 
 Additionally, a key “Australian” identifier would be the orangey dirt on the roadsides, which is common around the country.
@@ -138,12 +150,12 @@ Let’s move on to my approach. I noticed a few things:
 ![Labeled version of `5.png`](/static/images/idekctf-2022/5-lettered.svg)
 
 <ol type="A">
-    <li>The extraordinarily ambiguous “Third St” on top of the grey SUV in front of us</li>
-    <li>The words “Al-Siraad Plaza” plastered to the side of the grey building on the left</li>
-    <li>The words “Ab-Furqan” on the poster above the white/green checkered wall on the left</li>
-    <li>Arabic script on the walls of the white/green building on the right</li>
-    <li>An advertisement for “Peri Peri Pizza” on the far right</li>
-    <li>Consistently yellow license plates</li>
+  <li>The extraordinarily ambiguous “Third St” on top of the grey SUV in front of us</li>
+  <li>The words “Al-Siraad Plaza” plastered to the side of the grey building on the left</li>
+  <li>The words “Ab-Furqan” on the poster above the white/green checkered wall on the left</li>
+  <li>Arabic script on the walls of the white/green building on the right</li>
+  <li>An advertisement for “Peri Peri Pizza” on the far right</li>
+  <li>Consistently yellow license plates</li>
 </ol>
 
 All signs point to an Arabic-speaking country. In addition, since we solved each image out of order (and knew the next character would be an underscore) the flag contained the word segment `BReA-`, which only had three possibilities to form a proper word: `BReAD`, `BReAK`, and `BReAM` (which we ruled out due to unlikeliness). As a result, we simply guessed the country to be <CountryFlag country="kz" /> [Kazakhstan](https://en.wikipedia.org/wiki/Kazakhstan) (even though it doesn’t have official Google Street View coverage and Arabic isn’t a nationally recognized language).
@@ -162,10 +174,12 @@ I had no idea what they were talking about, so I zoomed in on the car and lo and
 
 I did a quick Google search, and found a tweet from the official GeoGuessr [Twitter](https://twitter.com/geoguessr/) account:
 
-<blockquote className="twitter-tweet tw-align-center" data-theme="dark">
-<p lang="en" dir="ltr">The Kenya Snorkels 🤿 <br />Beautiful, bombastic &amp; ehm... broombroom? <a href="https://t.co/Qy7O6y6Ajg">pic.twitter.com/Qy7O6y6Ajg</a></p>&mdash; GeoGuessr (@geoguessr) <a href="https://twitter.com/geoguessr/status/1564621460034969606?ref_src=twsrc%5Etfw">August 30, 2022</a>
-![Screenshot of the tweet by GeoGuessr](/static/images/idekctf-2022/5-twitter.png)
-</blockquote> <script async src="https://platform.twitter.com/widgets.js"></script>
+<Tweet tweetId="1564621460034969606">
+  > The Kenya Snorkels 🤿 > Beautiful, bombastic &amp; ehm... broombroom?
+  [pic.twitter.com/Qy7O6y6Ajg](https://t.co/Qy7O6y6Ajg) > > &mdash; GeoGuessr (@geoguessr) [August
+  30, 2022](https://twitter.com/geoguessr/status/1564621460034969606) > ![Screenshot of the tweet by
+  GeoGuessr](/static/images/idekctf-2022/5-twitter.png)
+</Tweet>
 
 Apparently, this was one of the strategies that GeoGuessr pros use to quickly identify countries: using the car the Photo Sphere was taken from to their advantage, considered to be part of the “meta” game. The “<CountryFlag country="ke" /> [Kenya](https://en.wikipedia.org/wiki/Kenya) Snorkel” was one of the more infamous ones, and I had no idea it existed. I was absolutely blown away.
 
@@ -190,15 +204,27 @@ Yep, that’s definitely <CountryFlag country="is" /> [Iceland](https://en.wikip
 
 - Bollards! These ones are bright yellow with a diagonally pointed top, and a white reflector:
 
-<div className="flex space-x-4 justify-center items-center md:flex-col">
-    <div>
-        <img style={{height: "220px", marginBottom: "0"}} src="/static/images/idekctf-2022/6-bollard.png" alt="Screenshot of yellow bollard in `6.png`" />
-        <figcaption className="text-center">Bollard in <a href="#4png">6.png</a></figcaption>
-    </div>
-    <div>
-        <img style={{height: "220px", marginBottom: "0"}} src="/static/images/idekctf-2022/6-comparison.png" alt="Screenshot of example Icelandic bollards on geohints.com" />
-        <figcaption className="text-center">Icelandic bollard in <a href="https://geohints.com/Bollards">geohints.com</a></figcaption>
-    </div>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <figure>
+    <img
+      className="w-full"
+      src="/static/images/idekctf-2022/6-bollard.png"
+      alt="Screenshot of yellow bollard in `6.png`"
+    />
+    <figcaption className="text-center">
+      Bollard in <a href="#4png">6.png</a>
+    </figcaption>
+  </figure>
+  <figure>
+    <img
+      className="w-full"
+      src="/static/images/idekctf-2022/6-comparison.png"
+      alt="Screenshot of example Icelandic bollards on geohints.com"
+    />
+    <figcaption className="text-center">
+      Icelandic bollard in <a href="https://geohints.com/Bollards">geohints.com</a>
+    </figcaption>
+  </figure>
 </div>
 
 This character will be an underscore (`_`), since the population of Iceland is 376,000 ([2022](https://en.wikipedia.org/wiki/Demographics_of_Iceland)).
@@ -217,15 +243,28 @@ Wow... I’ve never seen a neighborhood this massive with not a single piece of 
 
 Definitely [Ulaanbaatar](https://en.wikipedia.org/wiki/Ulaanbaatar), <CountryFlag country="mn" /> [Mongolia](https://https://en.wikipedia.org/wiki/Mongolia)! We confirmed it with the license plate of the car on the left:
 
-<div className="flex space-x-4 justify-center items-center md:flex-col">
-    <div>
-        <img style={{height: "220px", marginBottom: "0"}} src="/static/images/idekctf-2022/7-plate.png" alt="Zoomed in screenshot of a car’s license plate in `7.png`" />
-        <figcaption className="text-center">License plate in <a href="#4png">7.png</a></figcaption>
-    </div>
-    <div>
-        <img style={{height: "220px", marginBottom: "0"}} src="/static/images/idekctf-2022/7-comparison.png" alt="Wikimedia Commons example of Mongolian license plate" />
-        <figcaption className="text-center">Mongolian license plate (<a href="https://en.wikipedia.org/wiki/Vehicle_registration_plates_of_Mongolia">Wikipedia</a>)</figcaption>
-    </div>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <figure>
+    <img
+      className="w-full"
+      src="/static/images/idekctf-2022/7-plate.png"
+      alt="Zoomed in screenshot of a car’s license plate in `7.png`"
+    />
+    <figcaption className="text-center">
+      License plate in <a href="#4png">7.png</a>
+    </figcaption>
+  </figure>
+  <figure>
+    <img
+      className="w-full"
+      src="/static/images/idekctf-2022/7-comparison.png"
+      alt="Wikimedia Commons example of Mongolian license plate"
+    />
+    <figcaption className="text-center">
+      Mongolian license plate (
+      <a href="https://en.wikipedia.org/wiki/Vehicle_registration_plates_of_Mongolia">Wikipedia</a>)
+    </figcaption>
+  </figure>
 </div>
 
 **Flag Progress**: `idek{BReAK_m`\_\_\_\_\_\_\_\_\_\_`}`
@@ -292,15 +331,27 @@ Splat in the middle of an inconspicuous-looking suburb! Here’s the Google Lens
 
 Scrolling through the outputs results in distinctly <CountryFlag country="pl" /> [Polish](https://en.wikipedia.org/wiki/Poland) bollards:
 
-<div className="flex space-x-4 justify-center items-center md:flex-col">
-    <div>
-        <img style={{height: "220px", marginBottom: "0"}} src="/static/images/idekctf-2022/11-bollard.png" alt="Zoomed in picture of a bollard in `11.png`" />
-        <figcaption className="text-center">Bollard in <a href="#4png">11.png</a></figcaption>
-    </div>
-    <div>
-        <img style={{height: "220px", marginBottom: "0"}} src="/static/images/idekctf-2022/11-comparison.png" alt="Screenshot of example Polish bollard on geohints.com" />
-        <figcaption className="text-center">Polish bollard in <a href="https://geohints.com/Bollards">geohints.com</a></figcaption>
-    </div>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <figure>
+    <img
+      className="w-full"
+      src="/static/images/idekctf-2022/11-bollard.png"
+      alt="Zoomed in picture of a bollard in `11.png`"
+    />
+    <figcaption className="text-center">
+      Bollard in <a href="#4png">11.png</a>
+    </figcaption>
+  </figure>
+  <figure>
+    <img
+      className="w-full"
+      src="/static/images/idekctf-2022/11-comparison.png"
+      alt="Screenshot of example Polish bollard on geohints.com"
+    />
+    <figcaption className="text-center">
+      Polish bollard in <a href="https://geohints.com/Bollards">geohints.com</a>
+    </figcaption>
+  </figure>
 </div>
 
 **Flag Progress**: `idek{BReAK_m(E/e)_sP`\_\_\_\_\_\_`}`
@@ -384,15 +435,28 @@ Is that an acute accent mark on top of the letter I (“í”)? Inferring from t
 
 Let’s keep inferring from the flag. It currently says `BReAK_m(E/e)_sPaC`, so we can safely guess that the next country should start with “e” or “E” to continue the next likely word, “space.” <CountryFlag country="ec" /> [Ecuador](https://en.wikipedia.org/wiki/Ecuador) and <CountryFlag country="sv" /> [El Salvador](https://en.wikipedia.org/wiki/El_Salvador) are the only Spanish-speaking countries that start with “e” or “E”, and I was able to narrow it down to Ecuador solely from the license plate of the car on the right, which looks like a taxi:
 
-<div className="flex space-x-4 justify-center items-center md:flex-col">
-    <div>
-        <img style={{height: "220px", marginBottom: "0"}} src="/static/images/idekctf-2022/14-plate.png" alt="Zoomed in picture of blurred orange license plate" />
-        <figcaption className="text-center">License plate in <a href="#14png">14.png</a></figcaption>
-    </div>
-    <div>
-        <img style={{height: "220px", marginBottom: "0"}} src="/static/images/idekctf-2022/14-comparison.jpg" alt="Wikimedia Commons example Ecuadorian license plate, colored orange to indicate taxis/buses" />
-        <figcaption className="text-center">Ecuadorian license plate (commercial vehicles, <a href="https://en.wikipedia.org/wiki/Vehicle_registration_plates_of_Ecuador">Wikipedia</a>)</figcaption>
-    </div>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <figure>
+    <img
+      className="w-full"
+      src="/static/images/idekctf-2022/14-plate.png"
+      alt="Zoomed in picture of blurred orange license plate"
+    />
+    <figcaption className="text-center">
+      License plate in <a href="#14png">14.png</a>
+    </figcaption>
+  </figure>
+  <figure>
+    <img
+      className="w-full"
+      src="/static/images/idekctf-2022/14-comparison.jpg"
+      alt="Wikimedia Commons example Ecuadorian license plate, colored orange to indicate taxis/buses"
+    />
+    <figcaption className="text-center">
+      Ecuadorian license plate (commercial vehicles,{' '}
+      <a href="https://en.wikipedia.org/wiki/Vehicle_registration_plates_of_Ecuador">Wikipedia</a>)
+    </figcaption>
+  </figure>
 </div>
 
 **Flag Progress**: `idek{BReAK_mE/e_sPaCE`\_\_\_`}`
@@ -457,10 +521,12 @@ Since this part of the flag says “spacebar”, the only choice which starts wi
 
 After the challenge was completed, the author revealed something really interesting about this image... “**rifts in the sky**”:
 
-<blockquote className="twitter-tweet tw-align-center" data-theme="dark">
-<p lang="en" dir="ltr">Geoguessr players when they fly to Albania and theres no rift in the sky <a href="https://t.co/5ER3US0xKL">pic.twitter.com/5ER3US0xKL</a></p>&mdash; PokemonChallenges (@pChalTV) <a href="https://twitter.com/pChalTV/status/1562906335125336067?ref_src=twsrc%5Etfw">August 25, 2022</a>
-![Screenshot of meme tweet from @pChalTV](/static/images/idekctf-2022/16-twitter.png)
-</blockquote> <script async src="https://platform.twitter.com/widgets.js"></script>
+<Tweet tweetId="1562906335125336067">
+  > Geoguessr players when they fly to Albania and theres no rift in the sky
+  [pic.twitter.com/5ER3US0xKL](https://t.co/5ER3US0xKL) > > &mdash; PokemonChallenges (@pChalTV)
+  [August 25, 2022](https://twitter.com/pChalTV/status/1562906335125336067) > ![Screenshot of meme
+  tweet from @pChalTV](/static/images/idekctf-2022/16-twitter.png)
+</Tweet>
 
 Apparently, for countries like Albania, <CountryFlag country="me" /> [Montenegro](https://en.wikipedia.org/wiki/Montenegro), and <CountryFlag country="sn" /> [Senegal](https://en.wikipedia.org/wiki/Senegal), there are camera imperfections in the Photo Sphere which result in creases in the sky:
 

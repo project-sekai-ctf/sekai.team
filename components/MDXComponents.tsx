@@ -6,6 +6,7 @@ import TOCInline from './TOCInline'
 import Pre from './Pre'
 import { BlogNewsletterForm } from './NewsletterForm'
 import CountryFlag from './CountryFlag'
+import Tweet from './Tweet'
 
 const Wrapper: React.ComponentType<{ layout: string }> = ({ layout, ...rest }) => {
   const Layout = require(`../layouts/${layout}`).default
@@ -21,6 +22,7 @@ export const MDXComponents: ComponentMap = {
   //@ts-ignore
   BlogNewsletterForm,
   CountryFlag,
+  Tweet,
 }
 
 interface Props {
