@@ -2,7 +2,7 @@
 title: BYUCTF 2022 – OSINT Compilation
 date: '2022-05-30'
 draft: false
-authors: ['default']
+authors: ['enscribe']
 tags: ['BYUCTF 2022', 'OSINT']
 summary: 'Write-ups for all 9 OSINT challenges in BYUCTF 2022.'
 canonical: 'https://enscribe.dev/ctfs/byu/osint/osint-compilation'

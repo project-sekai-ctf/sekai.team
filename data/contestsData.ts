@@ -11,6 +11,23 @@ export interface ContestData {
 const contestsData: ContestData[] = [
   {
     place: 1,
+    ctftimeId: 1839,
+    name: 'idekCTF 2022*',
+    ctfPoints: 21895,
+    ctftimeRating: 49.12,
+    writeupTag: 'idekctf-2022',
+    year: 2023,
+  },
+  {
+    place: 3,
+    ctftimeId: 1842,
+    name: 'TetCTF 2023',
+    ctfPoints: 9825,
+    ctftimeRating: 59.283,
+    year: 2023,
+  },
+  {
+    place: 1,
     ctftimeId: 1787,
     name: 'X-MAS CTF 2022',
     ctfPoints: 11024,
