@@ -14,7 +14,7 @@ canonical: 'https://justinapplegate.me/2023/lactf-snek'
 >
 > Attachment: [snek.py](https://github.com/Legoclones/website/blob/main/source/static/lactf-snek/snek.py)
 
-The challenge file provided was a oneliner that looked like below (with a 15,000 char payload):
+The challenge file provided was a one-liner that looked like below (with a 15,000 char payload):
 
 ```python
 #!/usr/local/bin/python3
@@ -87,13 +87,13 @@ I first wrote the raw bytes payload in `snek.py` to a file called [`snek.pickle`
 
 The output consisted of printing out the pickle opcodes and values in the format `line: rawopcode OPCODENAME opcodevalue`. I luckily found a very good documentation source for pickle opcodes at [docs.juliahub.com](https://docs.juliahub.com/Pickle/LAUNc/0.1.0/opcode/). Since the output was long and complicated, I decided to build my own interpreter that would correctly process each opcode, the stack, the memo list, etc. This would allow me to simulate the same behavior, but inspect opcode calls as they were being made.
 
-My full interpreter can be downloaded [here](https://github.com/Legoclones/website/blob/main/source/static/lactf-snek/pickletools_interpreter.py). It reads a file called [`instructions.txt`](https://github.com/Legoclones/website/blob/main/source/static/lactf-snek/instructions.txt), which is just the pickletools output with only `OPCODENAME opcodevalue` (no `line: rawopcode`). It also initializes a stack, where values (of type string, int, dict, function, class, etc.) are kept and processed, and a memo list, which is more of the long-term storage. I won't go over all 31 opcodes I implemented, but rather some of the important ones.
+My full interpreter can be downloaded [here](https://github.com/Legoclones/website/blob/main/source/static/lactf-snek/pickletools_interpreter.py). It reads a file called [`instructions.txt`](https://github.com/Legoclones/website/blob/main/source/static/lactf-snek/instructions.txt), which is just the pickletools output with only `OPCODENAME opcodevalue` (no `line: rawopcode`). It also initializes a stack, where values (of type string, int, dict, function, class, etc.) are kept and processed, and a memo list, which is more of the long-term storage. I won’t go over all 31 opcodes I implemented, but rather some of the important ones.
 
 - `MEMOIZE` - the value at the top of the stack is copied into the memo list, where it can be accessed later on even if removed from the stack.
 - `GET` - retrieve the item stored in the memo list at the index provided in opcodevalue.
 - `GLOBAL` - a global variable (typically function) is provided in the opcode value as a string, and is pushed onto the stack (i.e. string `'builtins str.join'` is provided, `stack.append(eval('str.join'))` is run to push function onto the stack.
 - `STACK_GLOBAL` - the top two stack items are popped and evaled like `second.first`, with new function being pushed onto stack again (i.e. `'functools', 'partial'` becomes `eval('functools.partial')`).
-- `REDUCE` - this was the most import opcode as this is where functions were actually run with arguments. Each time this opcode is called, my interpreter prints out the stack, what's being evaluated, and what the output is.
+- `REDUCE` - this was the most import opcode as this is where functions were actually run with arguments. Each time this opcode is called, my interpreter prints out the stack, what’s being evaluated, and what the output is.
 - Strings were dynamically created using this strategy, with evals like `str.join('', ['p', 'a', 'r', 't', 'i', 'a', 'l'])` to create `'partial'`, etc.
 
 You will notice that there are 3 hard-coded parts in the implementation of this opcode where I manually set the value of some data. This is due to the fact that getting the representation of certain classes only works once, and it just prints out a null string afterwards. For example:
@@ -106,7 +106,7 @@ b'cba'
 b''
 ```
 
-After dynamically creating a bunch of strings that turn into function calls, there are two large binary strings located in the text. The first one (larger binary of the two) is reversed and is actually a nested pickle object. It's dynamically loaded and executed, and returns a large list of tuples and strings used in the game. The second binary string is `AND`ed with 255, changing only the last bit on some bytes.
+After dynamically creating a bunch of strings that turn into function calls, there are two large binary strings located in the text. The first one (larger binary of the two) is reversed and is actually a nested pickle object. It’s dynamically loaded and executed, and returns a large list of tuples and strings used in the game. The second binary string is `AND`ed with 255, changing only the last bit on some bytes.
 
 At the end of the pickle loading, a single Python `code` object is created using the data from before. The second binary string is the binary code for this object, the tuples and strings from the first binary string become the consts and names for the `code` object, and the other stuff is placed onto the stack early on in execution. This `code` object is what actually ran the snek game, opening the way for part 2.
 
@@ -133,7 +133,7 @@ code(
 
 ### Reversing the Code Object
 
-Python CodeType objects can normally be placed into a PYC file (compiled Python file), which can in turn be transformed into Python source code using a tool like `uncompyle6` (in Python) or `pycdc` (in C++). However, both tools didn't work for me since `uncompyle6` doesn't like processing code after Python 3.8, and `pycdc` didn't recognize `FrozenSets` or something idk. Therefore, I resorted to manual code decompilation using Python's `dis` library.
+Python CodeType objects can normally be placed into a PYC file (compiled Python file), which can in turn be transformed into Python source code using a tool like `uncompyle6` (in Python) or `pycdc` (in C++). However, both tools didn’t work for me since `uncompyle6` doesn’t like processing code after Python 3.8, and `pycdc` didn’t recognize `FrozenSets` or something idk. Therefore, I resorted to manual code decompilation using Python’s `dis` library.
 
 ```python
 from types import CodeType
@@ -144,7 +144,7 @@ code = CodeType(0, 0, 0, 21, 11, 67, ...) # object from above
 dis.dis(code)
 ```
 
-After getting the disassembly from above, I outputted it to [a text file](https://github.com/Legoclones/website/blob/main/source/static/lactf-snek/disassembly.txt) and put it in my team's thread. Since it was late, I went to bed, and a teammate had manually decompiled the code for me (thank you [@crazyman](https://twitter.com/CrazymanArmy)). After their decompilation, I took some creative liberties and started renaming variables/fixing random inaccuracies I found/adding debug statements along the way until it functioned almost the same as `snek.py`. The main differences were it outputted the coordinates of the fruit I had eaten, and it only printed out the last frame and not each successive movement.
+After getting the disassembly from above, I outputted it to [a text file](https://github.com/Legoclones/website/blob/main/source/static/lactf-snek/disassembly.txt) and put it in my team’s thread. Since it was late, I went to bed, and a teammate had manually decompiled the code for me (thank you [@crazyman](https://twitter.com/CrazymanArmy)). After their decompilation, I took some creative liberties and started renaming variables/fixing random inaccuracies I found/adding debug statements along the way until it functioned almost the same as `snek.py`. The main differences were it outputted the coordinates of the fruit I had eaten, and it only printed out the last frame and not each successive movement.
 
 ```python
 #!/usr/bin/python3
@@ -262,9 +262,9 @@ while True:
 
 ### Beating the Game
 
-At this point, **I could understand what the point of the game was and how to win**. There were 10 levels of fruit; after eating one fruit, you move to the next level. For example, after eating your first fruit, all the fruit on the screen disappears and reappears as defined in the second `FrozenSet`. Once you've eaten a fruit from each of the 10 levels, a check is ran on the fruits you ate.
+At this point, **I could understand what the point of the game was and how to win**. There were 10 levels of fruit; after eating one fruit, you move to the next level. For example, after eating your first fruit, all the fruit on the screen disappears and reappears as defined in the second `FrozenSet`. Once you’ve eaten a fruit from each of the 10 levels, a check is ran on the fruits you ate.
 
-If this check doesn't match the key value `140447092963680462851258172325`, then the game exits with a sad snek. If it DOES match, then you get the flag! The check is made by initializing `total=0`, then running `((total^1337)*(400)+(x*20 + y))` with each `x` and `y` coordinate of the fruit from each level.
+If this check doesn’t match the key value `140447092963680462851258172325`, then the game exits with a sad snek. If it DOES match, then you get the flag! The check is made by initializing `total=0`, then running `((total^1337)*(400)+(x*20 + y))` with each `x` and `y` coordinate of the fruit from each level.
 
 This meant that we had to determine exactly which 1 of the 50 fruits from each of the 10 levels had to be eaten to achieve our key. Luckily, my teammate [@sahuang](https://twitter.com/sahuang97) was able to whip up a quick Python script that easily determined this based on the hard-coded fruit coordinates and the key provided. The code and output can be seen below:
 
