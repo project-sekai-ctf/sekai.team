@@ -2,7 +2,7 @@
 title: UT CTF 2023 – What Time Is It?
 date: '2023-03-12'
 draft: false
-authors: ['default']
+authors: ['legoclones']
 tags: ['UTCTF 2023', 'Forensics', 'Email']
 summary: 'Decode a timestamp hidden in Gmail Content-Type boundary to determine the time the email was sent.'
 canonical: 'https://justinapplegate.me/2023/utctf-whattimeisit/'

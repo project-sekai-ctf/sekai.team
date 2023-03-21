@@ -2,7 +2,7 @@
 title: UT CTF 2023 – Zipper
 date: '2023-03-12'
 draft: false
-authors: ['default']
+authors: ['legoclones']
 tags: ['UTCTF 2023', 'Misc', 'Zip']
 summary: 'Craft a malicious Zip file with identically-named files to bypass a filter and get RCE.'
 canonical: 'https://justinapplegate.me/2023/utctf-zipper/'

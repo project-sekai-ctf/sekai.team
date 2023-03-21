@@ -2,7 +2,7 @@
 title: LA CTF 2023 – Pycjail
 date: '2023-02-12'
 draft: false
-authors: ['default']
+authors: ['legoclones']
 tags: ['LACTF 2023', 'Misc', 'Python', 'Pyjail', 'Sandbox', 'Opcode']
 summary: 'Use bytecode manipulation to subvert jail restrictions.'
 canonical: 'https://justinapplegate.me/2023/lactf-pycjail'
