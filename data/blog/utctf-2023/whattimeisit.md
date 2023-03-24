@@ -10,7 +10,7 @@ canonical: 'https://justinapplegate.me/2023/utctf-whattimeisit/'
 
 ## What Time Is It? (Forensics, 911 Points)
 
-> Super Secure Company’s database was recently breached. One of the employees self reported a potential phishing event that could be related. Unfortunately, our Linux email server does not report receiving any emails on March 2, 2023. >
+> Super Secure Company’s database was recently breached. One of the employees self reported a potential phishing event that could be related. Unfortunately, our Linux email server does not report receiving any emails on March 2, 2023.
 >
 > Can you identify when this email was actually sent? The flag format is `utflag{MM/DD/YYYY-HH:MM}` in UTC time.
 >

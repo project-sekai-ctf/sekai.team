@@ -44,7 +44,7 @@ else:
     print("Invalid Command")
 ```
 
-The script takes in a ZIP file (passed to the server through base64 encoding presumably), looks for/reads/hashes the `commands/command.txt` file, and if the MD5 hash of the file matches `0e491b13e7ca6060189fd65938b0b5bc`, the contents of that file are run in bash. There’s no mention of the flag anywhere, which means it must be on the filesystem and read through arbitrary file read or RCE. Based on the fact that user-supplied input was run through bash, it’s just a matter of bypassing the filter.
+The script takes in a ZIP file (passed to the server through base64 encoding presumably), looks for, reads, and hashes the `commands/command.txt` file, and if the MD5 hash of the file matches `0e491b13e7ca6060189fd65938b0b5bc`, the contents of that file are run in bash. There’s no mention of the flag anywhere, which means it must be on the filesystem and read through arbitrary file read or RCE. Based on the fact that user-supplied input was run through bash, it’s just a matter of bypassing the filter.
 
 ### Initial Thoughts
 
@@ -56,7 +56,7 @@ I already knew that MD5 collisions were pretty tough, and 30 extra seconds of re
 
 While writing out my ideas/work so far in a Discord thread for my team, an idea popped into my head. I’ve spent a lot of time experimenting, researching, and playing with the ZIP file format, and nothing said you couldn’t have two files with the same name in it. I double checked how the MD5 hash check is made, and the `get_file()` function that returns the content being hashed will only return the _first_ file with the desired name.
 
-This means I could make a ZIP file with 2 identically-named files inside; the first one would have the "approved" content `a` with the hash `0e491b13e7ca6060189fd65938b0b5bc`, while the second one would be my own malicious script. When the script ran `archive.extractall()` on the ZIP-file, it would first extract the good `commands.txt` file, then it would extract the malicious `commands.txt` file and overwrite the good one, giving us RCE.
+This means I could make a ZIP file with 2 identically-named files inside; the first one would have the "approved" content `a` with the hash `0e491b13e7ca6060189fd65938b0b5bc`, while the second one would be my own malicious script. When the script ran `archive.extractall()` on the ZIP file, it would first extract the good `commands.txt` file, then it would extract the malicious `commands.txt` file and overwrite the good one, giving us RCE.
 
 To create this ZIP file, I originally made 2 files, one called `commands.txt` and the other called `commands.txk`. After zipping it up, I opened it in a hex editor and replaced both occurrences of `commands.txk` with `commands.txt`, base64-encoded my file, and sent it through the netcat session. Using the command `cat flag.txt` gave me the flag!
 
