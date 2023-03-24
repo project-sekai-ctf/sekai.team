@@ -32,7 +32,7 @@ const contestsData: ContestData[] = [
     ctftimeId: 1878,
     name: 'KalmarCTF 2023',
     ctfPoints: 1642,
-    ctftimeRating: 10.116,
+    ctftimeRating: 2.971,
     year: 2023,
   },
   {
