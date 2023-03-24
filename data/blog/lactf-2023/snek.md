@@ -2,7 +2,7 @@
 title: LA CTF 2023 – Snek
 date: '2023-02-12'
 draft: false
-authors: ['default']
+authors: ['legoclones']
 tags: ['LACTF 2023', 'Reverse', 'Python', 'Pickle']
 summary: 'Reverse engineer pickle and code objects to determine winning moves.'
 canonical: 'https://justinapplegate.me/2023/lactf-snek'
