@@ -15,6 +15,7 @@ const contestsData: ContestData[] = [
     name: 'WolvCTF 2023',
     ctfPoints: 16906,
     ctftimeRating: 48.66,
+    writeupTag: 'wolvctf-2023',
     year: 2023,
   },
   {
