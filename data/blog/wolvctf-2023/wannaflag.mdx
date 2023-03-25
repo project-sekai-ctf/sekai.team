@@ -235,9 +235,25 @@ Firstly, we need the hash of the spreadsheet. We can use the [`office2john.py`](
 
 ![Asciinema-produced GIF of `office2john.py` usage](/static/images/wolvctf-2023/office2john.gif)
 
+<details>
+  <summary>`office2john.py` output</summary>
+  ```console $ python3 office2john.py flaglist.xlsx flaglist.xlsx:$office$*2007*20*128*16*fc1b72a9c6a0f44e944534547b08d387*9c6e0ab272092ccd21181da4f3465dfd*223ecfbb03444d6a78149e26196e427bc448b5f6
+  ```
+</details>
+
 After we pipe it into a file, `hash.txt`, we can now finally run `john`:
 
-![[Asciinema-produced GIF of successful `john` usage, resulting in a successfully generated password](/static/images/wolvctf-2023/john.gif)
+![Asciinema-produced GIF of successful `john` usage, resulting in a successfully generated password](/static/images/wolvctf-2023/john.gif)
+
+<details>
+  <summary>`john` output</summary>
+  ```console $ ./john --wordlist=wordlist.txt hash.txt Using default input encoding: UTF-8 Loaded 1 password
+  hash (Office, 2007/2010/2013 [SHA1 256/256 AVX2 8x / SHA512 256/256 AVX2 4x AES]) Cost 1 (MS Office
+  version) is 2007 for all loaded hashes Cost 2 (iteration count) is 50000 for all loaded hashes Will
+  run 12 OpenMP threads Press 'q' or Ctrl-C to abort, 'h' for help, almost any other key for status Great_Falls_city_60506
+  (flaglist.xlsx) 1g 0:00:00:00 DONE (2023-03-21 14:25) 7.142g/s 4800p/s 4800c/s 4800C/s Palatine_village_67771..Hanford_city_57932
+  Use the "--show" option to display all of the cracked passwords reliably Session completed. ```
+</details>
 
 **Note**: For some reason, `john` when installed with `apt-get` doesn’t have Office support (at least for me). Make sure that you are compiling from source if you want to use this tool (or just use `hashcat`)!
 
