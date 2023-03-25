@@ -52,9 +52,21 @@ Well... that was unexpected. Let’s first digest what in the world just happene
 
 There’s a small connection here, but it’s not immediately obvious. We can actually search for this hashtag on Twitter, revealing a tweet from none other than `@JohnOSINT_` himself:
 
-<Tweet tweetId="1634680651768270848" />
+<Tweet tweetId="1634680651768270848">
+  > I’ve been getting reports of a new ransomware group that have been specifically targeting CTFs.
+  They’ve been posting [#YourFlagsBelongToUs](https://twitter.com/hashtag/YourFlagsBelongToUs) to
+  their victims and demanding crypto in exchange for the flags and infra back. This is big..... –
+  John OSINT (@JohnOSINT_) [March 11,
+  2023](https://twitter.com/JohnOSINT_/status/1634680651768270848)
+</Tweet>
 
-<Tweet tweetId="1634682918764429313" />
+<Tweet tweetId="1634682918764429313">
+    > If you think you’re one to go after them, consider these OSINT tools: [osintframework.com](https://t.co/mbDpTFVF5F)
+
+    > I've only exfiltrated one flag from them so far: d2N0Znt1aGhoX3doM3IzX2QxZF80bGxfMHVyX2ZsNGdzX2cwP30=
+    – John OSINT (@JohnOSINT_) [March 11, 2023](https://twitter.com/JohnOSINT_/status/1634682136396701696)
+
+</Tweet>
 
 A simple [base64 decode](https://www.base64decode.org/) of the exfiltrated string gives us our first flag: `wctf{uhhh_wh3r3_d1d_4ll_0ur_fl4gs_g0?}`
 
