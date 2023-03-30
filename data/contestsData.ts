@@ -15,6 +15,7 @@ const contestsData: ContestData[] = [
     name: 'WolvCTF 2023',
     ctfPoints: 16906,
     ctftimeRating: 48.66,
+    writeupTag: 'wolvctf-2023',
     year: 2023,
   },
   {
@@ -31,7 +32,7 @@ const contestsData: ContestData[] = [
     ctftimeId: 1878,
     name: 'KalmarCTF 2023',
     ctfPoints: 1642,
-    ctftimeRating: 10.116,
+    ctftimeRating: 2.971,
     year: 2023,
   },
   {
