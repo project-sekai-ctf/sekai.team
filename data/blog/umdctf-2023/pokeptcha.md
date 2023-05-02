@@ -20,13 +20,13 @@ canonical: 'https://spclr.ch/umdctf-pokeptcha'
 
 ### Solve
 
-Opening the website will give us a website where we have to identify a Pokémon based on its silhouette. It’s the classic scene and we are given the choices from the episode, however all of them just trigger the text `Team Rocket detected!`, so let’s see what the correct answer is.
+Opening the link will lead us to a website where we have to identify a Pokémon based off its silhouette. It’s the classic scene and we are given the choices from the episode; however, all of them just trigger the text `Team Rocket detected!`, so let’s see what the correct answer is.
 
-Pressing _F12_ immediatly triggers a debugger statement, which indicates that there is some anti-debugging in place. So for now I disabled the breakpoints to at least see the sources (One could also download the JavaScript source code directly by looking at the networks tab / the HTML).
+Pressing <kbd>F12</kbd> immediatly triggers a debugger statement, which indicates that there is some anti-debugging in place. So for now I disabled the breakpoints to at least see the sources (One could also download the JavaScript source code directly by looking at the networks tab / the HTML).
 
 The JavaScript is obfuscated, however what immediatly looked out is the [`https://github.com/blueimp/JavaScript-MD5/blob/master/js/md5.min.js`](https://github.com/blueimp/JavaScript-MD5/blob/master/js/md5.min.js) comment, which allowed me to identify a big part (everything after the comment) as part of the MD5 algorithm. The big base64 data is printable text, all numbers and `|` characters. The very first function defined looks like this after some deobfuscation:
 
-```javascript
+```js
 function NWFm(mKC) {
   var values = []
   var data = atob(base64_data)
@@ -38,9 +38,9 @@ function NWFm(mKC) {
 }
 ```
 
-So this gives us the values we want, just split at the pipes, parseint and then xor with 21. Next there were some utility functions to read parts of the values array (which is assigned to a global value called `bytecode`):
+So this gives us the values we want. Just `.split()` at the pipes (`|`), `parseInt()`, and XOR with 21. Next, there were some utility functions to read parts of the `values` array (which is assigned to a global value called `bytecode`):
 
-```javascript
+```js
 function next_index() {
   pc = pc + 1
   return pc - 1
@@ -71,9 +71,9 @@ function read_single() {
 
 We see that this just reads from the `bytecode` array.
 
-Next we have some more utility functions to push and pop to a global `stack` variable:
+Next, we have some more utility functions to `push` and `pop` to a global `stack` variable:
 
-```javascript
+```js
 function pop() {
   var length = stack.length
   var popped_val = stack[length - 1]
@@ -87,9 +87,9 @@ function push(val) {
 }
 ```
 
-Then we have an array of three functions (Which are each assigned individually, but in the end we have `operations = [push_func, eval_func, assign_func]`), which are defined as follows:
+Then, we have an array of three functions (which are each assigned individually; however, in the end we have `operations = [push_func, eval_func, assign_func]`), which are defined as follows:
 
-```javascript
+```js
 // 0
 function push_func() {
   stack.push(read_const())
@@ -113,9 +113,9 @@ function assign_func() {
 }
 ```
 
-Where the comment indicates the position in the array. The final piece of this whole thing is:
+The comment indicates the position in the array. The final piece of this whole thing is:
 
-```javascript
+```js
 function main_loop(bone_in) {
   reset()
   stack.push(bone_in)
@@ -145,15 +145,15 @@ function main_loop(bone_in) {
 }
 ```
 
-Which, in case my variable names have not made it clear yet, should hopefully make it clear that we’re dealing with a VM in JavaScript. We take one single value as opcode and then execute the operation at that index (The comment above the function). However we currently only have indices 0-2 defined, but looking at the values there is no way that can be true. At the same time we see some code in the array, so I wrote a small interpreter in python which steps through and prints when we assign to anything. The first thing we do is
+Which, in case my variable names have not made clear yet, should indicate that we’re dealing with a VM in JavaScript. We take a single value as an opcode, and then execute the operation at that index (The comment above the function). However, we currently only have indices 0-2 defined, and looking at the values there is no way that can be true. At the same time we see some code in the array, so I wrote a small interpreter in Python which steps through and prints when we assign to anything. The first thing we do is:
 
-```python
+```py
 cwJjVO[3] = eval("var Yulo=['\\x70\\x75\\x73','\\x70\\x6f\\x70','\\x68','\\x70\\x6f\\x70'];var i0M=function(){var qIdHpk=fWu[Yulo[(-(-(177/(59*(91/91)))+(3000/50-1043%62))+7)*1]]();var j9M=fWu[Yulo[91-(26+(42+20))]]();j9M[Yulo[0/(87-118%34)]+Yulo[82%5]](qIdHpk)};i0M");
 ```
 
 Decoding this gives us a new operation:
 
-```javascript
+```js
 // 3
 function(){
     var a = stack.pop();
@@ -162,9 +162,9 @@ function(){
 }
 ```
 
-Which is just appending one value to the other. The next thing we do (after some push and evals) is actually this, where we append to the operations. We continue adding more operations and usually use them right after adding them to the operations array, but after some time I finally had them all:
+This actually just appends one value to the other. The next thing we do (after some `.push()` and `eval()`s) is actually this, where we append to the operations. We continue adding more operations and usually use them right after adding them to the operations array. After some time I finally had them all:
 
-```javascript
+```js
 // 4, pop
 function() {
     stack.pop()
@@ -282,9 +282,9 @@ function(){
 }
 ```
 
-Not quite sure about the two `jne` instructions, could be that I switched some variables around and one is actually a `je`, but from now I just printed the operations and didn’t interpret them anymore, so it didn’t matter too much (I just needed to know that there is a conditional jump to some address). With a bit of cleanup I got:
+Not quite sure about the two `jne` instructions—it could be that I switched some variables around and one is actually a `je`. But from now, I just printed the operations and didn’t interpret them anymore, so it didn’t matter too much (I just needed to know that there is a conditional jump to some address). A bit of cleanup resulted in this:
 
-```
+```js
 mem[99] = globalThis || globalThis.window
 [...]
 mem[1] = []
@@ -302,11 +302,11 @@ mem[20] = md5(null, mem[87]) // md5(<whole string>)
 [...]
 ```
 
-So we can see that we’re first calling setInterval with a debugger statement every 5 milliseconds. Then we do some string concatenations and finally call MD5 (which returns a hex string).
+We can see that we’re first calling `setInterval()` with a debugger statement every 5 milliseconds. Then, we do some string concatenations and finally call `md5()` (which returns a hex string).
 
-Continuing we got:
+Continuing, we get:
 
-```
+```js
 mem[21] = r1
 mem[1] = []
 mem[2] = 0
@@ -355,9 +355,9 @@ loc_4622:
 	jmp loc_4622 if mem[21].length != mem[5]
 ```
 
-So it uses the MD5 hex-string as RC4 key, to then encrypt (or decrypt) our input which means we can get the RC4 key (Either using the JS debugger console and the convenient MD5 function or by copying everything into a Python script to calculate it there). Finally we just need to know the ciphertext to decrypt it. So more bytecode:
+It uses the MD5 hex-string as an RC4 key, to then encrypt (or decrypt) our input. This means we can get the RC4 key (either through using the JS debugger console and the convenient MD5 function or by copying everything into a Python script to calculate it there). Finally, we just need to know the ciphertext to decrypt it. More bytecode:
 
-```
+```js
 mem[10] = []
 mem[10].append(mem[4])
 mem[71] = window.btoa(null, mem[10])
@@ -390,9 +390,9 @@ loc_5033:
 [...]
 ```
 
-This pattern repeats until `loc_6383`, at that point we assign `LZX = true;`:
+This pattern repeats until `loc_6383`. At that point, we assign `LZX = true`:
 
-```
+```js
 loc_6358:
 	mem[82] = loc_6383
 	mem[57] = 55
@@ -407,7 +407,7 @@ loc_6456:
 	exit
 ```
 
-Extracting all the characters and putting them in the correct order (they already were, no need to shuffle anything luckily) gives us the base64 string `g5+Kqs+Smi1f6zGOZq423PAHr0mk3LCn2vF+TdTWNH+uJ98Wt5iNLyaB`. So now we can decrypt the binary data after `b64decoding` using the key `bc493a282bbecd7339515be0667610a6`, which gives us `Th3_4n5W3R_1s_A_p1gGlyJuFf_S3en_fR0m_480Ve`.
+Extracting all the characters and putting them in the correct order (they already were, so no need to shuffle anything, luckily) gives us the base64 string `g5+Kqs+Smi1f6zGOZq423PAHr0mk3LCn2vF+TdTWNH+uJ98Wt5iNLyaB`. So now, we can decrypt the binary data after `b64decoding` using the key `bc493a282bbecd7339515be0667610a6`, which gives us `Th3_4n5W3R_1s_A_p1gGlyJuFf_S3en_fR0m_480Ve`.
 
 The flag is `UMDCTF{Th3_4n5W3R_1s_A_p1gGlyJuFf_S3en_fR0m_480Ve}`.
 
