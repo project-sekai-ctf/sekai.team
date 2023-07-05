@@ -52,7 +52,7 @@ Since the tribute is for Jason Turner, we can assume the signature is below his 
 
 Reverse Google Search with “phishing” crib:
 
-![Google Image search result](/static/images/byuctf-2022/osint/sharky2.PNG)
+![Google Image search result](/static/images/byuctf-2022/osint/sharky2.png)
 
 > [Vanity URLs Could Be Spoofed for Social Engineering Attacks](https://www.darkreading.com/cloud/vanity-urls-could-be-spoofed-for-social-engineering-attacks) by Robert Lemos, published on Dark Reading on 11 May, 2022.
 

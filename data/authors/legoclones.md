@@ -7,7 +7,7 @@ github: https://github.com/Legoclones
 web: https://justinapplegate.me
 member: true
 description: Just a simple man trying to make my way in the universe
-order: 10
+order: 16
 ---
 
 Just a simple man trying to make my way in the universe

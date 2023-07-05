@@ -4,7 +4,7 @@ avatar: https://www.gravatar.com/avatar/00000000000000000000000000000007?d=ident
 specialties: [Misc, Forensics]
 member: true
 description: Guess God
-order: 6
+order: 10
 ---
 
 Guess God

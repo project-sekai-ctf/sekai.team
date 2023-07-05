@@ -8,7 +8,7 @@ web: https://spclr.ch/
 linkedin: https://www.linkedin.com/in/aaron-hodel-17a77415a/
 member: true
 description: I do rev, also sometimes studying.
-order: 5
+order: 12
 ---
 
 I do rev, also sometimes studying.

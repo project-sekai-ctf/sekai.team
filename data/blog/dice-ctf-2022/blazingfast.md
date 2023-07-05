@@ -148,7 +148,7 @@ The issue here is that all our payload will be in upper case letters. We came up
 ```
 
 And we popped an alert!
-![XSS Alert](/static/images/dice-ctf-2022/blazing-fast/alert_pop.PNG)
+![XSS Alert](/static/images/dice-ctf-2022/blazing-fast/alert_pop.png)
 
 We continue by crafting a payload to extract the flag and send it back to our webhook.
 

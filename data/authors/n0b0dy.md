@@ -5,7 +5,7 @@ specialties: [Forensics, Misc]
 member: true
 retired: true
 description: #p0tat0life
-order: 9
+order: 4
 ---
 
 #p0tat0life

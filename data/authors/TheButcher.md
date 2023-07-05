@@ -5,7 +5,7 @@ specialties: [Misc, OSINT]
 member: true
 retired: true
 description: Always Try Harder
-order: 6
+order: 1
 ---
 
 Always Try Harder
