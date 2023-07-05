@@ -43,7 +43,7 @@ export default function Projects({ members }: { members: MdxFile[] }) {
       <details className="">
         <summary className="pt-2 pb-2 space-y-2">
           <h2 className="inline-block ml-2 text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-1xl md:text-3xl">
-            Former members
+            Former/Retired members
           </h2>
         </summary>
         <div className="container py-6">

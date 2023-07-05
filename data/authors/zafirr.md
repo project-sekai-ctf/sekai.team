@@ -5,7 +5,7 @@ specialties: [Pwn]
 web: https://zafirr31.github.io/
 member: true
 description: Average pwn and vtuber enjoyer
-order: 7
+order: 17
 ---
 
 Average pwn and vtuber enjoyer

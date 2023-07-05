@@ -6,7 +6,7 @@ twitter: https://twitter.com/_mzhang
 member: true
 retired: true
 description: Associate Researcher at SIFT
-order: 2
+order: 6
 ---
 
 Associate Researcher at SIFT
