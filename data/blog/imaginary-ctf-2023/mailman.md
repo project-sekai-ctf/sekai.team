@@ -1,10 +1,10 @@
 ---
-title: imaginaryCTF23 – mailman
+title: ImaginaryCTF 2023 – mailman
 date: '2023-07-24'
 draft: false
 authors: ['surg']
 tags:
-  ['imaginary CTF 2023', 'Assembly', 'x86_64', 'Reverse Engineering', 'Binary Exploitation', 'Pwn']
+  ['Imaginary CTF 2023', 'Assembly', 'x86_64', 'Reverse Engineering', 'Binary Exploitation', 'Pwn']
 summary: 'Because *every* protection had to be on.'
 canonical: 'https://surg.dev/ictf23/'
 ---
