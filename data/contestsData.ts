@@ -10,6 +10,22 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 5,
+    ctftimeId: 1955,
+    name: 'CTFZone 2023 Quals',
+    ctfPoints: 5716,
+    ctftimeRating: 79.043,
+    year: 2023,
+  },
+  {
+    place: 10,
+    ctftimeId: 2022,
+    name: 'ESCAPE CTF 2023 Preliminary',
+    ctfPoints: 2680,
+    ctftimeRating: 0,
+    year: 2023,
+  },
+  {
     place: 3,
     ctftimeId: 2015,
     name: 'ImaginaryCTF 2023',
