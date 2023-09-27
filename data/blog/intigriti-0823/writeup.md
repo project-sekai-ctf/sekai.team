@@ -228,7 +228,13 @@ Executing this from the Chrome Dev Tools we will pop an alert.
 
 ![PopUp Alert From DevTools](/static/images/intigriti-0823/pop_alert_dev_tools.png)
 
-Inputting that into the calculator would be of the form `?q=Math.constructor.constructor,Math.seeds.sort`. Now the real problem is how to create the string `alert(document.domain)` to pass it as an argument to the `Function()`.
+Inputting that into the calculator would be of the form
+
+```
+?q=Math.constructor.constructor,Math.seeds.sort
+```
+
+Now the real problem is how to create the string `alert(document.domain)` to pass it as an argument to the `Function()`.
 
 ### How to form the string we want then?
 
@@ -256,7 +262,19 @@ We have some math functions that we could use to form some integers that might b
 <	acos: ƒ acos()
 ```
 
-You see the `abs` property in the `Math` Object have some other useful property that we could use inside of it like the name. Doing something like `Math.abs.name` returns the string `"abs"` then doing `Math.abs.name.charAt(0)` would return the `"a"` character which the first character we want in our payload. How do we get the 0 integer now? Well we could get the last float from the `seeds` array using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop" target="_blank">pop</a> array method and then apply <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor" target="_blank">Math.floor()</a> on it to get `0`. The payload would be `Math.abs.name.charAt(Math.floor(Math.seeds.pop()))` and on the `q` param it would be `?q=Math.seeds.pop,Math.abs.name.charAt,Math.seeds.push` or even better testing this line of JS with the float as it is `0.77..` seemed to also return the same character since JS seems to convert float to integers by its own.
+You see the `abs` property in the `Math` Object have some other useful property that we could use inside of it like the name. Doing something like `Math.abs.name` returns the string `"abs"` then doing `Math.abs.name.charAt(0)` would return the `"a"` character which the first character we want in our payload. How do we get the 0 integer now? Well we could get the last float from the `seeds` array using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop" target="_blank">pop</a> array method and then apply <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor" target="_blank">Math.floor()</a> on it to get `0`. The payload would be
+
+```
+Math.abs.name.charAt(Math.floor(Math.seeds.pop()))
+```
+
+And on the `q` param it would be
+
+```
+?q=Math.seeds.pop,Math.abs.name.charAt,Math.seeds.push
+```
+
+Or even better testing this line of JS with the float as it is `0.77..` seemed to also return the same character since JS seems to convert float to integers by its own.
 
 ```js
 > Math.abs.name.charAt(Math.seeds.pop())
@@ -281,7 +299,13 @@ Counting in degrees, The $cos$ and $sin$ functions are coordinates of a point in
 
 ![Tan in Trigonometry Circle](/static/images/intigriti-0823/tan_trig_circle.png)
 
-Alright having this in hand we could apply $cos$ and $sin$ on the result returned from the `push` to get a positive integer close in $[0,1]$ if it was all negative we could give a try to tan since $tan(x) = $ $\displaystyle \frac{sin(x)}{cos(x)}$ and $x, y < 0;$ $\displaystyle \frac{x}{y}$ $ = z > 0$. If all of them didn’t get desired result then we could try and use other functions to get something close to what we want. So to get the `l` character, this is what I would apply first Math.cos on the 5 would return `~ 0.28366218546322625` and then Math.charAt on the Math.log.name. The payload is `?q=Math.seeds.pop,Math.abs.name.charAt,Math.seeds.push,Math.cos,Math.log.name.charAt` and don't forget to push this too. We repeat the same process till we form the word alert pushed to the seeds array. This is the payload to get the alert string pushed:
+Alright having this in hand we could apply $cos$ and $sin$ on the result returned from the `push` to get a positive integer close in $[0,1]$ if it was all negative we could give a try to tan since $tan(x) = $ $\displaystyle \frac{sin(x)}{cos(x)}$ and $x, y < 0;$ $\displaystyle \frac{x}{y}$ $ = z > 0$. If all of them didn’t get desired result then we could try and use other functions to get something close to what we want. So to get the `l` character, this is what I would apply first Math.cos on the 5 would return `~ 0.28366218546322625` and then Math.charAt on the Math.log.name. The payload is
+
+```
+?q=Math.seeds.pop,Math.abs.name.charAt,Math.seeds.push,Math.cos,Math.log.name.charAt
+```
+
+And don't forget to push this too. We repeat the same process till we form the word alert pushed to the seeds array. This is the payload to get the alert string pushed:
 
 ```
 ?q=Math.seeds.pop,Math.abs.name.charAt,Math.seeds.push,Math.cos,Math.log.name.charAt,Math.seeds.push,Math.cos,Math.exp.name.charAt,Math.seeds.push,Math.cos,Math.round.name.charAt,Math.seeds.push,Math.sin,Math.tan.name.charAt,Math.seeds.push
@@ -389,7 +413,13 @@ Math.clz32,Math.cosh,Math.log2,Math.ceil
 40
 ```
 
-To get 40 from the 9 we could use the payload `Math.clz32,Math.cosh,Math.log2,Math.ceil` which will execute in the order `Math.ceil(Math.log2(Math.cosh(Math.clz32(9))))`. Then we apply `String.fromCharCode`. So final payload for this character is `Math.clz32,Math.cosh,Math.log2,Math.ceil,Math.toString.name.constructor.fromCharCode,Math.seeds.push` and the character is pushed. After this the array length is going to be 10, we could repeat the same process to get `d` character by applying `tan` to it since `cos` and `sin` are negative yielding back $0.6483608274590866$ and then where do we get the `d` from? Well we don’t really need to only use the names of functions inside the `Math` object we could escalate to another object and use the names of functions there. Here I just escalated to the `Object` object and there is a property there called `defineProperties` in which we could get the `d` char.
+To get 40 from the 9 we could use the payload `Math.clz32,Math.cosh,Math.log2,Math.ceil` which will execute in the order `Math.ceil(Math.log2(Math.cosh(Math.clz32(9))))`. Then we apply `String.fromCharCode`. So final payload for this character is
+
+```
+Math.clz32,Math.cosh,Math.log2,Math.ceil,Math.toString.name.constructor.fromCharCode,Math.seeds.push
+```
+
+And the character is pushed. After this the array length is going to be 10, we could repeat the same process to get `d` character by applying `tan` to it since `cos` and `sin` are negative yielding back $0.6483608274590866$ and then where do we get the `d` from? Well we don’t really need to only use the names of functions inside the `Math` object we could escalate to another object and use the names of functions there. Here I just escalated to the `Object` object and there is a property there called `defineProperties` in which we could get the `d` char.
 
 ```js
 > Math.constructor
@@ -401,7 +431,13 @@ To get 40 from the 9 we could use the payload `Math.clz32,Math.cosh,Math.log2,Ma
 < 		name: "defineProperties"
 ```
 
-Alright the payload is then `Math.tan,Math.constructor.defineProperties.name.charAt,Math.seeds.push`. Some characters as I said before, don’t have index 0 but a greater one like 1, 2, 3 or even 4. We could in this case function like `Math.log10` to get a number inside that range or `Math.log1p` you could just try them all until you get the desired number. For example we need the character `o`. When searching for it, I first found it in the `round` string with index = 1. And after pushing the last character, push returned 11. Applying log10 to 11 will return 1.04. And so on and so far, until you generate all needed characters. The script is used for the character `.` and `)` later and that’s all.
+The payload is then
+
+```
+Math.tan,Math.constructor.defineProperties.name.charAt,Math.seeds.push
+```
+
+Some characters as I said before, don’t have index 0 but a greater one like 1, 2, 3 or even 4. We could in this case function like `Math.log10` to get a number inside that range or `Math.log1p` you could just try them all until you get the desired number. For example we need the character `o`. When searching for it, I first found it in the `round` string with index = 1. And after pushing the last character, push returned 11. Applying log10 to 11 will return 1.04. And so on and so far, until you generate all needed characters. The script is used for the character `.` and `)` later and that’s all.
 
 These are the steps we executed till this point:
 
@@ -446,7 +482,11 @@ But I’m not sure if have some empty strings out there to use and we couldn’t
 < ''
 ```
 
-But how do we get the empty array? We could just call <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Array" target="_blank">Array</a> constructor with a 0 argument which means creating an empty array and then we could apply join with that empty array as argument. and in order to access to the `Array` constructor we could just access the seeds array and then it’s constructor to get it. Also to get the 0, we could just run `Math.floor` since the returned number from the last shift is 0.62536 making it 0. This is the payload to do so: `Math.floor,Math.seeds.constructor,Math.seeds.join`.
+But how do we get the empty array? We could just call <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Array" target="_blank">Array</a> constructor with a 0 argument which means creating an empty array and then we could apply join with that empty array as argument. and in order to access to the `Array` constructor we could just access the seeds array and then it’s constructor to get it. Also to get the 0, we could just run `Math.floor` since the returned number from the last shift is 0.62536 making it 0. This is the payload to do so:
+
+```
+Math.floor,Math.seeds.constructor,Math.seeds.join
+```
 
 The payload is:
 

@@ -10,6 +10,15 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 1,
+    ctftimeId: 2103,
+    name: 'BRICS+ CTF Quals 2023',
+    writeupTag: 'bricsctf-quals-2023',
+    ctfPoints: 4745,
+    ctftimeRating: NaN,
+    year: 2023,
+  },
+  {
     place: 1000,
     ctftimeId: 0,
     name: 'Intigriti 0823',
