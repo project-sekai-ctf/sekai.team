@@ -14,6 +14,7 @@ const contestsData: ContestData[] = [
     place: 3,
     ctftimeId: 2172,
     name: 'Real World CTF 6th',
+    writeupTag: 'real-world-ctf-6th',
     ctfPoints: 2171,
     ctftimeRating: 124.224,
     merger: true,

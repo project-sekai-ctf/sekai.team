@@ -3,9 +3,9 @@ title: BSidesTLV 2022 CTF – Code is Law
 date: '2022-06-29'
 draft: false
 authors: ['yanhu']
-tags: ['BSidesTLV 2022', 'Blockchain', 'Solidity', 'Contract']
+tags: ['BSidesTLV 2022', 'Blockchain', 'Solidity', 'Smart Contract', 'Web3']
 summary: 'Modify contract storage using hardhat_setStorageAt.'
-canonical: 'https://yanhuijessica.github.io/Chictf-Writeups/crypto/code_is_law/'
+canonical: 'https://yanhuijessica.github.io/Chictf-Writeups/blockchain/code_is_law'
 ---
 
 ## Code is Law 1 & 2 (Blockchain, 150 + 250)
