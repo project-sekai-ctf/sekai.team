@@ -4,6 +4,7 @@ avatar: https://www.gravatar.com/avatar/aa9cc3f27f3b1f3c47841d62f18c039f?d=ident
 specialties: [Pwn]
 github: https://github.com/nhtri2003gmail
 member: true
+retired: true
 description: A person who does magic things.
 order: 2
 ---

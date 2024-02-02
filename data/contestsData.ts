@@ -10,6 +10,32 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 15,
+    ctftimeId: 2139,
+    name: "Insomni'hack teaser 2024",
+    ctfPoints: 1115,
+    ctftimeRating: 17.291,
+    year: 2024,
+  },
+  {
+    place: 1,
+    ctftimeId: 2218,
+    name: 'UofTCTF 2024',
+    writeupTag: 'uoftctf-2024',
+    ctfPoints: 14025,
+    ctftimeRating: 48.66,
+    year: 2024,
+  },
+  {
+    place: 1,
+    ctftimeId: 2085,
+    name: 'IrisCTF 2024',
+    writeupTag: 'irisctf-2024',
+    ctfPoints: 14691,
+    ctftimeRating: 49.18,
+    year: 2024,
+  },
+  {
     place: 8,
     ctftimeId: 2199,
     name: '37C3 Potluck CTF',
