@@ -14,7 +14,7 @@ const ContestCard = ({
 }: ContestData) => {
   const [open, setOpen] = useState(false)
 
-  if (place > 50) return null
+  if (place > 25) return null
   return (
     <div className="w-full p-4 md:w-1/2" style={{ maxWidth: '544px' }}>
       <ContestSocial
