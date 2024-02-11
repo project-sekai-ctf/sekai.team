@@ -5,7 +5,7 @@ export interface ContestData {
   ctfPoints: number
   ctftimeRating?: number
   writeupTag?: string
-  merger?: boolean
+  isMerger?: boolean
   year: number
 }
 
@@ -17,7 +17,7 @@ const contestsData: ContestData[] = [
     writeupTag: 'real-world-ctf-6th',
     ctfPoints: 2171,
     ctftimeRating: 124.224,
-    merger: true,
+    isMerger: true,
     year: 2024,
   },
   {
@@ -60,7 +60,7 @@ const contestsData: ContestData[] = [
     name: 'SECCON CTF 2023 International Finals',
     ctfPoints: 1990,
     ctftimeRating: 18.711,
-    merger: true,
+    isMerger: true,
     year: 2023,
   },
   {
@@ -69,7 +69,7 @@ const contestsData: ContestData[] = [
     name: 'niteCTF 2023',
     ctfPoints: 13556,
     ctftimeRating: 48,
-    merger: true,
+    isMerger: true,
     year: 2023,
   },
   {
@@ -78,7 +78,7 @@ const contestsData: ContestData[] = [
     name: 'BackdoorCTF 2023',
     ctfPoints: 21489,
     ctftimeRating: 68,
-    merger: true,
+    isMerger: true,
     year: 2023,
   },
   {
@@ -87,7 +87,7 @@ const contestsData: ContestData[] = [
     name: 'The Cyber Cooperative CTF',
     ctfPoints: 7700,
     ctftimeRating: 48.42,
-    merger: true,
+    isMerger: true,
     year: 2023,
   },
   {
@@ -144,7 +144,7 @@ const contestsData: ContestData[] = [
     name: '0CTF/TCTF 2023',
     ctfPoints: 6825,
     ctftimeRating: 67.786,
-    merger: true,
+    isMerger: true,
     year: 2023,
   },
   {
@@ -153,7 +153,7 @@ const contestsData: ContestData[] = [
     name: 'HITCON CTF 2023 Final',
     ctfPoints: 10710,
     ctftimeRating: 35.357,
-    merger: true,
+    isMerger: true,
     year: 2023,
   },
   {
@@ -162,7 +162,7 @@ const contestsData: ContestData[] = [
     name: 'RuCTF 2023',
     ctfPoints: 400732,
     ctftimeRating: 81.809,
-    merger: true,
+    isMerger: true,
     year: 2023,
   },
   {
@@ -205,7 +205,7 @@ const contestsData: ContestData[] = [
     name: 'SECCON CTF 2023 Quals',
     ctfPoints: 3157,
     ctftimeRating: 82.134,
-    merger: true,
+    isMerger: true,
     year: 2023,
   },
   {
@@ -238,7 +238,7 @@ const contestsData: ContestData[] = [
     name: 'WACON 2023 Final',
     ctfPoints: 3776,
     ctftimeRating: 19.039,
-    merger: true,
+    isMerger: true,
     year: 2023,
   },
   {
@@ -247,7 +247,7 @@ const contestsData: ContestData[] = [
     name: 'WACON 2023 Prequal',
     ctfPoints: 4115,
     ctftimeRating: 49.58,
-    merger: true,
+    isMerger: true,
     year: 2023,
   },
   {
@@ -256,7 +256,7 @@ const contestsData: ContestData[] = [
     name: 'Balsn CTF 2023',
     ctfPoints: 4878,
     ctftimeRating: 158.18,
-    merger: true,
+    isMerger: true,
     year: 2023,
   },
   {
@@ -265,7 +265,7 @@ const contestsData: ContestData[] = [
     name: 'HITCON CTF 2023 Quals',
     ctfPoints: 4586,
     ctftimeRating: 76.234,
-    merger: true,
+    isMerger: true,
     year: 2023,
   },
   {
@@ -375,7 +375,7 @@ const contestsData: ContestData[] = [
     name: 'Cyber Apocalypse 2023: The Cursed Mission',
     ctfPoints: 23125,
     ctftimeRating: 29.013,
-    merger: true,
+    isMerger: true,
     year: 2023,
   },
   {
@@ -384,7 +384,7 @@ const contestsData: ContestData[] = [
     name: 'DEF CON CTF Qualifier 2023',
     ctfPoints: 2083,
     ctftimeRating: 47.485,
-    merger: true,
+    isMerger: true,
     year: 2023,
   },
   {
@@ -409,7 +409,7 @@ const contestsData: ContestData[] = [
     name: 'PlaidCTF 2023',
     ctfPoints: 2598,
     ctftimeRating: 102.599,
-    merger: true,
+    isMerger: true,
     year: 2023,
   },
   {
@@ -418,7 +418,7 @@ const contestsData: ContestData[] = [
     name: 'Hack-A-Sat 4 Qualifiers',
     ctfPoints: 2433,
     ctftimeRating: 31.996,
-    merger: true,
+    isMerger: true,
     year: 2023,
   },
   {

@@ -11,6 +11,7 @@ const ContestCard = ({
   ctfPoints,
   ctftimeRating,
   writeupTag,
+  isMerger,
 }: ContestData) => {
   const [open, setOpen] = useState(false)
 
@@ -61,12 +62,17 @@ const ContestCard = ({
             )}
           </h2>
           <p className="flex flex-col items-start gap-2 mb-3 text-gray-500 xl:flex-row max-w-none dark:text-gray-400">
+            {ctftimeRating !== undefined && (
+              <span className="inline-block px-3 py-1 text-white bg-green-800 rounded-full">
+                Rating: {isNaN(ctftimeRating) ? 'Pending' : ctftimeRating.toFixed(2)}
+              </span>
+            )}
             <span className="inline-block px-3 py-1 text-white rounded-full bg-sky-800">
               Points: {ctfPoints}
             </span>
-            {ctftimeRating !== undefined && (
-              <span className="inline-block px-3 py-1 text-white bg-green-800 rounded-full">
-                Rating: {isNaN(ctftimeRating) ? 'Pending' : ctftimeRating}
+            {isMerger && (
+              <span className="inline-block px-3 py-1 text-white bg-cyan-800 rounded-full">
+                Merger
               </span>
             )}
           </p>

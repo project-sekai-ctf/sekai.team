@@ -45,6 +45,7 @@ const Splashscreen = () => {
   const splashRef = useRef(null)
   const lineContainerRef = useRef(null)
   const titleRef = useRef(null)
+
   useEffect(() => {
     if (splashRef.current) {
       const { lyrics, title } = sample(splashData)
@@ -83,7 +84,7 @@ const Splashscreen = () => {
       lang="ja"
       ref={splashRef}
       style={{ fontFeatureSettings: "'palt' 1" }}
-      className="fixed inset-0 flex items-center justify-center hidden transition-all duration-1000 bg-slate-900"
+      className="fixed inset-0 flex items-center justify-center transition-all duration-1000 bg-slate-900"
     >
       <button className="absolute top-0 right-0 p-4" onClick={() => hideSplash(splashRef.current)}>
         Skip
