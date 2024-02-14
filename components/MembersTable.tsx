@@ -1,7 +1,7 @@
 'use client'
 
 import { allAuthors } from 'contentlayer/generated'
-import { columns } from '@/data/membersColumns'
+import { columns } from '@/layouts/MembersColumns'
 import { DataTable } from '@/components/ui/data-table'
 import { useState, useMemo } from 'react'
 import { Checkbox } from '@/components/ui/checkbox'

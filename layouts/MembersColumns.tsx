@@ -41,36 +41,32 @@ export const columns: ColumnDef<Authors>[] = [
       return (
         <TooltipProvider>
           <div className="flex items-center gap-4 p-4">
-            {/* @ts-ignore */}
             <Avatar>
-              {/* @ts-ignore */}
               <AvatarImage src={row.original.avatar} alt={row.original.name} />
-              {/* @ts-ignore */}
               <AvatarFallback>{row.original.name.slice(0, 2)}</AvatarFallback>
             </Avatar>
 
             <div className="flex flex-col gap-1">
               <p className="flex items-center gap-1 text-sm font-medium leading-none">
-                <Link href={`/members/${row.original.slug}`}>
+                <Link
+                  href={`/members/${row.original.slug}`}
+                  className="text-foreground"
+                >
                   {row.original.name}
                 </Link>
                 {row.original.isCaptain && (
                   <Tooltip>
-                    {/* @ts-ignore */}
                     <TooltipTrigger asChild>
                       <Crown size={16} />
                     </TooltipTrigger>
-                    {/* @ts-ignore */}
                     <TooltipContent>Captain</TooltipContent>
                   </Tooltip>
                 )}
                 {row.original.retired && (
                   <Tooltip>
-                    {/* @ts-ignore */}
                     <TooltipTrigger asChild>
                       <GraduationCap size={16} />
                     </TooltipTrigger>
-                    {/* @ts-ignore */}
                     <TooltipContent>Retired</TooltipContent>
                   </Tooltip>
                 )}

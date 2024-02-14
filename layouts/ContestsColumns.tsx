@@ -25,7 +25,7 @@ import {
   Plane,
 } from 'lucide-react'
 import { useState } from 'react'
-import type { ContestData } from './contestsData'
+import type { ContestData } from '../data/contestsData'
 import Link from 'next/link'
 import {
   Tooltip,
@@ -116,20 +116,8 @@ export const columns: ColumnDef<ContestData>[] = [
       return (
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-1 px-4">
-            <p className="flex items-center gap-1 font-medium">
+            <p className="flex items-center gap-1 font-medium text-foreground">
               {row.original.name}
-              {row.original.writeupTag && (
-                <TooltipProvider>
-                  <Tooltip>
-                    {/* @ts-ignore */}
-                    <TooltipTrigger asChild>
-                      <BookOpenCheck size={16} />
-                    </TooltipTrigger>
-                    {/* @ts-ignore */}
-                    <TooltipContent>Writeups available</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
             </p>
             <p className="text-xs text-muted-foreground">
               {startDate} – {endDate}
@@ -176,6 +164,7 @@ export const columns: ColumnDef<ContestData>[] = [
       )
     },
     cell: ({ row }) => {
+      // eslint-disable-next-line
       const [open, setOpen] = useState(false)
 
       return (
@@ -189,30 +178,33 @@ export const columns: ColumnDef<ContestData>[] = [
           />
           <div className="flex flex-col items-center justify-center">
             {row.original.writeupTag && (
-              <Link href={`/tags/${row.original.writeupTag}`}>
-                <Button variant="ghost" className="h-fit w-fit p-2">
-                  <BookOpen size={16} />
-                </Button>
-              </Link>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link href={`/tags/${row.original.writeupTag}`}>
+                      <Button variant="ghost" className="h-fit w-fit p-2">
+                        <BookOpen size={16} />
+                      </Button>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>View writeups</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
             <DropdownMenu modal={false}>
-              {/* @ts-ignore */}
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">
                   <span className="sr-only">Open menu</span>
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              {/* @ts-ignore */}
               <DropdownMenuContent align="end">
-                {/* @ts-ignore */}
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {row.original.ctftimeId && (
                   <Link
                     href={`https://ctftime.org/event/${row.original.ctftimeId}`}
                   >
-                    {/* @ts-ignore */}
                     <DropdownMenuItem className="flex justify-between">
                       View on CTFtime
                       <DropdownMenuShortcut>
@@ -222,7 +214,6 @@ export const columns: ColumnDef<ContestData>[] = [
                   </Link>
                 )}
                 <button onClick={() => setOpen(!open)} className="w-full">
-                  {/* @ts-ignore */}
                   <DropdownMenuItem className="flex justify-between">
                     Share
                     <DropdownMenuShortcut>
@@ -233,8 +224,8 @@ export const columns: ColumnDef<ContestData>[] = [
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <div>
-            <span className="flex items-center justify-end gap-1 text-base font-bold">
+          <div className="flex flex-col items-end justify-center">
+            <span className="flex items-center justify-end gap-1 text-base font-bold text-foreground">
               {row.original.ctftimeRating !== undefined &&
                 row.original.ctftimeRating.toFixed(2)}
               <Flag size={16} />

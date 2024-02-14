@@ -15,7 +15,6 @@ import {
 const MobileNav = () => {
   return (
     <DropdownMenu modal={false}>
-      {/* @ts-ignore */}
       <DropdownMenuTrigger asChild>
         <Button
           className="p-2 sm:hidden"
@@ -26,13 +25,10 @@ const MobileNav = () => {
           <Menu />
         </Button>
       </DropdownMenuTrigger>
-      {/* @ts-ignore */}
       <DropdownMenuContent align="end" className="min-w-[10rem]">
         {headerNavLinks.map((link) => (
-          // @ts-ignore
           <DropdownMenuItem key={link.title} asChild>
             <Link href={link.href} className="flex items-center gap-4">
-              {/* {link.icon} */}
               <div>{link.title}</div>
             </Link>
           </DropdownMenuItem>

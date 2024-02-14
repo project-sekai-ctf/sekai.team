@@ -1,6 +1,6 @@
 import ContestCard from '@/components/ContestCard'
 import { DataTable } from '@/components/ui/data-table'
-import { columns } from '@/data/contestsColumns'
+import { columns } from '@/layouts/ContestsColumns'
 import contestsData from '@/data/contestsData'
 import { genPageMetadata } from 'app/seo'
 import { groupBy } from 'lodash'
@@ -13,7 +13,7 @@ export default function Contests() {
     <>
       <div className="divide-y divide-border">
         <div className="space-y-2 pb-8 pt-6 md:space-y-5">
-          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-foreground sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
+          <h1 className="text-3xl font-semibold leading-9 tracking-tight text-foreground sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
             Contests
           </h1>
           <p className="text-lg leading-7 text-muted-foreground">
