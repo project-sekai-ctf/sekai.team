@@ -1,24 +1,26 @@
 // @ts-check
-/* eslint-disable @typescript-eslint/no-var-requires */
-
-const defaultTheme = require('tailwindcss/defaultTheme')
+const { fontFamily } = require('tailwindcss/defaultTheme')
 const colors = require('tailwindcss/colors')
 
-/** @type {import("tailwindcss/tailwind-config").TailwindConfig } */
+/** @type {import("tailwindcss/types").Config } */
 module.exports = {
   content: [
-    './pages/**/*.tsx',
-    './components/**/*.tsx',
-    './layouts/**/*.tsx',
-    './lib/**/*.ts',
+    './node_modules/pliny/**/*.js',
+    './app/**/*.{js,ts,jsx,tsx}',
+    './pages/**/*.{js,ts,tsx}',
+    './components/**/*.{js,ts,tsx}',
+    './layouts/**/*.{js,ts,tsx}',
     './data/**/*.mdx',
   ],
   darkMode: 'class',
   theme: {
-    extend: {
-      spacing: {
-        '9/16': '56.25%',
+    container: {
+      center: true,
+      screens: {
+        '2xl': '1400px',
       },
+    },
+    extend: {
       lineHeight: {
         11: '2.75rem',
         12: '3rem',
@@ -26,146 +28,165 @@ module.exports = {
         14: '3.5rem',
       },
       fontFamily: {
-        sans: ['Inter', ...defaultTheme.fontFamily.sans],
+        sans: ['var(--font-inter)', ...fontFamily.sans],
+        mono: ['var(--font-fira-code)', ...fontFamily.mono],
       },
       colors: {
-        primary: colors.teal,
-        //@ts-ignore
-        gray: colors.neutral, // TODO: Remove ts-ignore after tw types gets updated to v3
+        gray: colors.gray,
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          // Pliny algolia dependency
+          400: 'hsl(var(--primary))',
+          500: 'hsl(var(--primary))',
+          600: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
+        },
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+        },
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
+        },
       },
-      typography: (theme) => ({
+      borderRadius: {
+        lg: `var(--radius)`,
+        md: `calc(var(--radius) - 2px)`,
+        sm: 'calc(var(--radius) - 4px)',
+      },
+      keyframes: {
+        'accordion-down': {
+          from: { height: 0 },
+          to: { height: 'var(--radix-accordion-content-height)' },
+        },
+        'accordion-up': {
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: 0 },
+        },
+      },
+      animation: {
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
+      },
+      typography: ({ theme }) => ({
         DEFAULT: {
           css: {
-            color: theme('colors.gray.700'),
             a: {
-              color: theme('colors.primary.500'),
+              color: theme('colors.primary.DEFAULT'),
               '&:hover': {
-                color: theme('colors.primary.600'),
+                filter: 'brightness(1.10)',
               },
-              code: { color: theme('colors.primary.400') },
+              code: { color: theme('colors.primary.DEFAULT') },
             },
-            h1: {
+            // p: {
+            //     fontSize: '14px',
+            // },
+            'h1,h2': {
               fontWeight: '700',
               letterSpacing: theme('letterSpacing.tight'),
-              color: theme('colors.gray.900'),
-            },
-            h2: {
-              fontWeight: '700',
-              letterSpacing: theme('letterSpacing.tight'),
-              color: theme('colors.gray.900'),
             },
             h3: {
               fontWeight: '600',
-              color: theme('colors.gray.900'),
-            },
-            'h4,h5,h6': {
-              color: theme('colors.gray.900'),
             },
             pre: {
-              backgroundColor: theme('colors.gray.800'),
+              fontSize: '1rem !important',
             },
             code: {
-              color: theme('colors.pink.500'),
-              backgroundColor: theme('colors.gray.100'),
-              paddingLeft: '4px',
-              paddingRight: '4px',
-              paddingTop: '2px',
-              paddingBottom: '2px',
-              borderRadius: '0.25rem',
-            },
-            'code::before': {
-              content: 'none',
-            },
-            'code::after': {
-              content: 'none',
-            },
-            details: {
-              backgroundColor: theme('colors.gray.100'),
-              paddingLeft: '4px',
-              paddingRight: '4px',
-              paddingTop: '2px',
-              paddingBottom: '2px',
-              borderRadius: '0.25rem',
-            },
-            hr: { borderColor: theme('colors.gray.200') },
-            'ol li::marker': {
-              fontWeight: '600',
-              color: theme('colors.gray.500'),
-            },
-            'ul li::marker': {
-              backgroundColor: theme('colors.gray.500'),
-            },
-            strong: { color: theme('colors.gray.600') },
-            blockquote: {
-              color: theme('colors.gray.900'),
-              borderLeftColor: theme('colors.gray.200'),
+              color: theme('colors.primary.DEFAULT'),
             },
           },
         },
-        dark: {
+        invert: {
           css: {
-            color: theme('colors.gray.300'),
             a: {
-              color: theme('colors.primary.500'),
+              color: theme('colors.primary.DEFAULT'),
               '&:hover': {
-                color: theme('colors.primary.400'),
+                filter: 'brightness(1.10)',
               },
-              code: { color: theme('colors.primary.400') },
+              code: { color: theme('colors.primary.DEFAULT') },
             },
-            h1: {
-              fontWeight: '700',
-              letterSpacing: theme('letterSpacing.tight'),
+            // p: {
+            //     fontSize: '14px',
+            // },
+            'h1,h2,h3,h4,h5,h6': {
               color: theme('colors.gray.100'),
-            },
-            h2: {
-              fontWeight: '700',
-              letterSpacing: theme('letterSpacing.tight'),
-              color: theme('colors.gray.100'),
-            },
-            h3: {
-              fontWeight: '600',
-              color: theme('colors.gray.100'),
-            },
-            'h4,h5,h6': {
-              color: theme('colors.gray.100'),
-            },
-            pre: {
-              backgroundColor: theme('colors.gray.800'),
-            },
-            code: {
-              backgroundColor: theme('colors.gray.800'),
-            },
-            details: {
-              backgroundColor: theme('colors.gray.800'),
-            },
-            hr: { borderColor: theme('colors.gray.700') },
-            'ol li::marker': {
-              fontWeight: '600',
-              color: theme('colors.gray.400'),
-            },
-            'ul li::marker': {
-              backgroundColor: theme('colors.gray.400'),
-            },
-            strong: { color: theme('colors.gray.100') },
-            thead: {
-              color: theme('colors.gray.100'),
-              th: {
-                color: theme('colors.gray.100'),
-              },
-            },
-            tbody: {
-              tr: {
-                borderBottomColor: theme('colors.gray.700'),
-              },
-            },
-            blockquote: {
-              color: theme('colors.gray.100'),
-              borderLeftColor: theme('colors.gray.700'),
             },
           },
         },
       }),
     },
   },
-  plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
+  safelist: [
+    // Category specialties
+    'bg-rose-300',
+    'dark:bg-rose-700',
+    'bg-orange-300',
+    'dark:bg-orange-700',
+    'bg-yellow-300',
+    'dark:bg-yellow-700',
+    'bg-emerald-300',
+    'dark:bg-emerald-700',
+    'bg-cyan-300',
+    'dark:bg-cyan-700',
+    'bg-sky-300',
+    'dark:bg-sky-700',
+    'bg-fuchsia-300',
+    'dark:bg-fuchsia-700',
+    'bg-gray-300',
+    'dark:bg-gray-700',
+    // Ribbon in /contests
+    'bg-gradient-to-r',
+    'dark:from-yellow-500',
+    'dark:to-yellow-700',
+    'dark:from-rose-700',
+    'dark:to-rose-900',
+    'dark:from-gray-400',
+    'dark:to-gray-600',
+    'from-yellow-300',
+    'to-yellow-400',
+    'from-rose-300',
+    'to-rose-400',
+    'from-gray-300',
+    'to-gray-400',
+    '[clip-path:polygon(0%_0%,_100%_0%,_calc(100%_-_20px)_50%,_100%_100%,_0%_100%)]',
+    // Table adjustments
+    '-ml-4',
+    '-mr-4',
+    '-mt-1',
+    'text-right',
+    'bg-cyan-300',
+    'dark:bg-cyan-800',
+    'bg-emerald-300',
+    'dark:bg-emerald-800',
+    'whitespace-nowrap',
+    'xl:flex-row',
+    'ml-4',
+  ],
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+    require('tailwindcss-animate'),
+  ],
 }
