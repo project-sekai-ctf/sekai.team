@@ -15,7 +15,7 @@ const Tag = ({ text }: Props) => {
     <Link href={`/tags/${slug(text)}`}>
       <Badge
         className={clsx(
-          'mb-1 mr-1 font-normal text-foreground',
+          'mb-1 mr-1 font-normal text-foreground hover:!bg-primary/80',
           specialtyColors[text.toLowerCase()]
             ? `bg-${specialtyColors[text.toLowerCase()]}-300 dark:bg-${
                 specialtyColors[text.toLowerCase()]

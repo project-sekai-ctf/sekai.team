@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/tooltip'
 import clsx from 'clsx'
 import Link from 'next/link'
+import { Badge } from '@/components/ui/badge'
 
 export const columns: ColumnDef<Authors>[] = [
   {
@@ -108,33 +109,23 @@ export const columns: ColumnDef<Authors>[] = [
               const color = specialtyColors[specialty.toLowerCase()]
 
               return (
-                <span
-                  key={specialty}
-                  className={clsx(
-                    'inline-block rounded-full px-3 py-1 text-foreground',
-                    color
-                      ? `bg-${color}-300 dark:bg-${color}-700`
-                      : 'bg-secondary'
-                  )}
-                >
-                  {IconComponent ? (
-                    <div className="flex items-center gap-1">
-                      <IconComponent size={18} /> {specialty}
-                    </div>
-                  ) : null}
-                  {/* ALTERNATIVE DISPLAY METHOD */}
-                  {/* {IconComponent ? (
-                                        <TooltipProvider>
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <IconComponent size={18} />
-                                                </TooltipTrigger>
-                                                <TooltipContent>{specialty}</TooltipContent>
-                                            </Tooltip>
-                                        </TooltipProvider>
-                                    ) : null} */}
-                  {/* <span className="ml-2">{specialty}</span> */}
-                </span>
+                <Link key={specialty} href={`/tags/${specialty.toLowerCase()}`}>
+                  <Badge
+                    key={specialty}
+                    className={clsx(
+                      'px-3 py-1 text-sm font-normal text-foreground hover:!bg-primary/80',
+                      color
+                        ? `bg-${color}-300 dark:bg-${color}-700`
+                        : 'bg-secondary'
+                    )}
+                  >
+                    {IconComponent ? (
+                      <div className="flex items-center gap-1">
+                        <IconComponent size={18} /> {specialty}
+                      </div>
+                    ) : null}
+                  </Badge>
+                </Link>
               )
             })}
         </div>

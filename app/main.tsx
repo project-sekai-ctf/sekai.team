@@ -41,7 +41,7 @@ export default function Home({ posts }) {
               aria-label={`Project SEKAI is a CTF team with over ${currentMembers} members and has participated in over ${contestsData.length} contests.`}
               className="font-mono"
             >
-              {`SEKAI{I5_\u200BA_\u200BCTF_\u200Bt3Am_\u200Bw/_\u200B${currentMembers}+_\u200BmbRs_\u200B&_\u200Bp4r71CiP4tEd_\u200Bin_\u200B${contestsData.length}+_\u200Bc0nt3Stz}`}
+              {`SEKAI{I5_\u200BA_\u200BCTF_\u200Bt3Am_\u200Bw/_\u200B${currentMembers}+_\u200BmbRs\u200B,_\u200Bp4r71CiP4t1ng_\u200Bin_\u200B${contestsData.length}+_\u200Bc0nt3Stz}`}
             </code>
           </p>
         </div>

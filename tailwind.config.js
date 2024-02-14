@@ -28,8 +28,8 @@ module.exports = {
         14: '3.5rem',
       },
       fontFamily: {
-        sans: ['var(--font-inter)', ...fontFamily.sans],
-        mono: ['var(--font-fira-code)', ...fontFamily.mono],
+        sans: ['var(--font-geist-sans)', ...fontFamily.sans],
+        mono: ['var(--font-geist-mono)', ...fontFamily.mono],
       },
       colors: {
         gray: colors.gray,
@@ -109,6 +109,9 @@ module.exports = {
             },
             h3: {
               fontWeight: '600',
+            },
+            'h1,h2,h3,h4,h5,h6': {
+              color: theme('colors.foreground'),
             },
             pre: {
               fontSize: '1rem !important',

@@ -66,7 +66,7 @@ export const columns: ColumnDef<ContestData>[] = [
               : 'bg-gradient-to-r from-rose-300 to-rose-400 dark:from-rose-700 dark:to-rose-900'
           )}
         >
-          <span className="-ml-4 flex items-center justify-center text-2xl font-semibold leading-none text-foreground">
+          <span className="-ml-4 flex items-center justify-center text-2xl font-semibold leading-none text-accent-foreground">
             <sup className="pt-4">#</sup>
             {row.original.place}
           </span>

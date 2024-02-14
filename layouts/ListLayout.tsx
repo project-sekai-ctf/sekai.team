@@ -93,7 +93,7 @@ export default function ListLayout({
 
   return (
     <>
-      <div className="divide-y divide-accent-foreground dark:divide-accent">
+      <div className="divide-y divide-border">
         <div className="space-y-2 pb-8 pt-6 md:space-y-5">
           <h1 className="text-3xl font-semibold leading-9 tracking-tight text-foreground sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
             {title && title}
@@ -106,7 +106,7 @@ export default function ListLayout({
                 type="text"
                 onChange={(e) => setSearchValue(e.target.value)}
                 placeholder="Search articles"
-                className="block w-full rounded-md border border-muted-foreground bg-muted px-4 py-2 text-muted-foreground placeholder-muted-foreground focus:border-primary focus:ring-primary dark:border-muted"
+                className="block w-full rounded-md border border-border bg-muted px-4 py-2 text-muted-foreground placeholder-muted-foreground focus:border-primary focus:ring-primary"
               />
             </label>
             <Search className="absolute right-3 top-3 h-5 w-5 text-muted-foreground" />
@@ -136,11 +136,11 @@ export default function ListLayout({
                 <article className="space-y-2 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0">
                   <dl>
                     <dt className="sr-only">Published on</dt>
-                    <dd className="text-sm font-medium leading-6 text-muted-foreground">
+                    <dd className="flex flex-row gap-2 divide-x-2 divide-border text-sm font-medium leading-6 text-muted-foreground xl:flex-col xl:gap-0 xl:divide-none">
                       <time dateTime={date}>
                         {formatDate(date, siteMetadata.locale)}
                       </time>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1 pl-2 xl:pl-0">
                         {' by '}
                         <Image
                           src={finalAuthorDetails.avatar}
