@@ -12,9 +12,13 @@ export async function generateMetadata({
 }: {
   params: { tag: string }
 }): Promise<Metadata> {
+  const tagCounts = tagData as Record<
+    string,
+    { slug: string; proper: string; count: number }
+  >
   const tag = decodeURI(params.tag)
   return genPageMetadata({
-    title: tag,
+    title: tagCounts[tag].proper,
     description: `${siteMetadata.title} ${tag} tagged content`,
     alternates: {
       canonical: './',
@@ -26,7 +30,10 @@ export async function generateMetadata({
 }
 
 export const generateStaticParams = async () => {
-  const tagCounts = tagData as Record<string, number>
+  const tagCounts = tagData as Record<
+    string,
+    { slug: string; proper: string; count: number }
+  >
   const tagKeys = Object.keys(tagCounts)
   const paths = tagKeys.map((tag) => ({
     tag: tag,
@@ -35,9 +42,12 @@ export const generateStaticParams = async () => {
 }
 
 export default function TagPage({ params }: { params: { tag: string } }) {
+  const tagCounts = tagData as Record<
+    string,
+    { slug: string; proper: string; count: number }
+  >
   const tag = decodeURI(params.tag)
-  // Capitalize first letter and convert space to dash
-  const title = tag[0].toUpperCase() + tag.slice(1)
+  const title = tagCounts[tag].proper
   const filteredPosts = allCoreContent(
     sortPosts(
       allBlogs.filter(

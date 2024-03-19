@@ -26,7 +26,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import type { ContestData } from '../data/contestsData'
-import Link from 'next/link'
+import Link from '@/components/Link'
 import {
   Tooltip,
   TooltipTrigger,

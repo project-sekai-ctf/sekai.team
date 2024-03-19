@@ -6,6 +6,7 @@ import { useState } from 'react'
 import ContestSocial from '@/components/ContestSocial'
 import Share from '@/data/share.svg'
 import clsx from 'clsx'
+import { cn } from '@/scripts/utils'
 
 const ContestCard = ({
   place,
@@ -31,12 +32,14 @@ const ContestCard = ({
       <div className="relative flex h-full flex-col gap-6 overflow-hidden rounded-md border-2 border-border border-opacity-60 p-6 md:flex-row">
         <div className="relative -mt-6 mb-6 h-fit w-16 text-center">
           <div
-            className={clsx(
-              place == 1
-                ? 'from-yellow-500 to-yellow-700 after:border-yellow-700'
-                : place == 2
-                ? 'from-gray-400 to-gray-600 after:border-gray-600'
-                : 'from-rose-700 to-rose-900 after:border-rose-900',
+            className={cn(
+              clsx(
+                place == 1
+                  ? 'from-yellow-500 to-yellow-700 after:border-yellow-700'
+                  : place == 2
+                  ? 'from-gray-400 to-gray-600 after:border-gray-600'
+                  : 'from-rose-700 to-rose-900 after:border-rose-900'
+              ),
               'z-1 flex h-[4.5rem] w-16 items-end justify-center bg-gradient-to-b pb-3 after:absolute after:left-0 after:top-full after:box-border after:h-6 after:w-16 after:border-b-[2rem] after:border-l-[2rem] after:border-r-[2rem] after:border-b-transparent'
             )}
           >
@@ -71,7 +74,7 @@ const ContestCard = ({
             )}
           </h2>
           <p className="mb-3 flex max-w-none flex-col items-start gap-2 text-muted-foreground xl:flex-row">
-            {ctftimeRating !== undefined && (
+            {ctftimeRating && ctftimeRating !== 0 && (
               <span className="inline-block rounded-full bg-green-800 px-3 py-1 text-white">
                 Rating:{' '}
                 {isNaN(ctftimeRating) ? 'Pending' : ctftimeRating.toFixed(2)}

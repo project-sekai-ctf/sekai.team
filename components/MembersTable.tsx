@@ -30,7 +30,11 @@ const MembersTable = () => {
         />
         <p className="text-sm text-muted-foreground">Show retired members</p>
       </div>
-      <DataTable columns={columns} data={filteredAuthors} isMemberTable />
+      <DataTable
+        columns={columns}
+        data={filteredAuthors}
+        defaultSortState={[{ id: 'joinDate', desc: false }]}
+      />
     </>
   )
 }

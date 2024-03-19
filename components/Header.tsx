@@ -18,26 +18,24 @@ const Header = () => {
   return (
     <header className="flex items-center justify-between py-10">
       <div>
-        {isHome ? (
-          <Link href="/" aria-label="Visit home page">
-            <div className="flex items-center justify-between">
-              <div className="mr-3">
+        <Link href="/" aria-label="Visit home page">
+          <div className="flex items-center justify-between">
+            {isHome ? (
+              <div className="mr-3" title="Project Sekai">
                 <Logo height={50} width="auto" />
               </div>
-            </div>
-          </Link>
-        ) : (
-          <Link href="/" aria-label="Visit home page">
-            <div className="flex items-center justify-between">
-              <div className="mr-3 hidden dark:block">
-                <FullLogo height={80} width="auto" />
-              </div>
-              <div className="mr-3 block dark:hidden">
-                <FullLogoDark height={80} width="auto" />
-              </div>
-            </div>
-          </Link>
-        )}
+            ) : (
+              <>
+                <div className="mr-3 hidden dark:block" title="Project Sekai">
+                  <FullLogo height={80} width="auto" />
+                </div>
+                <div className="mr-3 block dark:hidden" title="Project Sekai">
+                  <FullLogoDark height={80} width="auto" />
+                </div>
+              </>
+            )}
+          </div>
+        </Link>
       </div>
       <div className="flex items-center text-base leading-5">
         <div className="mr-1 hidden sm:flex sm:gap-1">

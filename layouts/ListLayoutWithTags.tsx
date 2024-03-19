@@ -79,9 +79,14 @@ export default function ListLayoutWithTags({
   pagination,
 }: ListLayoutProps) {
   const pathname = usePathname()
-  const tagCounts = tagData as Record<string, number>
+  const tagCounts = tagData as Record<
+    string,
+    { slug: string; proper: string; count: number }
+  >
   const tagKeys = Object.keys(tagCounts)
-  const sortedTags = tagKeys.sort((a, b) => tagCounts[b] - tagCounts[a])
+  const sortedTags = tagKeys.sort(
+    (a, b) => tagCounts[b].count - tagCounts[a].count
+  )
 
   const displayPosts =
     initialDisplayPosts.length > 0 ? initialDisplayPosts : posts

@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/Link'
 import { slug } from 'github-slugger'
 import { Badge } from './ui/badge'
 import clsx from 'clsx'

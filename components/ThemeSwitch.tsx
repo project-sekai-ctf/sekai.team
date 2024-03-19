@@ -21,6 +21,7 @@ const ThemeSwitch = () => {
       aria-label="Toggle Dark Mode"
       variant="ghost"
       className="px-2"
+      title="Toggle Dark Mode"
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
     >
       {mounted && theme === 'dark' ? <Sun /> : <Moon />}

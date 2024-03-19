@@ -145,6 +145,8 @@ module.exports = {
     // Category specialties
     'bg-rose-300',
     'dark:bg-rose-700',
+    'bg-red-300',
+    'dark:bg-red-700',
     'bg-orange-300',
     'dark:bg-orange-700',
     'bg-yellow-300',

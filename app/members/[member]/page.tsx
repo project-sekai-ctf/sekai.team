@@ -1,7 +1,6 @@
 import React from 'react'
 import { genPageMetadata } from 'app/seo'
 import { Metadata } from 'next'
-import siteMetadata from '@/data/siteMetadata'
 import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer'
 import { allAuthors, allBlogs } from 'contentlayer/generated'
 import ListLayout from '@/layouts/ListLayout'

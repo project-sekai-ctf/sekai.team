@@ -16,7 +16,7 @@ export default function ContestSocial({
   ctfPoints: number
 }) {
   const cancelButtonRef = useRef(null)
-  const [image, setImage] = useState<string | null>(null)
+  const [image, setImage] = useState<string | undefined>(undefined)
   const designRef = useCallback((designRef) => {
     if (designRef) {
       setTimeout(() => domtoimage.toPng(designRef).then(setImage), 100)
@@ -107,7 +107,6 @@ export default function ContestSocial({
                     />
                   </div>
                   <img
-                    // @ts-ignore
                     src={image}
                     alt="Share this for contest"
                     className="-z-1 absolute left-0 top-0 h-[500px] w-[1000px]"

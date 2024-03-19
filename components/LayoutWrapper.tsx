@@ -1,4 +1,4 @@
-import { Inter } from 'next/font/google'
+import { GeistSans } from 'geist/font/sans'
 import SectionContainer from './SectionContainer'
 import Footer from './Footer'
 import { ReactNode } from 'react'
@@ -8,15 +8,11 @@ interface Props {
   children: ReactNode
 }
 
-const inter = Inter({
-  subsets: ['latin'],
-})
-
 const LayoutWrapper = ({ children }: Props) => {
   return (
     <SectionContainer>
       <div
-        className={`${inter.className} flex h-full flex-col justify-between font-sans`}
+        className={`${GeistSans.variable} flex h-full flex-col justify-between font-sans`}
       >
         <Header />
         <main className="mb-auto">{children}</main>

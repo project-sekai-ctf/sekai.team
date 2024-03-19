@@ -15,7 +15,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import clsx from 'clsx'
-import Link from 'next/link'
+import Link from '@/components/Link'
 import { Badge } from '@/components/ui/badge'
 
 export const columns: ColumnDef<Authors>[] = [
