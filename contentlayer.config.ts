@@ -58,13 +58,10 @@ function createTagCount(allBlogs) {
     if (file.tags && (!isProduction || file.draft !== true)) {
       file.tags.forEach((tag) => {
         const formattedTag = GithubSlugger.slug(tag)
-        if (formattedTag in tagCount) {
-          tagCount[formattedTag].count += 1
-        } else {
-          tagCount[formattedTag].slug = formattedTag
-          tagCount[formattedTag].proper = tag
-          tagCount[formattedTag].count = 1
+        if (!(formattedTag in tagCount)) {
+          tagCount[formattedTag] = { slug: formattedTag, proper: tag, count: 0 }
         }
+        tagCount[formattedTag].count += 1
       })
     }
   })
