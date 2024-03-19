@@ -27,14 +27,18 @@ const components = {
 }
 
 const SocialIcon = ({ kind, href, size = 8 }) => {
-  if (!href || (kind === 'mail' && !/^mailto:\w+([.-]?\w+)@\w+([.-]?\w+)(.\w{2,3})+$/.test(href)))
+  if (
+    !href ||
+    (kind === 'mail' &&
+      !/^mailto:\w+([.-]?\w+)@\w+([.-]?\w+)(.\w{2,3})+$/.test(href))
+  )
     return null
 
   const SocialSvg = components[kind]
 
   return (
     <a
-      className="text-sm text-gray-500 transition hover:text-gray-600"
+      className="text-sm text-foreground transition"
       target="_blank"
       rel="noopener noreferrer"
       href={href}
@@ -43,7 +47,7 @@ const SocialIcon = ({ kind, href, size = 8 }) => {
         <span className="w-6">{kind}</span>
       </span>
       <SocialSvg
-        className={`fill-current text-gray-700 w-${size} h-${size} dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400`}
+        className={`fill-current text-foreground w-${size} h-${size} hover:text-primary`}
       />
     </a>
   )

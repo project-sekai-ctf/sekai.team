@@ -15,7 +15,7 @@ export const socialKeys = [
 ] as const
 
 export type SocialBarProps = {
-  [key in typeof socialKeys[number]]?: string
+  [key in (typeof socialKeys)[number]]?: string
 } & {
   size?: number
 }
@@ -35,7 +35,7 @@ const SocialBar = ({
   size,
 }: SocialBarProps) => {
   return (
-    <div className="flex mb-3 space-x-4">
+    <div className="flex space-x-4 p-4">
       <SocialIcon kind="web" href={web} size={size ?? 6} />
       <SocialIcon kind="mail" href={`mailto:${email}`} size={size ?? 6} />
       <SocialIcon kind="github" href={github} size={size ?? 6} />

@@ -5,8 +5,8 @@ import SocialBar from '@/components/SocialBar'
 export default function Footer() {
   return (
     <footer>
-      <div className="flex flex-col items-center mt-16">
-        <div className="flex mb-3 space-x-4">
+      <div className="mt-16 flex flex-col items-center">
+        <div className="mb-3 flex space-x-4">
           <SocialBar
             size={6}
             email={siteMetadata.email}
@@ -19,7 +19,7 @@ export default function Footer() {
             discord={siteMetadata.discord}
           />
         </div>
-        <div className="flex mb-2 space-x-2 text-sm text-gray-500 dark:text-gray-400">
+        <div className="mb-2 flex space-x-2 text-sm text-muted-foreground">
           <Link href="/">{siteMetadata.title}</Link>
           <div>{` • `}</div>
           <div>{`© ${new Date().getFullYear()}`}</div>
@@ -28,9 +28,9 @@ export default function Footer() {
             <a href="https://1a23.com">1A23 Studio</a>
           </div>
         </div>
-        <div className="mb-8 text-xs text-center text-gray-200 dark:text-gray-700">
-          This website is in no way affiliated with any of the following individuals or
-          organizations.{' '}
+        <div className="mb-8 text-center text-xs text-muted-foreground/25">
+          This website is in no way affiliated with any of the following
+          individuals or organizations.{' '}
           <Link href="https://github.com/timlrx/tailwind-nextjs-starter-blog">
             Tailwind Nextjs Theme
           </Link>

@@ -10,7 +10,7 @@ export default function CountryFlag({ country }: Props) {
     <img
       src={`https://flagcdn.com/20x15/${country}.png`}
       alt={country}
-      className="inline-block align-text-middle bottom m-0"
+      className="align-text-middle bottom m-0 inline-block"
     />
   )
 }
