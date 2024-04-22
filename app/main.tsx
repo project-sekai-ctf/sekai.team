@@ -49,18 +49,20 @@ export default function Home({ posts }) {
           {!posts.length && 'No posts found.'}
           {posts.slice(0, MAX_DISPLAY).map((frontMatter) => {
             const { slug, date, title, tags, authors } = frontMatter
-            const authorSlug =
-              authors && authors.length > 0 ? authors[0] : undefined
 
-            const authorDetails = authorSlug
-              ? allAuthors.find((author) => author.slug === authorSlug)
-              : undefined
+            const authorDetails = authors?.map((authorSlug) =>
+              allAuthors.find((author) => author.slug === authorSlug)
+            )
 
-            const finalAuthorDetails = authorDetails ?? {
-              name: siteMetadata.author,
-              avatar: siteMetadata.image,
-              slug: siteMetadata.author,
-            }
+            const finalAuthorDetails = authorDetails?.length
+              ? authorDetails
+              : [
+                  {
+                    name: siteMetadata.author,
+                    avatar: siteMetadata.image,
+                    slug: siteMetadata.author,
+                  },
+                ]
 
             return (
               <li key={slug} className="py-6">
@@ -72,29 +74,29 @@ export default function Home({ posts }) {
                         <time dateTime={date as string}>
                           {formatDate(date as string)}
                         </time>
-                        {finalAuthorDetails.name !== siteMetadata.author ? (
-                          <div className="flex items-center gap-1">
-                            {' by '}
-                            <Image
-                              src={finalAuthorDetails.avatar}
-                              alt={finalAuthorDetails.name}
-                              width={24}
-                              height={24}
-                              className="rounded-full"
-                            />
-
-                            <Link
-                              href={`/members/${finalAuthorDetails.slug}`}
-                              className="text-foreground hover:underline"
+                        <div className="flex items-center gap-1">
+                          {' by '}
+                          {finalAuthorDetails.map((author) => (
+                            <div
+                              key={author.slug}
+                              className="flex items-center gap-1"
                             >
-                              {finalAuthorDetails.name}
-                            </Link>
-                          </div>
-                        ) : (
-                          <span className="pl-2 pr-1 text-foreground">
-                            by {finalAuthorDetails.name}
-                          </span>
-                        )}
+                              <Image
+                                src={author.avatar}
+                                alt={author.name}
+                                width={24}
+                                height={24}
+                                className="rounded-full"
+                              />
+                              <Link
+                                href={`/members/${author.slug}`}
+                                className="text-foreground hover:underline"
+                              >
+                                {author.name}
+                              </Link>
+                            </div>
+                          ))}
+                        </div>
                       </dd>
                     </dl>
                     <div className="space-y-5 xl:col-span-3">

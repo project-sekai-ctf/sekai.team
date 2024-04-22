@@ -43,7 +43,15 @@ export async function generateMetadata({
   const publishedAt = new Date(post.date).toISOString()
   const modifiedAt = new Date(post.lastmod || post.date).toISOString()
   const authors = authorDetails.map((author) => author.name)
-  let imageList = [siteMetadata.socialBanner]
+  const authorNames = authors.join(', ')
+  const organizedParams = {
+    title: post.title,
+    desc: post.summary,
+    authors: authorNames,
+  } as Record<string, string>
+  const query = new URLSearchParams(organizedParams).toString()
+  const defaultSocialBanner = `https://og-vercel-ruby.vercel.app/api/sekai?${query}`
+  let imageList = [defaultSocialBanner]
   if (post.images) {
     imageList = typeof post.images === 'string' ? [post.images] : post.images
   }

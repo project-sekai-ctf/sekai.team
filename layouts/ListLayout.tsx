@@ -118,18 +118,20 @@ export default function ListLayout({
           )}
           {displayPosts.map((post) => {
             const { path, date, title, authors, summary, tags } = post
-            const authorSlug =
-              authors && authors.length > 0 ? authors[0] : undefined
 
-            const authorDetails = authorSlug
-              ? allAuthors.find((author) => author.slug === authorSlug)
-              : undefined
+            const authorDetails = authors?.map((authorSlug) =>
+              allAuthors.find((author) => author.slug === authorSlug)
+            )
 
-            const finalAuthorDetails = authorDetails ?? {
-              name: siteMetadata.author,
-              avatar: siteMetadata.image,
-              slug: siteMetadata.author,
-            }
+            const finalAuthorDetails = authorDetails?.length
+              ? authorDetails
+              : [
+                  {
+                    name: siteMetadata.author,
+                    avatar: siteMetadata.image,
+                    slug: siteMetadata.author,
+                  },
+                ]
 
             return (
               <li key={path} className="py-4">
@@ -142,20 +144,26 @@ export default function ListLayout({
                       </time>
                       <div className="flex items-center gap-1 pl-2 xl:pl-0">
                         {' by '}
-                        <Image
-                          src={finalAuthorDetails.avatar}
-                          alt={finalAuthorDetails.name}
-                          width={24}
-                          height={24}
-                          className="rounded-full"
-                        />
-
-                        <Link
-                          href={`/members/${finalAuthorDetails.slug}`}
-                          className="text-foreground hover:underline"
-                        >
-                          {finalAuthorDetails.name}
-                        </Link>
+                        {finalAuthorDetails.map((author) => (
+                          <div
+                            key={author.slug}
+                            className="flex items-center gap-1"
+                          >
+                            <Image
+                              src={author.avatar}
+                              alt={author.name}
+                              width={24}
+                              height={24}
+                              className="rounded-full"
+                            />
+                            <Link
+                              href={`/members/${author.slug}`}
+                              className="text-foreground hover:underline"
+                            >
+                              {author.name}
+                            </Link>
+                          </div>
+                        ))}
                       </div>
                     </dd>
                   </dl>
