@@ -26,6 +26,10 @@ export async function generateMetadata({
         'application/rss+xml': `${siteMetadata.siteUrl}/tags/${tag}/feed.xml`,
       },
     },
+    robots: {
+      index: false,
+      follow: false,
+    },
   })
 }
 
