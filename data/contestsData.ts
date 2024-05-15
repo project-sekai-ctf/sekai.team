@@ -6,6 +6,10 @@ export interface ContestData {
   ctftimeRating?: number
   writeupTag?: string
   isMerger?: boolean
+  startDate?: string
+  endDate?: string
+  onSite?: boolean
+  location?: string
   year: number
 }
 
@@ -19,6 +23,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 124.224,
     isMerger: true,
     year: 2024,
+    startDate: '2024-01-26T11:00:00+00:00',
+    endDate: '2024-01-28T11:00:00+00:00',
   },
   {
     place: 15,
@@ -27,6 +33,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 1115,
     ctftimeRating: 17.291,
     year: 2024,
+    startDate: '2024-01-20T09:00:00+00:00',
+    endDate: '2024-01-21T09:00:00+00:00',
   },
   {
     place: 1,
@@ -36,6 +44,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 14025,
     ctftimeRating: 48.66,
     year: 2024,
+    startDate: '2023-12-30T17:00:00+00:00',
+    endDate: '2024-01-14T21:00:00+00:00',
   },
   {
     place: 1,
@@ -45,6 +55,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 14691,
     ctftimeRating: 49.18,
     year: 2024,
+    startDate: '2024-01-06T00:00:00+00:00',
+    endDate: '2024-01-08T00:00:00+00:00',
   },
   {
     place: 8,
@@ -53,6 +65,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 2255,
     ctftimeRating: 12.271,
     year: 2023,
+    startDate: '2023-12-28T18:00:00+00:00',
+    endDate: '2023-12-29T18:00:00+00:00',
   },
   {
     place: 7,
@@ -61,7 +75,11 @@ const contestsData: ContestData[] = [
     ctfPoints: 1990,
     ctftimeRating: 18.711,
     isMerger: true,
+    onSite: true,
+    location: 'Tokyo, Japan',
     year: 2023,
+    startDate: '2023-12-23T01:00:00+00:00',
+    endDate: '2023-12-24T09:00:00+00:00',
   },
   {
     place: 1,
@@ -71,6 +89,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 48,
     isMerger: true,
     year: 2023,
+    startDate: '2023-12-17T11:30:00+00:00',
+    endDate: '2023-12-19T11:30:00+00:00',
   },
   {
     place: 1,
@@ -80,6 +100,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 68,
     isMerger: true,
     year: 2023,
+    startDate: '2023-12-16T12:00:00+00:00',
+    endDate: '2023-12-18T12:00:00+00:00',
   },
   {
     place: 1,
@@ -89,6 +111,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 48.42,
     isMerger: true,
     year: 2023,
+    startDate: '2023-12-15T05:01:01+00:00',
+    endDate: '2023-12-18T04:59:00+00:00',
   },
   {
     place: 7,
@@ -96,7 +120,10 @@ const contestsData: ContestData[] = [
     name: 'CTFZone 2023 Final',
     ctfPoints: 3833,
     ctftimeRating: 0,
+    onSite: true,
     year: 2023,
+    startDate: '2023-11-25T09:00:00+00:00',
+    endDate: '2023-11-25T19:00:00+00:00',
   },
   {
     place: 1,
@@ -105,6 +132,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 6471,
     ctftimeRating: 48.64,
     year: 2023,
+    startDate: '2023-11-24T18:00:00+00:00',
+    endDate: '2023-11-26T18:00:00+00:00',
   },
   {
     place: 1,
@@ -113,6 +142,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 14869,
     ctftimeRating: 48.46,
     year: 2023,
+    startDate: '2023-11-17T11:59:59+00:00',
+    endDate: '2023-11-18T23:59:59+00:00',
   },
   {
     place: 7,
@@ -121,6 +152,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 8770,
     ctftimeRating: 9.904,
     year: 2023,
+    startDate: '2023-11-11T10:00:00+00:00',
+    endDate: '2023-11-11T18:00:00+00:00',
   },
   {
     place: 1,
@@ -129,6 +162,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 11409,
     ctftimeRating: 110,
     year: 2023,
+    startDate: '2023-11-10T10:00:00+00:00',
+    endDate: '2023-11-12T10:00:00+00:00',
   },
   {
     place: 3,
@@ -137,6 +172,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 7556,
     ctftimeRating: 25.418,
     year: 2023,
+    startDate: '2023-10-28T08:00:00+00:00',
+    endDate: '2023-10-29T08:00:00+00:00',
   },
   {
     place: 8,
@@ -146,6 +183,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 67.786,
     isMerger: true,
     year: 2023,
+    startDate: '2023-12-09T02:00:00+00:00',
+    endDate: '2023-12-11T02:00:00+00:00',
   },
   {
     place: 2,
@@ -154,7 +193,11 @@ const contestsData: ContestData[] = [
     ctfPoints: 10710,
     ctftimeRating: 35.357,
     isMerger: true,
+    onSite: true,
+    location: 'Taipei, Taiwan',
     year: 2023,
+    startDate: '2023-11-14T00:00:00+00:00',
+    endDate: '2023-11-15T08:00:00+00:00',
   },
   {
     place: 2,
@@ -164,6 +207,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 81.809,
     isMerger: true,
     year: 2023,
+    startDate: '2023-11-04T10:00:00+00:00',
+    endDate: '2023-11-04T19:00:00+00:00',
   },
   {
     place: 13,
@@ -172,6 +217,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 1719,
     ctftimeRating: 38.548,
     year: 2023,
+    startDate: '2023-10-13T18:00:00+00:00',
+    endDate: '2023-10-15T18:00:00+00:00',
   },
   {
     place: 18,
@@ -180,6 +227,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 1936,
     ctftimeRating: 8.255,
     year: 2023,
+    startDate: '2023-09-30T00:00:00+00:00',
+    endDate: '2023-10-02T00:00:00+00:00',
   },
   {
     place: 1,
@@ -188,16 +237,20 @@ const contestsData: ContestData[] = [
     writeupTag: 'bricsctf-quals-2023',
     ctfPoints: 4745,
     ctftimeRating: 49.36,
+    onSite: true,
     year: 2023,
+    startDate: '2023-09-24T10:00:00+00:00',
+    endDate: '2023-09-25T10:00:00+00:00',
   },
   {
     place: 1000,
-    ctftimeId: 0,
     name: 'Intigriti 0823',
     ctfPoints: 0,
     ctftimeRating: 0,
     writeupTag: 'intigriti-0823',
     year: 2023,
+    startDate: '2023-08-20T23:00:00+00:00',
+    endDate: '2023-08-28T22:59:00+00:00',
   },
   {
     place: 7,
@@ -207,6 +260,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 82.134,
     isMerger: true,
     year: 2023,
+    startDate: '2023-09-16T05:00:00+00:00',
+    endDate: '2023-09-17T05:00:00+00:00',
   },
   {
     place: 1,
@@ -215,6 +270,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 5260,
     ctftimeRating: 49.5,
     year: 2023,
+    startDate: '2023-08-19T00:00:00+00:00',
+    endDate: '2023-08-21T00:00:00+00:00',
   },
   {
     place: 5,
@@ -223,6 +280,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 5716,
     ctftimeRating: 79.043,
     year: 2023,
+    startDate: '2023-08-12T09:00:00+00:00',
+    endDate: '2023-08-13T21:00:00+00:00',
   },
   {
     place: 10,
@@ -230,7 +289,10 @@ const contestsData: ContestData[] = [
     name: 'ESCAPE CTF 2023 Preliminary',
     ctfPoints: 2680,
     ctftimeRating: 0,
+    onSite: true,
     year: 2023,
+    startDate: '2023-08-05T01:00:00+00:00',
+    endDate: '2023-08-05T09:00:00+00:00',
   },
   {
     place: 5,
@@ -239,7 +301,11 @@ const contestsData: ContestData[] = [
     ctfPoints: 3776,
     ctftimeRating: 19.039,
     isMerger: true,
+    onSite: true,
+    location: 'Seoul, South Korea',
     year: 2023,
+    startDate: '2023-09-25T07:00:00+00:00',
+    endDate: '2023-09-26T07:00:00+00:00',
   },
   {
     place: 1,
@@ -249,6 +315,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 49.58,
     isMerger: true,
     year: 2023,
+    startDate: '2023-09-02T00:00:00+00:00',
+    endDate: '2023-09-03T00:00:00+00:00',
   },
   {
     place: 1,
@@ -258,6 +326,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 158.18,
     isMerger: true,
     year: 2023,
+    startDate: '2023-10-07T02:00:00+00:00',
+    endDate: '2023-10-09T02:00:00+00:00',
   },
   {
     place: 8,
@@ -267,6 +337,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 76.234,
     isMerger: true,
     year: 2023,
+    startDate: '2023-09-08T14:00:00+00:00',
+    endDate: '2023-09-10T14:00:00+00:00',
   },
   {
     place: 3,
@@ -276,6 +348,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 14389,
     ctftimeRating: 44.899,
     year: 2023,
+    startDate: '2023-07-21T19:00:00+00:00',
+    endDate: '2023-07-23T19:00:00+00:00',
   },
   {
     place: 18,
@@ -284,6 +358,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 2285,
     ctftimeRating: 31.395,
     year: 2023,
+    startDate: '2023-07-15T03:00:00+00:00',
+    endDate: '2023-07-16T03:00:00+00:00',
   },
   {
     place: 1,
@@ -293,6 +369,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 26745,
     ctftimeRating: 40.66,
     year: 2023,
+    startDate: '2023-07-08T05:00:00+00:00',
+    endDate: '2023-07-09T17:00:00+00:00',
   },
   {
     place: 3,
@@ -301,6 +379,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 4712,
     ctftimeRating: 63.613,
     year: 2023,
+    startDate: '2023-07-01T00:00:00+00:00',
+    endDate: '2023-07-03T00:00:00+00:00',
   },
   {
     place: 1,
@@ -309,6 +389,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 19584,
     ctftimeRating: 49.76,
     year: 2023,
+    startDate: '2023-06-10T02:00:00+00:00',
+    endDate: '2023-06-12T02:00:00+00:00',
   },
   {
     place: 1,
@@ -317,6 +399,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 23491,
     ctftimeRating: 41.82,
     year: 2023,
+    startDate: '2023-05-19T17:00:00+00:00',
+    endDate: '2023-05-21T05:00:00+00:00',
   },
   {
     place: 1,
@@ -326,6 +410,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 87.54,
     writeupTag: 'umdctf-2023',
     year: 2023,
+    startDate: '2023-04-28T22:00:00+00:00',
+    endDate: '2023-04-30T22:00:00+00:00',
   },
   {
     place: 6,
@@ -334,6 +420,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 3110,
     ctftimeRating: 97.477,
     year: 2023,
+    startDate: '2023-04-22T00:00:00+00:00',
+    endDate: '2023-04-26T23:59:59+00:00',
   },
   {
     place: 1,
@@ -342,6 +430,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 16419,
     ctftimeRating: 49.58,
     year: 2023,
+    startDate: '2023-04-07T17:00:00+00:00',
+    endDate: '2023-04-09T17:00:00+00:00',
   },
   {
     place: 1,
@@ -350,6 +440,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 9362,
     ctftimeRating: 61.24,
     year: 2023,
+    startDate: '2023-03-31T16:00:00+00:00',
+    endDate: '2023-04-02T16:00:00+00:00',
   },
   {
     place: 1,
@@ -359,6 +451,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 48.66,
     writeupTag: 'wolvctf-2023',
     year: 2023,
+    startDate: '2023-03-17T20:00:00+00:00',
+    endDate: '2023-03-19T20:00:00+00:00',
   },
   {
     place: 1,
@@ -368,6 +462,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 87.08,
     writeupTag: 'utctf-2023',
     year: 2023,
+    startDate: '2023-03-11T00:00:00+00:00',
+    endDate: '2023-03-13T00:00:00+00:00',
   },
   {
     place: 4,
@@ -377,6 +473,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 29.013,
     isMerger: true,
     year: 2023,
+    startDate: '2023-03-18T13:00:00+00:00',
+    endDate: '2023-03-23T12:59:00+00:00',
   },
   {
     place: 15,
@@ -386,6 +484,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 47.485,
     isMerger: true,
     year: 2023,
+    startDate: '2023-05-27T00:00:00+00:00',
+    endDate: '2023-05-29T00:00:00+00:00',
   },
   {
     place: 45,
@@ -394,6 +494,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 1642,
     ctftimeRating: 2.971,
     year: 2023,
+    startDate: '2023-03-03T17:00:00+00:00',
+    endDate: '2023-03-05T17:00:00+00:00',
   },
   {
     place: 19,
@@ -402,6 +504,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 1888,
     ctftimeRating: 10.116,
     year: 2023,
+    startDate: '2023-02-18T12:00:00+00:00',
+    endDate: '2023-02-19T12:00:00+00:00',
   },
   {
     place: 4,
@@ -411,6 +515,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 102.599,
     isMerger: true,
     year: 2023,
+    startDate: '2023-04-14T21:00:00+00:00',
+    endDate: '2023-04-16T21:00:00+00:00',
   },
   {
     place: 8,
@@ -420,6 +526,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 31.996,
     isMerger: true,
     year: 2023,
+    startDate: '2023-04-01T14:00:00+00:00',
+    endDate: '2023-04-02T20:00:00+00:00',
   },
   {
     place: 2,
@@ -429,6 +537,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 36.596,
     writeupTag: 'lactf-2023',
     year: 2023,
+    startDate: '2023-02-11T04:00:00+00:00',
+    endDate: '2023-02-12T22:00:00+00:00',
   },
   {
     place: 58,
@@ -437,6 +547,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 979,
     ctftimeRating: 7.008,
     year: 2023,
+    startDate: '2023-02-03T21:00:00+00:00',
+    endDate: '2023-02-05T21:00:00+00:00',
   },
   {
     place: 41,
@@ -445,6 +557,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 381,
     ctftimeRating: 2.481,
     year: 2023,
+    startDate: '2023-01-21T12:00:00+00:00',
+    endDate: '2023-01-22T12:00:00+00:00',
   },
   {
     place: 1,
@@ -454,6 +568,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 49.12,
     writeupTag: 'idekctf-2022',
     year: 2023,
+    startDate: '2023-01-13T00:00:00+00:00',
+    endDate: '2023-01-15T00:00:00+00:00',
   },
   {
     place: 3,
@@ -462,6 +578,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 9825,
     ctftimeRating: 59.283,
     year: 2023,
+    startDate: '2023-01-01T00:00:00+00:00',
+    endDate: '2023-01-03T00:00:00+00:00',
   },
   {
     place: 1,
@@ -470,6 +588,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 11024,
     ctftimeRating: 48.84,
     year: 2022,
+    startDate: '2022-12-16T20:00:00+00:00',
+    endDate: '2022-12-21T19:59:59+00:00',
   },
   {
     place: 10,
@@ -478,6 +598,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 5270,
     ctftimeRating: 13.491,
     year: 2022,
+    startDate: '2022-12-09T18:00:00+00:00',
+    endDate: '2022-12-10T23:59:59+00:00',
   },
   {
     place: 3,
@@ -487,6 +609,8 @@ const contestsData: ContestData[] = [
     writeupTag: 'stack-the-flags-2022',
     ctftimeRating: 0.0,
     year: 2022,
+    startDate: '2022-12-02T13:00:00+00:00',
+    endDate: '2022-12-04T13:00:00+00:00',
   },
   {
     place: 1,
@@ -495,6 +619,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 4838,
     ctftimeRating: 48.2,
     year: 2022,
+    startDate: '2022-11-19T10:00:00+00:00',
+    endDate: '2022-11-21T10:00:00+00:00',
   },
   {
     place: 7,
@@ -503,6 +629,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 3301,
     ctftimeRating: 32.071,
     year: 2022,
+    startDate: '2022-11-18T22:00:00+00:00',
+    endDate: '2022-11-19T22:00:00+00:00',
   },
   {
     place: 1,
@@ -511,6 +639,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 5826,
     ctftimeRating: 74.0,
     year: 2022,
+    startDate: '2022-11-11T10:00:00+00:00',
+    endDate: '2022-11-13T10:00:00+00:00',
   },
   {
     place: 1,
@@ -520,6 +650,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 47.1,
     writeupTag: 'gdg-algiers-2022',
     year: 2022,
+    startDate: '2022-10-07T18:00:00+00:00',
+    endDate: '2022-10-09T18:00:00+00:00',
   },
   {
     place: 9,
@@ -528,6 +660,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 9817,
     ctftimeRating: 22.57,
     year: 2022,
+    startDate: '2022-09-23T09:30:00+00:00',
+    endDate: '2022-09-25T09:30:00+00:00',
   },
   {
     place: 17,
@@ -536,6 +670,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 2670,
     ctftimeRating: 8.227,
     year: 2022,
+    startDate: '2022-08-27T00:00:00+00:00',
+    endDate: '2022-08-29T00:00:00+00:00',
   },
   {
     place: 15,
@@ -544,6 +680,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 2119,
     ctftimeRating: 11.57,
     year: 2022,
+    startDate: '2022-08-22T06:00:00+00:00',
+    endDate: '2022-08-23T06:00:00+00:00',
   },
   {
     place: 3,
@@ -552,6 +690,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 5952,
     ctftimeRating: 31.68,
     year: 2022,
+    startDate: '2022-08-12T12:30:00+00:00',
+    endDate: '2022-08-14T12:30:00+00:00',
   },
   {
     place: 4,
@@ -560,6 +700,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 6168,
     ctftimeRating: 23.959,
     year: 2022,
+    startDate: '2022-08-06T00:00:00+00:00',
+    endDate: '2022-08-08T00:00:00+00:00',
   },
   {
     place: 3,
@@ -568,6 +710,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 13199,
     ctftimeRating: 27.111,
     year: 2022,
+    startDate: '2022-07-30T01:30:00+00:00',
+    endDate: '2022-08-01T01:30:00+00:00',
   },
   {
     place: 9,
@@ -576,6 +720,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 9191,
     ctftimeRating: 44.766,
     year: 2022,
+    startDate: '2022-07-22T18:00:00+00:00',
+    endDate: '2022-07-24T18:00:00+00:00',
   },
   {
     place: 3,
@@ -584,6 +730,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 9950,
     ctftimeRating: 30.116,
     year: 2022,
+    startDate: '2022-07-15T20:00:00+00:00',
+    endDate: '2022-07-18T20:00:00+00:00',
   },
   {
     place: 1,
@@ -593,6 +741,8 @@ const contestsData: ContestData[] = [
     writeupTag: 'bsidestlv-2022',
     ctftimeRating: 43.76,
     year: 2022,
+    startDate: '2022-06-27T06:00:00+00:00',
+    endDate: '2022-06-29T06:00:00+00:00',
   },
   {
     place: 3,
@@ -601,6 +751,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 3940,
     ctftimeRating: 23.842,
     year: 2022,
+    startDate: '2022-06-20T09:00:00+00:00',
+    endDate: '2022-06-24T09:00:00+00:00',
   },
   {
     place: 1,
@@ -609,6 +761,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 26834,
     ctftimeRating: 49.88,
     year: 2022,
+    startDate: '2022-06-10T10:30:00+00:00',
+    endDate: '2022-06-12T10:30:00+00:00',
   },
   {
     place: 11,
@@ -617,6 +771,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 9027,
     ctftimeRating: 27.914,
     year: 2022,
+    startDate: '2022-06-05T19:00:00+00:00',
+    endDate: '2022-06-10T19:00:00+00:00',
   },
   {
     place: 1,
@@ -626,6 +782,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 13980,
     ctftimeRating: 42.48,
     year: 2022,
+    startDate: '2022-05-27T16:00:00+00:00',
+    endDate: '2022-05-29T04:00:00+00:00',
   },
   {
     place: 1,
@@ -634,6 +792,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 660,
     ctftimeRating: 47.22,
     year: 2022,
+    startDate: '2022-05-19T11:30:00+00:00',
+    endDate: '2022-05-23T04:30:00+00:00',
   },
   {
     place: 5,
@@ -643,6 +803,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 8305,
     ctftimeRating: 25.858,
     year: 2022,
+    startDate: '2022-05-07T00:00:00+00:00',
+    endDate: '2022-05-09T00:00:00+00:00',
   },
   {
     place: 68,
@@ -651,6 +813,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 2330,
     ctftimeRating: 28.277,
     year: 2022,
+    startDate: '2022-04-30T00:00:00+00:00',
+    endDate: '2022-05-04T23:59:59+00:00',
   },
   {
     place: 6,
@@ -660,6 +824,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 22001,
     ctftimeRating: 25.337,
     year: 2022,
+    startDate: '2022-04-28T19:00:00+00:00',
+    endDate: '2022-04-30T19:00:00+00:00',
   },
   {
     place: 14,
@@ -668,6 +834,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 2080,
     ctftimeRating: 19.28,
     year: 2022,
+    startDate: '2022-04-23T00:00:00+00:00',
+    endDate: '2022-04-25T00:00:00+00:00',
   },
   {
     place: 19,
@@ -676,6 +844,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 3329,
     ctftimeRating: 10.734,
     year: 2022,
+    startDate: '2022-04-15T18:00:00+00:00',
+    endDate: '2022-04-17T18:00:00+00:00',
   },
   {
     place: 3,
@@ -685,6 +855,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 21000,
     ctftimeRating: 24.967,
     year: 2022,
+    startDate: '2022-04-15T17:00:00+00:00',
+    endDate: '2022-04-17T17:00:00+00:00',
   },
   {
     place: 9,
@@ -693,6 +865,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 2774,
     ctftimeRating: 26.959,
     year: 2022,
+    startDate: '2022-04-08T15:00:00+00:00',
+    endDate: '2022-04-09T15:00:00+00:00',
   },
   {
     place: 23,
@@ -701,6 +875,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 2661,
     ctftimeRating: 9.232,
     year: 2022,
+    startDate: '2022-04-01T22:00:00+00:00',
+    endDate: '2022-04-03T22:00:00+00:00',
   },
   {
     place: 1,
@@ -710,6 +886,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 10777,
     ctftimeRating: 63.64,
     year: 2022,
+    startDate: '2022-04-01T16:00:00+00:00',
+    endDate: '2022-04-04T04:00:00+00:00',
   },
   {
     place: 2,
@@ -719,6 +897,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 11924,
     ctftimeRating: 33.707,
     year: 2022,
+    startDate: '2022-03-25T16:00:00+00:00',
+    endDate: '2022-03-27T22:00:00+00:00',
   },
   {
     place: 1,
@@ -727,6 +907,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 20894,
     ctftimeRating: 41.58,
     year: 2022,
+    startDate: '2022-03-19T10:30:00+00:00',
+    endDate: '2022-03-21T10:30:00+00:00',
   },
   {
     place: 7,
@@ -736,6 +918,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 14074,
     ctftimeRating: 29.258,
     year: 2022,
+    startDate: '2022-03-12T00:00:00+00:00',
+    endDate: '2022-03-14T00:00:00+00:00',
   },
   {
     place: 6,
@@ -745,6 +929,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 8875,
     ctftimeRating: 25.045,
     year: 2022,
+    startDate: '2022-03-11T16:00:00+00:00',
+    endDate: '2022-03-13T16:00:00+00:00',
   },
   {
     place: 9,
@@ -753,6 +939,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 17948,
     ctftimeRating: 25.037,
     year: 2022,
+    startDate: '2022-03-04T23:00:00+00:00',
+    endDate: '2022-03-06T23:00:00+00:00',
   },
   {
     place: 1,
@@ -762,6 +950,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 6379,
     ctftimeRating: 43.22,
     year: 2022,
+    startDate: '2022-03-04T14:30:00+00:00',
+    endDate: '2022-03-05T14:30:00+00:00',
   },
   {
     place: 1,
@@ -770,6 +960,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 3719,
     ctftimeRating: 38.42,
     year: 2022,
+    startDate: '2022-02-27T06:30:00+00:00',
+    endDate: '2022-02-28T18:29:00+00:00',
   },
   {
     place: 2,
@@ -779,6 +971,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 2975,
     ctftimeRating: 45.988,
     year: 2022,
+    startDate: '2022-02-26T07:00:00+00:00',
+    endDate: '2022-03-01T07:00:00+00:00',
   },
   {
     place: 11,
@@ -788,6 +982,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 1146,
     ctftimeRating: 10.162,
     year: 2022,
+    startDate: '2022-02-26T02:00:00+00:00',
+    endDate: '2022-02-28T05:00:00+00:00',
   },
   {
     place: 1,
@@ -796,13 +992,18 @@ const contestsData: ContestData[] = [
     ctfPoints: 1215,
     ctftimeRating: 20.66,
     year: 2022,
+    startDate: '2022-02-20T00:00:00+00:00',
+    endDate: '2022-02-20T23:59:00+00:00',
   },
   {
     place: 1,
     name: 'MOCSCTF 2022',
     writeupTag: 'mocsctf-2022',
     ctfPoints: 3390,
+    ctftimeRating: 0,
     year: 2022,
+    startDate: '2022-02-23T00:00:00+00:00',
+    endDate: '2022-02-23T08:30:00+00:00',
   },
   {
     place: 36,
@@ -811,6 +1012,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 851.99,
     ctftimeRating: 3.72,
     year: 2022,
+    startDate: '2022-02-12T01:00:00+00:00',
+    endDate: '2022-02-13T01:00:00+00:00',
   },
   {
     place: 9,
@@ -819,6 +1022,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 3838,
     ctftimeRating: 36.967,
     year: 2022,
+    startDate: '2022-02-11T09:00:00+00:00',
+    endDate: '2022-02-13T15:00:00+00:00',
   },
   {
     place: 1,
@@ -828,6 +1033,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 6550,
     ctftimeRating: 46.46,
     year: 2022,
+    startDate: '2022-02-06T04:30:00+00:00',
+    endDate: '2022-02-06T16:30:00+00:00',
   },
   {
     place: 73,
@@ -837,6 +1044,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 736,
     ctftimeRating: 3.205,
     year: 2022,
+    startDate: '2022-02-04T21:00:00+00:00',
+    endDate: '2022-02-06T21:00:00+00:00',
   },
   {
     place: 30,
@@ -846,6 +1055,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 529,
     ctftimeRating: 4.197,
     year: 2022,
+    startDate: '2022-01-29T12:00:00+00:00',
+    endDate: '2022-01-30T12:00:00+00:00',
   },
   {
     place: 83,
@@ -854,6 +1065,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 105.0,
     ctftimeRating: 1.982,
     year: 2022,
+    startDate: '2022-01-21T13:00:00+00:00',
+    endDate: '2022-01-23T13:00:00+00:00',
   },
   {
     place: 3,
@@ -863,6 +1076,8 @@ const contestsData: ContestData[] = [
     ctftimeRating: 21.657,
     writeupTag: 'knight-ctf-2022',
     year: 2022,
+    startDate: '2022-01-20T15:00:00+00:00',
+    endDate: '2022-01-21T15:00:00+00:00',
   },
   {
     place: 46,
@@ -871,6 +1086,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 1265.0,
     ctftimeRating: 6.841,
     year: 2022,
+    startDate: '2022-01-15T18:00:00+00:00',
+    endDate: '2022-01-18T23:00:00+00:00',
   },
   {
     place: 49,
@@ -879,6 +1096,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 516.0,
     ctftimeRating: 2.307,
     year: 2022,
+    startDate: '2022-01-01T00:00:00+00:00',
+    endDate: '2022-01-02T23:59:59+00:00',
   },
   {
     place: 8,
@@ -887,6 +1106,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 1524.0,
     ctftimeRating: 12.872,
     year: 2021,
+    startDate: '2021-12-24T18:00:00+00:00',
+    endDate: '2021-12-25T18:00:00+00:00',
   },
   {
     place: 52,
@@ -895,6 +1116,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 397.0,
     ctftimeRating: 5.958,
     year: 2021,
+    startDate: '2021-12-17T15:00:00+00:00',
+    endDate: '2021-12-19T15:00:00+00:00',
   },
   {
     place: 17,
@@ -903,6 +1126,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 5248.0,
     ctftimeRating: 9.089,
     year: 2021,
+    startDate: '2021-12-11T00:00:00+00:00',
+    endDate: '2021-12-13T00:00:00+00:00',
   },
   {
     place: 6,
@@ -911,6 +1136,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 9750.0,
     ctftimeRating: 22.229,
     year: 2021,
+    startDate: '2021-12-10T12:00:00+00:00',
+    endDate: '2021-12-12T12:00:00+00:00',
   },
   {
     place: 27,
@@ -919,6 +1146,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 9450.0,
     ctftimeRating: 15.993,
     year: 2021,
+    startDate: '2021-12-03T20:00:00+00:00',
+    endDate: '2021-12-05T20:00:00+00:00',
   },
   {
     place: 15,
@@ -927,6 +1156,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 2823.0,
     ctftimeRating: 15.934,
     year: 2021,
+    startDate: '2021-11-26T12:00:00+00:00',
+    endDate: '2021-11-28T12:00:00+00:00',
   },
   {
     place: 63,
@@ -935,6 +1166,8 @@ const contestsData: ContestData[] = [
     ctfPoints: 1416.0,
     ctftimeRating: 3.462,
     year: 2021,
+    startDate: '2021-11-12T17:00:00+00:00',
+    endDate: '2021-11-14T04:59:59+00:00',
   },
 ]
 

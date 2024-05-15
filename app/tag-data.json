@@ -1,0 +1,300 @@
+{
+  "reverse": { "count": 6, "slug": "reverse", "proper": "Reverse" },
+  "bricsctf-quals-2023": {
+    "count": 1,
+    "slug": "bricsctf-quals-2023",
+    "proper": "BRICSCTF Quals 2023"
+  },
+  "wasm": { "count": 1, "slug": "wasm", "proper": "Wasm" },
+  "vm": { "count": 2, "slug": "vm", "proper": "VM" },
+  "web": { "count": 12, "slug": "web", "proper": "Web" },
+  "crew-ctf-2022": {
+    "count": 1,
+    "slug": "crew-ctf-2022",
+    "proper": "CREW CTF 2022"
+  },
+  "ssti": { "count": 1, "slug": "ssti", "proper": "SSTI" },
+  "waf": { "count": 1, "slug": "waf", "proper": "WAF" },
+  "blacklist": { "count": 1, "slug": "blacklist", "proper": "Blacklist" },
+  "osint": { "count": 5, "slug": "osint", "proper": "OSINT" },
+  "byuctf-2022": { "count": 1, "slug": "byuctf-2022", "proper": "BYUCTF 2022" },
+  "geoint": { "count": 4, "slug": "geoint", "proper": "GEOINT" },
+  "tineye": { "count": 1, "slug": "tineye", "proper": "TinEye" },
+  "what3words": { "count": 1, "slug": "what3words", "proper": "What3Words" },
+  "social-media": {
+    "count": 1,
+    "slug": "social-media",
+    "proper": "Social Media"
+  },
+  "davinci-ctf-2022": {
+    "count": 1,
+    "slug": "davinci-ctf-2022",
+    "proper": "DaVinci CTF 2022"
+  },
+  "transaction-search": {
+    "count": 2,
+    "slug": "transaction-search",
+    "proper": "Transaction Search"
+  },
+  "cyber-grabs-ctf-0x03": {
+    "count": 2,
+    "slug": "cyber-grabs-ctf-0x03",
+    "proper": "Cyber Grabs CTF 0x03"
+  },
+  "jenkins": { "count": 1, "slug": "jenkins", "proper": "Jenkins" },
+  "shell": { "count": 3, "slug": "shell", "proper": "Shell" },
+  "privesc": { "count": 1, "slug": "privesc", "proper": "PrivEsc" },
+  "crypto": { "count": 9, "slug": "crypto", "proper": "Crypto" },
+  "rsa": { "count": 1, "slug": "rsa", "proper": "RSA" },
+  "number-theory": {
+    "count": 1,
+    "slug": "number-theory",
+    "proper": "Number Theory"
+  },
+  "blockchain": { "count": 3, "slug": "blockchain", "proper": "Blockchain" },
+  "bsidestlv-2022": {
+    "count": 3,
+    "slug": "bsidestlv-2022",
+    "proper": "BSidesTLV 2022"
+  },
+  "solidity": { "count": 3, "slug": "solidity", "proper": "Solidity" },
+  "smart-contract": {
+    "count": 3,
+    "slug": "smart-contract",
+    "proper": "Smart Contract"
+  },
+  "web3": { "count": 3, "slug": "web3", "proper": "Web3" },
+  "pwn": { "count": 5, "slug": "pwn", "proper": "Pwn" },
+  "rc4": { "count": 1, "slug": "rc4", "proper": "rc4" },
+  "ecc": { "count": 1, "slug": "ecc", "proper": "ECC" },
+  "elliptic-curve": {
+    "count": 2,
+    "slug": "elliptic-curve",
+    "proper": "Elliptic Curve"
+  },
+  "foobar-ctf-2022": {
+    "count": 1,
+    "slug": "foobar-ctf-2022",
+    "proper": "FooBar CTF 2022"
+  },
+  "heap": { "count": 2, "slug": "heap", "proper": "heap" },
+  "dice-ctf-2022": {
+    "count": 3,
+    "slug": "dice-ctf-2022",
+    "proper": "DICE CTF 2022"
+  },
+  "xss": { "count": 3, "slug": "xss", "proper": "XSS" },
+  "unicode": { "count": 1, "slug": "unicode", "proper": "Unicode" },
+  "javascript": { "count": 4, "slug": "javascript", "proper": "JavaScript" },
+  "signature": { "count": 1, "slug": "signature", "proper": "Signature" },
+  "prototype-pollution": {
+    "count": 2,
+    "slug": "prototype-pollution",
+    "proper": "Prototype Pollution"
+  },
+  "cve-2022-21824": {
+    "count": 1,
+    "slug": "cve-2022-21824",
+    "proper": "CVE-2022-21824"
+  },
+  "vm2": { "count": 1, "slug": "vm2", "proper": "vm2" },
+  "proxy": { "count": 1, "slug": "proxy", "proper": "Proxy" },
+  "misc": { "count": 11, "slug": "misc", "proper": "Misc" },
+  "forensics": { "count": 5, "slug": "forensics", "proper": "Forensics" },
+  "gdg-algiers-2022": {
+    "count": 1,
+    "slug": "gdg-algiers-2022",
+    "proper": "GDG Algiers 2022"
+  },
+  "pcapng": { "count": 1, "slug": "pcapng", "proper": "pcapng" },
+  "ai": { "count": 1, "slug": "ai", "proper": "AI" },
+  "bert": { "count": 1, "slug": "bert", "proper": "Bert" },
+  "crew-ctf-2023": {
+    "count": 1,
+    "slug": "crew-ctf-2023",
+    "proper": "Crew CTF 2023"
+  },
+  "idekctf-2022": {
+    "count": 1,
+    "slug": "idekctf-2022",
+    "proper": "idekCTF 2022*"
+  },
+  "geoguessr": { "count": 1, "slug": "geoguessr", "proper": "GeoGuessr" },
+  "imaginary-ctf-2023": {
+    "count": 1,
+    "slug": "imaginary-ctf-2023",
+    "proper": "Imaginary CTF 2023"
+  },
+  "assembly": { "count": 1, "slug": "assembly", "proper": "Assembly" },
+  "x86_64": { "count": 1, "slug": "x86_64", "proper": "x86_64" },
+  "insomnihack-teaser-2022": {
+    "count": 7,
+    "slug": "insomnihack-teaser-2022",
+    "proper": "Insomni'hack teaser 2022"
+  },
+  "android": { "count": 2, "slug": "android", "proper": "Android" },
+  "git": { "count": 1, "slug": "git", "proper": "Git" },
+  "python": { "count": 3, "slug": "python", "proper": "Python" },
+  "cv": { "count": 1, "slug": "cv", "proper": "CV" },
+  "video": { "count": 1, "slug": "video", "proper": "Video" },
+  "mobile": { "count": 1, "slug": "mobile", "proper": "Mobile" },
+  "react-native": {
+    "count": 1,
+    "slug": "react-native",
+    "proper": "React Native"
+  },
+  "php": { "count": 4, "slug": "php", "proper": "PHP" },
+  "xml": { "count": 1, "slug": "xml", "proper": "XML" },
+  "xxe": { "count": 1, "slug": "xxe", "proper": "XXE" },
+  "jwt": { "count": 1, "slug": "jwt", "proper": "JWT" },
+  "sqli": { "count": 1, "slug": "sqli", "proper": "SQLi" },
+  "json": { "count": 1, "slug": "json", "proper": "JSON" },
+  "irisctf-2024": {
+    "count": 1,
+    "slug": "irisctf-2024",
+    "proper": "IrisCTF 2024"
+  },
+  "rf": { "count": 1, "slug": "rf", "proper": "RF" },
+  "networks": { "count": 1, "slug": "networks", "proper": "Networks" },
+  "knight-ctf-2022": {
+    "count": 2,
+    "slug": "knight-ctf-2022",
+    "proper": "Knight CTF 2022"
+  },
+  "type-juggling": {
+    "count": 1,
+    "slug": "type-juggling",
+    "proper": "Type juggling"
+  },
+  "eval": { "count": 1, "slug": "eval", "proper": "eval" },
+  "intigriti-0823": {
+    "count": 1,
+    "slug": "intigriti-0823",
+    "proper": "Intigriti 0823"
+  },
+  "mocsctf-2022": {
+    "count": 1,
+    "slug": "mocsctf-2022",
+    "proper": "MOCSCTF 2022"
+  },
+  "house-of-orange": {
+    "count": 1,
+    "slug": "house-of-orange",
+    "proper": "house of orange"
+  },
+  "tcache": { "count": 1, "slug": "tcache", "proper": "tcache" },
+  "lactf-2023": { "count": 2, "slug": "lactf-2023", "proper": "LACTF 2023" },
+  "pyjail": { "count": 1, "slug": "pyjail", "proper": "Pyjail" },
+  "sandbox": { "count": 1, "slug": "sandbox", "proper": "Sandbox" },
+  "opcode": { "count": 1, "slug": "opcode", "proper": "Opcode" },
+  "pickle": { "count": 1, "slug": "pickle", "proper": "Pickle" },
+  "real-world-ctf-6th": {
+    "count": 1,
+    "slug": "real-world-ctf-6th",
+    "proper": "Real World CTF 6th"
+  },
+  "cross-chain": { "count": 1, "slug": "cross-chain", "proper": "Cross Chain" },
+  "ritsec-ctf-2022": {
+    "count": 1,
+    "slug": "ritsec-ctf-2022",
+    "proper": "RITSEC CTF 2022"
+  },
+  "xor": { "count": 2, "slug": "xor", "proper": "XOR" },
+  "hamming-code": {
+    "count": 1,
+    "slug": "hamming-code",
+    "proper": "Hamming Code"
+  },
+  "sdctf-2022": { "count": 1, "slug": "sdctf-2022", "proper": "SDCTF 2022" },
+  "aes": { "count": 1, "slug": "aes", "proper": "AES" },
+  "z3": { "count": 1, "slug": "z3", "proper": "z3" },
+  "substitution": {
+    "count": 1,
+    "slug": "substitution",
+    "proper": "substitution"
+  },
+  "permutation": { "count": 1, "slug": "permutation", "proper": "permutation" },
+  "fullpwn": { "count": 1, "slug": "fullpwn", "proper": "fullpwn" },
+  "stack-the-flags-2022": {
+    "count": 1,
+    "slug": "stack-the-flags-2022",
+    "proper": "STACK The Flags 2022"
+  },
+  "electron": { "count": 1, "slug": "electron", "proper": "Electron" },
+  "rce": { "count": 1, "slug": "rce", "proper": "RCE" },
+  "selenium": { "count": 1, "slug": "selenium", "proper": "Selenium" },
+  "tsjctf-2022": { "count": 1, "slug": "tsjctf-2022", "proper": "TSJCTF 2022" },
+  "buffer-overflow": {
+    "count": 1,
+    "slug": "buffer-overflow",
+    "proper": "Buffer Overflow"
+  },
+  "ugra-ctf-quals-2022": {
+    "count": 5,
+    "slug": "ugra-ctf-quals-2022",
+    "proper": "Ugra CTF Quals 2022"
+  },
+  "pdf": { "count": 2, "slug": "pdf", "proper": "PDF" },
+  "cmap": { "count": 1, "slug": "cmap", "proper": "CMAP" },
+  "font": { "count": 1, "slug": "font", "proper": "Font" },
+  "caesar-cipher": {
+    "count": 1,
+    "slug": "caesar-cipher",
+    "proper": "Caesar Cipher"
+  },
+  "snake": { "count": 1, "slug": "snake", "proper": "Snake" },
+  "qr-code": { "count": 1, "slug": "qr-code", "proper": "QR Code" },
+  "music": { "count": 1, "slug": "music", "proper": "Music" },
+  "audio-processing": {
+    "count": 1,
+    "slug": "audio-processing",
+    "proper": "Audio Processing"
+  },
+  "talking-piano": {
+    "count": 1,
+    "slug": "talking-piano",
+    "proper": "Talking Piano"
+  },
+  "automation": { "count": 1, "slug": "automation", "proper": "Automation" },
+  "websocket": { "count": 1, "slug": "websocket", "proper": "WebSocket" },
+  "umdctf-2023": { "count": 1, "slug": "umdctf-2023", "proper": "UMDCTF 2023" },
+  "uoftctf-2024": {
+    "count": 1,
+    "slug": "uoftctf-2024",
+    "proper": "UofTCTF 2024"
+  },
+  "lfsr": { "count": 1, "slug": "lfsr", "proper": "LFSR" },
+  "utctf-2022": { "count": 1, "slug": "utctf-2022", "proper": "UTCTF 2022" },
+  "volatility": { "count": 1, "slug": "volatility", "proper": "volatility" },
+  "utctf-2023": { "count": 2, "slug": "utctf-2023", "proper": "UTCTF 2023" },
+  "email": { "count": 1, "slug": "email", "proper": "Email" },
+  "zip": { "count": 1, "slug": "zip", "proper": "Zip" },
+  "wolvctf-2023": {
+    "count": 1,
+    "slug": "wolvctf-2023",
+    "proper": "WolvCTF 2023"
+  },
+  "wayback-machine": {
+    "count": 1,
+    "slug": "wayback-machine",
+    "proper": "Wayback Machine"
+  },
+  "email-reconnaisance": {
+    "count": 1,
+    "slug": "email-reconnaisance",
+    "proper": "Email Reconnaisance"
+  },
+  "wolvsec-ctf": { "count": 1, "slug": "wolvsec-ctf", "proper": "WolvSec CTF" },
+  "diffie-hellman": {
+    "count": 1,
+    "slug": "diffie-hellman",
+    "proper": "Diffie-Hellman"
+  },
+  "prime": { "count": 1, "slug": "prime", "proper": "Prime" },
+  "mersenne": { "count": 1, "slug": "mersenne", "proper": "Mersenne" },
+  "factorization": {
+    "count": 1,
+    "slug": "factorization",
+    "proper": "Factorization"
+  }
+}
