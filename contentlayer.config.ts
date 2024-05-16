@@ -130,7 +130,6 @@ export const Authors = defineDocumentType(() => ({
     company: { type: 'string' },
     member: { type: 'boolean' },
     isCaptain: { type: 'boolean' },
-    order: { type: 'number' },
     joinDate: { type: 'string' },
     retired: { type: 'boolean' },
     email: { type: 'string' },
