@@ -9,9 +9,12 @@ import MemberLayout from '@/layouts/MemberLayout'
 import { genPageMetadata } from 'app/seo'
 import { allAuthors } from 'contentlayer/generated'
 
-export const metadata = genPageMetadata({ title: 'Blog' })
+export const metadata = genPageMetadata({
+  title: 'Members',
+  description: 'Current active players in the team.',
+})
 
-export default function Projects() {
+export default function Members() {
   return (
     <>
       <div className="divide-y divide-border">

@@ -6,7 +6,10 @@ import { genPageMetadata } from 'app/seo'
 import { groupBy } from 'lodash'
 import { Fragment } from 'react'
 
-export const metadata = genPageMetadata({ title: 'Contests' })
+export const metadata = genPageMetadata({
+  title: 'Contests',
+  description: 'CTFs we have participated in.',
+})
 
 export default function Contests() {
   return (
