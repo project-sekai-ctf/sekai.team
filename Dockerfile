@@ -1,6 +1,6 @@
 # Install dependencies and build the app
 FROM node:18.20.2 AS builder
-RUN git clone https://github.com/project-sekai-ctf/sekai.team /app
+COPY . /app
 WORKDIR /app
 RUN npm i
 RUN npx next build
