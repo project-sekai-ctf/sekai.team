@@ -31,11 +31,6 @@ export default function Projects() {
             {allAuthors
               .filter((d) => !d.retired)
               .filter((d) => d.name !== 'Project SEKAI')
-              .sort(
-                (a, b) =>
-                  (a.order == undefined ? Infinity : a.order) -
-                  (b.order == undefined ? Infinity : b.order)
-              )
               .map((member) => (
                 <MemberLayout member={member} key={member.name}>
                   {member.description}
