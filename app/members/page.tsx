@@ -50,11 +50,6 @@ export default function Members() {
                   <div className="-m-4 flex flex-wrap place-items-stretch">
                     {allAuthors
                       .filter((d) => d.retired)
-                      .sort(
-                        (a, b) =>
-                          (a.order == undefined ? Infinity : a.order) -
-                          (b.order == undefined ? Infinity : b.order)
-                      )
                       .map((member) => (
                         <MemberLayout member={member} key={member.name}>
                           {member.description}

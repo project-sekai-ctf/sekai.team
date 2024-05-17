@@ -1,0 +1,26 @@
+on:
+  push:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: azure/docker-login@v1
+        with:
+          login-server: "${{ vars.CONTAINER_REGISTRY }}"
+          username: "${{ vars.DOCKER_USERNAME }}"
+          password: "${{ secrets.DOCKER_PASSWORD }}"
+
+      - name: Build & push Docker image to registry
+        run: |
+          image=${{ vars.CONTAINER_REGISTRY }}/sekai:latest
+          docker build -t $image .
+          docker push $image
+
+      - name: Trigger App Service Webhook
+        run: |
+          curl -X POST '${{ secrets.AZ_WEBHOOK }}'
