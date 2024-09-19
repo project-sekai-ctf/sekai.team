@@ -1,0 +1,64 @@
+---
+title: SekaiCTF 2024 – ProcessFlipper
+date: '2024-09-19'
+draft: false
+authors: ['nyancat0131']
+tags: ['Pwn', 'SekaiCTF 2024', 'Windows', 'Privilege Escalation']
+summary: 'The story behind ProcessFlipper challenge in SekaiCTF 2024.'
+---
+
+# Pwn/Process Flipper (458pts, 3 solves)
+
+In SekaiCTF 2024, I made `ProcessFlipper` challenge. The goal is to escalate privilege to `NT AUTHORITY\SYSTEM` on a Windows VM with a vulnerable driver installed. This post will cover the background of the challenge, technical information on how we setup an automated exploit runner, as well as the solution for the challenge.
+
+## Background
+
+I play *gacha* games. Normally they are mobile games, but some also have PC clients. Because you can do many things on a PC, cheating become a problem. Developers use a variety of way to prevent cheating, even using kernel drivers to monitor activities. Some companies use commercially available anti-cheat systems like Easy Anti Cheat, some develop their own system. One of the most famous example would be the anti-cheat system of *Genshin Impact* by *HoYoVerse*, where they use a kernel driver that has the ability to read and write memory in *any* process and do other interesting things. The driver is also signed so it became a BYOVD for threat actors.
+
+Besides anti-cheat, companies also don't want people to reverse engineer their games, so anti-tamper methods like obfuscating, packing and crypting are also used. One day when fiddling around with *Heaven Burns Red*, I noted that the game executable is packed, and protected at runtime by a driver that prevent debuggers from attaching to it. Searching online for `wfshbr64.sys`, I found out that an old version of the driver is available which allows manipulation of arbitrary bits in `EPROCESS` structure of the calling process. Originally it is used for the anti-tamper to manipulate the `Protection` field and the `SignatureLevel` field of the `EPROCESS` structure, but the offset check is incomplete, making it possible to manipulate other fields as well, therefore privilege escalation is possible.
+
+I decided to reimplement it for this challenge, but with some modifications in the offset checking and remove other checks. It features 2 IOCTLs for turning on and off any bit in the `EPROCESS` structure. Originally I intended to deploy this challenge on Windows 11 23H2, but `NtQuerySystemInformation` would make it trivial to exploit. After confirming that it is indeed exploitable without the free information leak, I decided to use Windows 11 24H2. I even thought of making it harder by only providing an IOCTL to *flip* the bit (look at the challenge's name!) but I don't want my challenge to have 0 solves again (not because of it being too hard, but it would be really time consuming that teams wouldn't bother solving it).
+
+## Setting up the infrastructure
+
+Unlike Linux, Windows kernel challenges are really hard to deploy. Some of the problems are:
+
+- Long boot-up time (this can somewhat be solved by using VM snapshots)
+- Not CLI-friendly, since even the core version of Windows Server technically still uses GUI subsystem, so cannot just do xinetd-like deployments
+- The VM itself is heavy since we can't customize the roofs easily
+- Heavy resource consumption even when idling
+- etc..
+
+In *corCTF* 2024, originally it would have a Windows kernel challenge, but it was dropped. This is the announcement by the organizers:
+
+```
+Unfortunately, the Windows kernel challenge will not be happening this year. After years of smoothly hosting Linux kernel challenges, we underestimated the difficulty and pain which hosting Windows kernel challenges would bring. :bsod:
+```
+
+Other CTFs, such as last year *SECCON CTF* final uses a manual approach where players would submit the exploit to the organizer and they will run it manually on the target machine. We could have gone with this approach, but **hfz** thought of a brilliant flow:
+
+- Player submit their compiled exploit through a web front-end with captcha or PoW to prevent abuse
+- These exploit will be put in a task queue, which will then be feed into a malware analysis framework
+- The framework will spawn a VM from prepared snapshot, run the exploit and take screenshots with a timeout of 30 seconds
+- The last screenshot taken will be returned to the player
+
+With this flow, the exploits are expected to escalate the privilege to `SYSTEM` and print the flag to the screen, so they can see it in the screenshot. We had to use a strong GCP instance in order to smoothly run (multiple) nested Windows VM(s). After some testing, we were confident enough to go with this flow. During the contest, we found out that some exploits could be caught by Windows Defender, which is really funny. However after the contest ends, a player informed us that we accidentally left the solution in `%TEMP%` folder, but lucky for us they couldn't abuse it. Overall we were satisfied with how things went.
+
+## Solution
+
+Because there are no read functionalities, I read through the `EPROCESS` structure to find fields that satisfy these conditions in order to create arbitrary read-write primitives:
+
+- Is a pointer pointing to somewhere in kernel memory space
+- Possible to query and modify the content of the memory that it points to
+- Modifying the pointer has low to no chance of BSOD
+
+At first I thought of modifying the `Token` pointer directly, but I was afraid that it would cause BSOD (turns out that would be true if we are unlucky, but *r4kapig* solved it this way). I also found some exploits used `QuotaBlock` field, but I continued searching for other fields. Finally, I stumbled upon `DiskCounters` field. This field was introduced in Windows 8. It is a pointer to a `PROCESS_DISK_COUNTERS` object, and it is queryable from low privilege user process running on medium IL using `NtQuerySystemInformation` with `SystemProcessInformation` class. Furthermore, we can somewhat modify the object's fields by reading or writing to disk, that should be enough to flip some bits of some important field we can point to. Observing the pointer value in debugger, I noticed that it points to the same pool as the `EPROCESS` structure, which I confirmed by reversing the process creation function of the kernel that the `PROCESS_DISK_COUNTERS` object is hosted inside the `EPROCESS` structure. This is huge because by changing some lower bits of the pointer, we can leak other fields of the `EPROCESS` structure. I was able to leak `Token` field of the current process. So the brifef exploitation flow is:
+
+- Modify `DiskCounters` pointer so that the `BytesWritten` field overlaps with `Token` field of the `EPROCESS` structure
+- Leak the `Token` pointer using `NtQuerySystemInformation`
+- Point `DiskCounters` to the `TOKEN` object we leak before so that the `BytesWritten` field overlaps with `Privileges.Present` field of the `TOKEN` structure
+- Write something to disk to turn on `SeDebugPrivilege` flag
+- Repeat the above 2 steps but with `Privileges.Enabled` field of the `TOKEN` structure
+- Spawn a shell with `winlogon.exe` as its parent since we now have `SeDebugPrivilege` privilege
+
+Source code and solution code for the challenge are available [here](https://github.com/project-sekai-ctf/sekaictf-2024/tree/main/pwn/process-flipper).
