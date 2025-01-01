@@ -39,6 +39,11 @@
     "proper": "Social Media",
     "count": 1
   },
+  "crew-ctf-2023": {
+    "slug": "crew-ctf-2023",
+    "proper": "Crew CTF 2023",
+    "count": 1
+  },
   "web": { "slug": "web", "proper": "Web", "count": 13 },
   "crew-ctf-2022": {
     "slug": "crew-ctf-2022",
@@ -48,11 +53,6 @@
   "ssti": { "slug": "ssti", "proper": "SSTI", "count": 1 },
   "waf": { "slug": "waf", "proper": "WAF", "count": 1 },
   "blacklist": { "slug": "blacklist", "proper": "Blacklist", "count": 1 },
-  "crew-ctf-2023": {
-    "slug": "crew-ctf-2023",
-    "proper": "Crew CTF 2023",
-    "count": 1
-  },
   "cyber-grabs-ctf-0x03": {
     "slug": "cyber-grabs-ctf-0x03",
     "proper": "Cyber Grabs CTF 0x03",
@@ -216,15 +216,6 @@
     "count": 1
   },
   "cross-chain": { "slug": "cross-chain", "proper": "Cross Chain", "count": 1 },
-  "sdctf-2022": { "slug": "sdctf-2022", "proper": "SDCTF 2022", "count": 1 },
-  "aes": { "slug": "aes", "proper": "AES", "count": 1 },
-  "z3": { "slug": "z3", "proper": "z3", "count": 1 },
-  "substitution": {
-    "slug": "substitution",
-    "proper": "substitution",
-    "count": 1
-  },
-  "permutation": { "slug": "permutation", "proper": "permutation", "count": 1 },
   "ritsec-ctf-2022": {
     "slug": "ritsec-ctf-2022",
     "proper": "RITSEC CTF 2022",
@@ -236,6 +227,15 @@
     "proper": "Hamming Code",
     "count": 1
   },
+  "sdctf-2022": { "slug": "sdctf-2022", "proper": "SDCTF 2022", "count": 1 },
+  "aes": { "slug": "aes", "proper": "AES", "count": 1 },
+  "z3": { "slug": "z3", "proper": "z3", "count": 1 },
+  "substitution": {
+    "slug": "substitution",
+    "proper": "substitution",
+    "count": 1
+  },
+  "permutation": { "slug": "permutation", "proper": "permutation", "count": 1 },
   "sekaictf-2024": {
     "slug": "sekaictf-2024",
     "proper": "SekaiCTF 2024",
