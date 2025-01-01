@@ -1,123 +1,27 @@
 {
-  "reverse": { "slug": "reverse", "proper": "Reverse", "count": 6 },
-  "bricsctf-quals-2023": {
-    "slug": "bricsctf-quals-2023",
-    "proper": "BRICSCTF Quals 2023",
-    "count": 1
-  },
-  "wasm": { "slug": "wasm", "proper": "Wasm", "count": 1 },
-  "vm": { "slug": "vm", "proper": "VM", "count": 2 },
-  "blockchain": { "slug": "blockchain", "proper": "Blockchain", "count": 4 },
-  "bsidestlv-2022": {
-    "slug": "bsidestlv-2022",
-    "proper": "BSidesTLV 2022",
-    "count": 3
-  },
-  "solidity": { "slug": "solidity", "proper": "Solidity", "count": 3 },
-  "smart-contract": {
-    "slug": "smart-contract",
-    "proper": "Smart Contract",
-    "count": 4
-  },
-  "web3": { "slug": "web3", "proper": "Web3", "count": 4 },
   "pwn": { "slug": "pwn", "proper": "Pwn", "count": 6 },
-  "rc4": { "slug": "rc4", "proper": "rc4", "count": 1 },
-  "crypto": { "slug": "crypto", "proper": "Crypto", "count": 9 },
-  "ecc": { "slug": "ecc", "proper": "ECC", "count": 1 },
-  "elliptic-curve": {
-    "slug": "elliptic-curve",
-    "proper": "Elliptic Curve",
-    "count": 2
-  },
-  "osint": { "slug": "osint", "proper": "OSINT", "count": 5 },
-  "byuctf-2022": { "slug": "byuctf-2022", "proper": "BYUCTF 2022", "count": 1 },
-  "geoint": { "slug": "geoint", "proper": "GEOINT", "count": 4 },
-  "tineye": { "slug": "tineye", "proper": "TinEye", "count": 1 },
-  "what3words": { "slug": "what3words", "proper": "What3Words", "count": 1 },
-  "social-media": {
-    "slug": "social-media",
-    "proper": "Social Media",
+  "sekaictf-2024": {
+    "slug": "sekaictf-2024",
+    "proper": "SekaiCTF 2024",
     "count": 1
   },
-  "crew-ctf-2023": {
-    "slug": "crew-ctf-2023",
-    "proper": "Crew CTF 2023",
+  "windows": { "slug": "windows", "proper": "Windows", "count": 1 },
+  "privilege-escalation": {
+    "slug": "privilege-escalation",
+    "proper": "Privilege Escalation",
     "count": 1
   },
-  "web": { "slug": "web", "proper": "Web", "count": 13 },
-  "crew-ctf-2022": {
-    "slug": "crew-ctf-2022",
-    "proper": "CREW CTF 2022",
-    "count": 1
-  },
-  "ssti": { "slug": "ssti", "proper": "SSTI", "count": 1 },
-  "waf": { "slug": "waf", "proper": "WAF", "count": 1 },
-  "blacklist": { "slug": "blacklist", "proper": "Blacklist", "count": 1 },
-  "cyber-grabs-ctf-0x03": {
-    "slug": "cyber-grabs-ctf-0x03",
-    "proper": "Cyber Grabs CTF 0x03",
-    "count": 2
-  },
-  "jenkins": { "slug": "jenkins", "proper": "Jenkins", "count": 1 },
-  "shell": { "slug": "shell", "proper": "Shell", "count": 3 },
-  "privesc": { "slug": "privesc", "proper": "PrivEsc", "count": 1 },
-  "rsa": { "slug": "rsa", "proper": "RSA", "count": 1 },
-  "number-theory": {
-    "slug": "number-theory",
-    "proper": "Number Theory",
-    "count": 1
-  },
-  "davinci-ctf-2022": {
-    "slug": "davinci-ctf-2022",
-    "proper": "DaVinci CTF 2022",
-    "count": 1
-  },
-  "transaction-search": {
-    "slug": "transaction-search",
-    "proper": "Transaction Search",
-    "count": 2
-  },
-  "dice-ctf-2022": {
-    "slug": "dice-ctf-2022",
-    "proper": "DICE CTF 2022",
-    "count": 3
-  },
-  "xss": { "slug": "xss", "proper": "XSS", "count": 4 },
-  "unicode": { "slug": "unicode", "proper": "Unicode", "count": 1 },
-  "javascript": { "slug": "javascript", "proper": "JavaScript", "count": 5 },
-  "signature": { "slug": "signature", "proper": "Signature", "count": 1 },
-  "prototype-pollution": {
-    "slug": "prototype-pollution",
-    "proper": "Prototype Pollution",
-    "count": 2
-  },
-  "cve-2022-21824": {
-    "slug": "cve-2022-21824",
-    "proper": "CVE-2022-21824",
-    "count": 1
-  },
-  "vm2": { "slug": "vm2", "proper": "vm2", "count": 1 },
-  "proxy": { "slug": "proxy", "proper": "Proxy", "count": 1 },
-  "foobar-ctf-2022": {
-    "slug": "foobar-ctf-2022",
-    "proper": "FooBar CTF 2022",
-    "count": 1
-  },
-  "heap": { "slug": "heap", "proper": "heap", "count": 2 },
-  "misc": { "slug": "misc", "proper": "Misc", "count": 11 },
-  "forensics": { "slug": "forensics", "proper": "Forensics", "count": 5 },
-  "gdg-algiers-2022": {
-    "slug": "gdg-algiers-2022",
-    "proper": "GDG Algiers 2022",
-    "count": 1
-  },
-  "pcapng": { "slug": "pcapng", "proper": "pcapng", "count": 1 },
-  "ai": { "slug": "ai", "proper": "AI", "count": 1 },
-  "bert": { "slug": "bert", "proper": "Bert", "count": 1 },
+  "blockchain": { "slug": "blockchain", "proper": "Blockchain", "count": 4 },
   "hitcon-ctf-2024-quals": {
     "slug": "hitcon-ctf-2024-quals",
     "proper": "HITCON CTF 2024 Quals",
     "count": 1
+  },
+  "web3": { "slug": "web3", "proper": "Web3", "count": 4 },
+  "smart-contract": {
+    "slug": "smart-contract",
+    "proper": "Smart Contract",
+    "count": 4
   },
   "vyper": { "slug": "vyper", "proper": "vyper", "count": 1 },
   "frontrun": { "slug": "frontrun", "proper": "frontrun", "count": 1 },
@@ -131,51 +35,29 @@
     "proper": "compiler bug",
     "count": 1
   },
-  "idekctf-2022": {
-    "slug": "idekctf-2022",
-    "proper": "idekCTF 2022*",
-    "count": 1
-  },
-  "geoguessr": { "slug": "geoguessr", "proper": "GeoGuessr", "count": 1 },
-  "imaginary-ctf-2023": {
-    "slug": "imaginary-ctf-2023",
-    "proper": "Imaginary CTF 2023",
-    "count": 1
-  },
-  "assembly": { "slug": "assembly", "proper": "Assembly", "count": 1 },
-  "x86_64": { "slug": "x86_64", "proper": "x86_64", "count": 1 },
-  "insomnihack-teaser-2022": {
-    "slug": "insomnihack-teaser-2022",
-    "proper": "Insomni'hack teaser 2022",
-    "count": 7
-  },
-  "android": { "slug": "android", "proper": "Android", "count": 2 },
-  "git": { "slug": "git", "proper": "Git", "count": 1 },
-  "python": { "slug": "python", "proper": "Python", "count": 3 },
-  "cv": { "slug": "cv", "proper": "CV", "count": 1 },
-  "video": { "slug": "video", "proper": "Video", "count": 1 },
-  "mobile": { "slug": "mobile", "proper": "Mobile", "count": 1 },
-  "react-native": {
-    "slug": "react-native",
-    "proper": "React Native",
-    "count": 1
-  },
-  "php": { "slug": "php", "proper": "PHP", "count": 4 },
-  "xml": { "slug": "xml", "proper": "XML", "count": 1 },
-  "xxe": { "slug": "xxe", "proper": "XXE", "count": 1 },
-  "jwt": { "slug": "jwt", "proper": "JWT", "count": 1 },
-  "sqli": { "slug": "sqli", "proper": "SQLi", "count": 1 },
-  "json": { "slug": "json", "proper": "JSON", "count": 1 },
+  "web": { "slug": "web", "proper": "Web", "count": 13 },
   "intigriti-0724": {
     "slug": "intigriti-0724",
     "proper": "Intigriti 0724",
     "count": 1
   },
-  "intigriti-0823": {
-    "slug": "intigriti-0823",
-    "proper": "Intigriti 0823",
+  "xss": { "slug": "xss", "proper": "XSS", "count": 4 },
+  "javascript": { "slug": "javascript", "proper": "JavaScript", "count": 5 },
+  "real-world-ctf-6th": {
+    "slug": "real-world-ctf-6th",
+    "proper": "Real World CTF 6th",
     "count": 1
   },
+  "solidity": { "slug": "solidity", "proper": "Solidity", "count": 3 },
+  "cross-chain": { "slug": "cross-chain", "proper": "Cross Chain", "count": 1 },
+  "crypto": { "slug": "crypto", "proper": "Crypto", "count": 9 },
+  "uoftctf-2024": {
+    "slug": "uoftctf-2024",
+    "proper": "UofTCTF 2024",
+    "count": 1
+  },
+  "lfsr": { "slug": "lfsr", "proper": "LFSR", "count": 1 },
+  "misc": { "slug": "misc", "proper": "Misc", "count": 11 },
   "irisctf-2024": {
     "slug": "irisctf-2024",
     "proper": "IrisCTF 2024",
@@ -183,48 +65,105 @@
   },
   "rf": { "slug": "rf", "proper": "RF", "count": 1 },
   "networks": { "slug": "networks", "proper": "Networks", "count": 1 },
-  "knight-ctf-2022": {
-    "slug": "knight-ctf-2022",
-    "proper": "Knight CTF 2022",
-    "count": 2
-  },
-  "type-juggling": {
-    "slug": "type-juggling",
-    "proper": "Type juggling",
+  "reverse": { "slug": "reverse", "proper": "Reverse", "count": 6 },
+  "bricsctf-quals-2023": {
+    "slug": "bricsctf-quals-2023",
+    "proper": "BRICSCTF Quals 2023",
     "count": 1
   },
-  "eval": { "slug": "eval", "proper": "eval", "count": 1 },
+  "wasm": { "slug": "wasm", "proper": "Wasm", "count": 1 },
+  "vm": { "slug": "vm", "proper": "VM", "count": 2 },
+  "intigriti-0823": {
+    "slug": "intigriti-0823",
+    "proper": "Intigriti 0823",
+    "count": 1
+  },
+  "imaginary-ctf-2023": {
+    "slug": "imaginary-ctf-2023",
+    "proper": "Imaginary CTF 2023",
+    "count": 1
+  },
+  "assembly": { "slug": "assembly", "proper": "Assembly", "count": 1 },
+  "x86_64": { "slug": "x86_64", "proper": "x86_64", "count": 1 },
+  "crew-ctf-2023": {
+    "slug": "crew-ctf-2023",
+    "proper": "Crew CTF 2023",
+    "count": 1
+  },
+  "umdctf-2023": { "slug": "umdctf-2023", "proper": "UMDCTF 2023", "count": 1 },
+  "osint": { "slug": "osint", "proper": "OSINT", "count": 5 },
+  "wolvctf-2023": {
+    "slug": "wolvctf-2023",
+    "proper": "WolvCTF 2023",
+    "count": 1
+  },
+  "geoint": { "slug": "geoint", "proper": "GEOINT", "count": 4 },
+  "transaction-search": {
+    "slug": "transaction-search",
+    "proper": "Transaction Search",
+    "count": 2
+  },
+  "wayback-machine": {
+    "slug": "wayback-machine",
+    "proper": "Wayback Machine",
+    "count": 1
+  },
+  "email-reconnaisance": {
+    "slug": "email-reconnaisance",
+    "proper": "Email Reconnaisance",
+    "count": 1
+  },
+  "forensics": { "slug": "forensics", "proper": "Forensics", "count": 5 },
+  "utctf-2023": { "slug": "utctf-2023", "proper": "UTCTF 2023", "count": 2 },
+  "email": { "slug": "email", "proper": "Email", "count": 1 },
+  "zip": { "slug": "zip", "proper": "Zip", "count": 1 },
   "lactf-2023": { "slug": "lactf-2023", "proper": "LACTF 2023", "count": 2 },
+  "python": { "slug": "python", "proper": "Python", "count": 3 },
   "pyjail": { "slug": "pyjail", "proper": "Pyjail", "count": 1 },
   "sandbox": { "slug": "sandbox", "proper": "Sandbox", "count": 1 },
   "opcode": { "slug": "opcode", "proper": "Opcode", "count": 1 },
   "pickle": { "slug": "pickle", "proper": "Pickle", "count": 1 },
-  "mocsctf-2022": {
-    "slug": "mocsctf-2022",
-    "proper": "MOCSCTF 2022",
+  "idekctf-2022": {
+    "slug": "idekctf-2022",
+    "proper": "idekCTF 2022*",
     "count": 1
   },
-  "house-of-orange": {
-    "slug": "house-of-orange",
-    "proper": "house of orange",
+  "geoguessr": { "slug": "geoguessr", "proper": "GeoGuessr", "count": 1 },
+  "fullpwn": { "slug": "fullpwn", "proper": "Fullpwn", "count": 1 },
+  "stack-the-flags-2022": {
+    "slug": "stack-the-flags-2022",
+    "proper": "STACK The Flags 2022",
     "count": 1
   },
-  "tcache": { "slug": "tcache", "proper": "tcache", "count": 1 },
-  "real-world-ctf-6th": {
-    "slug": "real-world-ctf-6th",
-    "proper": "Real World CTF 6th",
+  "electron": { "slug": "electron", "proper": "Electron", "count": 1 },
+  "rce": { "slug": "rce", "proper": "RCE", "count": 1 },
+  "selenium": { "slug": "selenium", "proper": "Selenium", "count": 1 },
+  "gdg-algiers-2022": {
+    "slug": "gdg-algiers-2022",
+    "proper": "GDG Algiers 2022",
     "count": 1
   },
-  "cross-chain": { "slug": "cross-chain", "proper": "Cross Chain", "count": 1 },
-  "ritsec-ctf-2022": {
-    "slug": "ritsec-ctf-2022",
-    "proper": "RITSEC CTF 2022",
-    "count": 1
+  "pcapng": { "slug": "pcapng", "proper": "pcapng", "count": 1 },
+  "ai": { "slug": "ai", "proper": "AI", "count": 1 },
+  "bert": { "slug": "bert", "proper": "Bert", "count": 1 },
+  "bsidestlv-2022": {
+    "slug": "bsidestlv-2022",
+    "proper": "BSidesTLV 2022",
+    "count": 3
   },
-  "xor": { "slug": "xor", "proper": "XOR", "count": 2 },
-  "hamming-code": {
-    "slug": "hamming-code",
-    "proper": "Hamming Code",
+  "ecc": { "slug": "ecc", "proper": "ECC", "count": 1 },
+  "elliptic-curve": {
+    "slug": "elliptic-curve",
+    "proper": "Elliptic Curve",
+    "count": 2
+  },
+  "rc4": { "slug": "rc4", "proper": "rc4", "count": 1 },
+  "byuctf-2022": { "slug": "byuctf-2022", "proper": "BYUCTF 2022", "count": 1 },
+  "tineye": { "slug": "tineye", "proper": "TinEye", "count": 1 },
+  "what3words": { "slug": "what3words", "proper": "What3Words", "count": 1 },
+  "social-media": {
+    "slug": "social-media",
+    "proper": "Social Media",
     "count": 1
   },
   "sdctf-2022": { "slug": "sdctf-2022", "proper": "SDCTF 2022", "count": 1 },
@@ -236,80 +175,23 @@
     "count": 1
   },
   "permutation": { "slug": "permutation", "proper": "permutation", "count": 1 },
-  "sekaictf-2024": {
-    "slug": "sekaictf-2024",
-    "proper": "SekaiCTF 2024",
+  "crew-ctf-2022": {
+    "slug": "crew-ctf-2022",
+    "proper": "CREW CTF 2022",
     "count": 1
   },
-  "windows": { "slug": "windows", "proper": "Windows", "count": 1 },
-  "privilege-escalation": {
-    "slug": "privilege-escalation",
-    "proper": "Privilege Escalation",
+  "ssti": { "slug": "ssti", "proper": "SSTI", "count": 1 },
+  "waf": { "slug": "waf", "proper": "WAF", "count": 1 },
+  "blacklist": { "slug": "blacklist", "proper": "Blacklist", "count": 1 },
+  "ritsec-ctf-2022": {
+    "slug": "ritsec-ctf-2022",
+    "proper": "RITSEC CTF 2022",
     "count": 1
   },
-  "fullpwn": { "slug": "fullpwn", "proper": "Fullpwn", "count": 1 },
-  "stack-the-flags-2022": {
-    "slug": "stack-the-flags-2022",
-    "proper": "STACK The Flags 2022",
-    "count": 1
-  },
-  "electron": { "slug": "electron", "proper": "Electron", "count": 1 },
-  "rce": { "slug": "rce", "proper": "RCE", "count": 1 },
-  "selenium": { "slug": "selenium", "proper": "Selenium", "count": 1 },
-  "tsjctf-2022": { "slug": "tsjctf-2022", "proper": "TSJCTF 2022", "count": 1 },
-  "ugra-ctf-quals-2022": {
-    "slug": "ugra-ctf-quals-2022",
-    "proper": "Ugra CTF Quals 2022",
-    "count": 5
-  },
-  "pdf": { "slug": "pdf", "proper": "PDF", "count": 2 },
-  "cmap": { "slug": "cmap", "proper": "CMAP", "count": 1 },
-  "font": { "slug": "font", "proper": "Font", "count": 1 },
-  "caesar-cipher": {
-    "slug": "caesar-cipher",
-    "proper": "Caesar Cipher",
-    "count": 1
-  },
-  "snake": { "slug": "snake", "proper": "Snake", "count": 1 },
-  "qr-code": { "slug": "qr-code", "proper": "QR Code", "count": 1 },
-  "music": { "slug": "music", "proper": "Music", "count": 1 },
-  "audio-processing": {
-    "slug": "audio-processing",
-    "proper": "Audio Processing",
-    "count": 1
-  },
-  "talking-piano": {
-    "slug": "talking-piano",
-    "proper": "Talking Piano",
-    "count": 1
-  },
-  "automation": { "slug": "automation", "proper": "Automation", "count": 1 },
-  "websocket": { "slug": "websocket", "proper": "WebSocket", "count": 1 },
-  "umdctf-2023": { "slug": "umdctf-2023", "proper": "UMDCTF 2023", "count": 1 },
-  "uoftctf-2024": {
-    "slug": "uoftctf-2024",
-    "proper": "UofTCTF 2024",
-    "count": 1
-  },
-  "lfsr": { "slug": "lfsr", "proper": "LFSR", "count": 1 },
-  "utctf-2022": { "slug": "utctf-2022", "proper": "UTCTF 2022", "count": 1 },
-  "volatility": { "slug": "volatility", "proper": "volatility", "count": 1 },
-  "utctf-2023": { "slug": "utctf-2023", "proper": "UTCTF 2023", "count": 2 },
-  "email": { "slug": "email", "proper": "Email", "count": 1 },
-  "zip": { "slug": "zip", "proper": "Zip", "count": 1 },
-  "wolvctf-2023": {
-    "slug": "wolvctf-2023",
-    "proper": "WolvCTF 2023",
-    "count": 1
-  },
-  "wayback-machine": {
-    "slug": "wayback-machine",
-    "proper": "Wayback Machine",
-    "count": 1
-  },
-  "email-reconnaisance": {
-    "slug": "email-reconnaisance",
-    "proper": "Email Reconnaisance",
+  "xor": { "slug": "xor", "proper": "XOR", "count": 2 },
+  "hamming-code": {
+    "slug": "hamming-code",
+    "proper": "Hamming Code",
     "count": 1
   },
   "wolvsec-ctf": { "slug": "wolvsec-ctf", "proper": "WolvSec CTF", "count": 1 },
@@ -324,5 +206,123 @@
     "slug": "factorization",
     "proper": "Factorization",
     "count": 1
-  }
+  },
+  "davinci-ctf-2022": {
+    "slug": "davinci-ctf-2022",
+    "proper": "DaVinci CTF 2022",
+    "count": 1
+  },
+  "utctf-2022": { "slug": "utctf-2022", "proper": "UTCTF 2022", "count": 1 },
+  "volatility": { "slug": "volatility", "proper": "volatility", "count": 1 },
+  "foobar-ctf-2022": {
+    "slug": "foobar-ctf-2022",
+    "proper": "FooBar CTF 2022",
+    "count": 1
+  },
+  "heap": { "slug": "heap", "proper": "heap", "count": 2 },
+  "shell": { "slug": "shell", "proper": "Shell", "count": 3 },
+  "ugra-ctf-quals-2022": {
+    "slug": "ugra-ctf-quals-2022",
+    "proper": "Ugra CTF Quals 2022",
+    "count": 5
+  },
+  "automation": { "slug": "automation", "proper": "Automation", "count": 1 },
+  "websocket": { "slug": "websocket", "proper": "WebSocket", "count": 1 },
+  "tsjctf-2022": { "slug": "tsjctf-2022", "proper": "TSJCTF 2022", "count": 1 },
+  "caesar-cipher": {
+    "slug": "caesar-cipher",
+    "proper": "Caesar Cipher",
+    "count": 1
+  },
+  "pdf": { "slug": "pdf", "proper": "PDF", "count": 2 },
+  "cmap": { "slug": "cmap", "proper": "CMAP", "count": 1 },
+  "font": { "slug": "font", "proper": "Font", "count": 1 },
+  "snake": { "slug": "snake", "proper": "Snake", "count": 1 },
+  "qr-code": { "slug": "qr-code", "proper": "QR Code", "count": 1 },
+  "music": { "slug": "music", "proper": "Music", "count": 1 },
+  "audio-processing": {
+    "slug": "audio-processing",
+    "proper": "Audio Processing",
+    "count": 1
+  },
+  "talking-piano": {
+    "slug": "talking-piano",
+    "proper": "Talking Piano",
+    "count": 1
+  },
+  "mocsctf-2022": {
+    "slug": "mocsctf-2022",
+    "proper": "MOCSCTF 2022",
+    "count": 1
+  },
+  "house-of-orange": {
+    "slug": "house-of-orange",
+    "proper": "house of orange",
+    "count": 1
+  },
+  "tcache": { "slug": "tcache", "proper": "tcache", "count": 1 },
+  "dice-ctf-2022": {
+    "slug": "dice-ctf-2022",
+    "proper": "DICE CTF 2022",
+    "count": 3
+  },
+  "prototype-pollution": {
+    "slug": "prototype-pollution",
+    "proper": "Prototype Pollution",
+    "count": 2
+  },
+  "cve-2022-21824": {
+    "slug": "cve-2022-21824",
+    "proper": "CVE-2022-21824",
+    "count": 1
+  },
+  "vm2": { "slug": "vm2", "proper": "vm2", "count": 1 },
+  "proxy": { "slug": "proxy", "proper": "Proxy", "count": 1 },
+  "cyber-grabs-ctf-0x03": {
+    "slug": "cyber-grabs-ctf-0x03",
+    "proper": "Cyber Grabs CTF 0x03",
+    "count": 2
+  },
+  "jenkins": { "slug": "jenkins", "proper": "Jenkins", "count": 1 },
+  "privesc": { "slug": "privesc", "proper": "PrivEsc", "count": 1 },
+  "rsa": { "slug": "rsa", "proper": "RSA", "count": 1 },
+  "number-theory": {
+    "slug": "number-theory",
+    "proper": "Number Theory",
+    "count": 1
+  },
+  "unicode": { "slug": "unicode", "proper": "Unicode", "count": 1 },
+  "signature": { "slug": "signature", "proper": "Signature", "count": 1 },
+  "insomnihack-teaser-2022": {
+    "slug": "insomnihack-teaser-2022",
+    "proper": "Insomni'hack teaser 2022",
+    "count": 7
+  },
+  "git": { "slug": "git", "proper": "Git", "count": 1 },
+  "sqli": { "slug": "sqli", "proper": "SQLi", "count": 1 },
+  "json": { "slug": "json", "proper": "JSON", "count": 1 },
+  "android": { "slug": "android", "proper": "Android", "count": 2 },
+  "cv": { "slug": "cv", "proper": "CV", "count": 1 },
+  "video": { "slug": "video", "proper": "Video", "count": 1 },
+  "mobile": { "slug": "mobile", "proper": "Mobile", "count": 1 },
+  "react-native": {
+    "slug": "react-native",
+    "proper": "React Native",
+    "count": 1
+  },
+  "php": { "slug": "php", "proper": "PHP", "count": 4 },
+  "xml": { "slug": "xml", "proper": "XML", "count": 1 },
+  "xxe": { "slug": "xxe", "proper": "XXE", "count": 1 },
+  "jwt": { "slug": "jwt", "proper": "JWT", "count": 1 },
+  "knight-ctf-2022": {
+    "slug": "knight-ctf-2022",
+    "proper": "Knight CTF 2022",
+    "count": 2
+  },
+  "type-juggling": {
+    "slug": "type-juggling",
+    "proper": "Type juggling",
+    "count": 1
+  },
+  "eval": { "slug": "eval", "proper": "eval", "count": 1 }
 }
