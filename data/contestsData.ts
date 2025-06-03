@@ -15,6 +15,29 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 2,
+    ctftimeId: 2636,
+    name: 'SASCTF 2025 Quals',
+    ctfPoints: 8918,
+    ctftimeRating: 28.153,
+    year: 2025,
+    isMerger: true,
+    writeupTag: 'sasctf-2025-quals',
+    startDate: '2025-05-24T12:00:00+00:00',
+    endDate: '2025-05-25T12:00:00+00:00',
+  },
+  {
+    place: 3,
+    ctftimeId: 2632,
+    name: 'Midnight Sun CTF 2025 Quals',
+    ctfPoints: 2113,
+    ctftimeRating: 68.272,
+    year: 2025,
+    isMerger: true,
+    startDate: '2025-05-17T12:00:00+00:00',
+    endDate: '2025-05-18T12:00:00+00:00',
+  },
+  {
     place: 1,
     ctftimeId: 2685,
     name: 'ICCSDFAI',

