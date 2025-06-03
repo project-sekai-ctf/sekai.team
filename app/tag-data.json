@@ -1,4 +1,13 @@
 {
+  "web": { "slug": "web", "proper": "Web", "count": 15 },
+  "sasctf-2025-quals": {
+    "slug": "sasctf-2025-quals",
+    "proper": "SASCTF 2025 Quals",
+    "count": 2
+  },
+  "xss": { "slug": "xss", "proper": "XSS", "count": 5 },
+  "ssrf": { "slug": "ssrf", "proper": "SSRF", "count": 1 },
+  "caddy": { "slug": "caddy", "proper": "Caddy", "count": 1 },
   "pwn": { "slug": "pwn", "proper": "Pwn", "count": 6 },
   "sekaictf-2024": {
     "slug": "sekaictf-2024",
@@ -35,13 +44,11 @@
     "proper": "compiler bug",
     "count": 1
   },
-  "web": { "slug": "web", "proper": "Web", "count": 13 },
   "intigriti-0724": {
     "slug": "intigriti-0724",
     "proper": "Intigriti 0724",
     "count": 1
   },
-  "xss": { "slug": "xss", "proper": "XSS", "count": 4 },
   "javascript": { "slug": "javascript", "proper": "JavaScript", "count": 5 },
   "real-world-ctf-6th": {
     "slug": "real-world-ctf-6th",
