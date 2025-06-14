@@ -9,18 +9,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: azure/docker-login@v1
-        with:
-          login-server: "${{ vars.CONTAINER_REGISTRY }}"
-          username: "${{ vars.DOCKER_USERNAME }}"
-          password: "${{ secrets.DOCKER_PASSWORD }}"
-
-      - name: Build & push Docker image to registry
+      - name: Deploy the new website
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          WORKDIR: ${{ secrets.WORKDIR }}
         run: |
-          image=${{ vars.CONTAINER_REGISTRY }}/sekai:latest
-          docker build -t $image .
-          docker push $image
-
-      - name: Trigger App Service Webhook
-        run: |
-          curl -sX POST '${{ secrets.AZ_WEBHOOK }}' -o/dev/null
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
+          ssh root@$SERVER_IP "cd $WORKDIR && git pull origin master"
+          ssh root@$SERVER_IP "cd $WORKDIR && docker compose up -d --build"
