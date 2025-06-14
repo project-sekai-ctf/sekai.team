@@ -16,6 +16,17 @@ export interface ContestData {
 const contestsData: ContestData[] = [
   {
     place: 2,
+    ctftimeId: 2672,
+    name: 'bi0sCTF 2025',
+    ctfPoints: 15157,
+    ctftimeRating: 117.849,
+    year: 2025,
+    writeupTag: 'bi0sCTF-2025',
+    startDate: '2025-06-07T05:30:00+00:00',
+    endDate: '2025-06-08T17:30:00+00:00',
+  },
+  {
+    place: 2,
     ctftimeId: 2636,
     name: 'SASCTF 2025 Quals',
     ctfPoints: 8918,
