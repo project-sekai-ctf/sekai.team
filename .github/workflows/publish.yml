@@ -20,4 +20,5 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
           ssh root@$SERVER_IP "cd $WORKDIR && git pull origin master"
-          ssh root@$SERVER_IP "cd $WORKDIR && docker compose up -d --build"
+          ssh root@$SERVER_IP "cd $WORKDIR && docker compose build"
+          ssh root@$SERVER_IP "cd $WORKDIR && docker compose restart"
