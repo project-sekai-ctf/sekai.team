@@ -21,4 +21,4 @@ jobs:
           ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
           ssh root@$SERVER_IP "cd $WORKDIR && git pull origin master"
           ssh root@$SERVER_IP "cd $WORKDIR && docker compose build"
-          ssh root@$SERVER_IP "cd $WORKDIR && docker compose restart"
+          ssh root@$SERVER_IP "cd $WORKDIR && docker compose up --force-recreate -d"
