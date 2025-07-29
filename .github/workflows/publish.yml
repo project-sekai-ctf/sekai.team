@@ -22,3 +22,4 @@ jobs:
           ssh root@$SERVER_IP "cd $WORKDIR && git pull origin master"
           ssh root@$SERVER_IP "cd $WORKDIR && docker compose build"
           ssh root@$SERVER_IP "cd $WORKDIR && docker compose up --force-recreate -d"
+          ssh root@$SERVER_IP "docker builder prune -f"
