@@ -62,7 +62,7 @@ again just guessed it probably is free, since we don't use the buffer afterwards
 Next we have an if which checks that the output of a function, which takes the
 data and its size, is equal to the first eight bytes of the packet - which we
 used as the key for the decryption. If the check fails, we print "checksum failed"
-and exit, so this makes it pretty clear that we're using some sort of checksum.
+and exit, so this makes it pretty clear that we’re using some sort of checksum.
 Looking at the function we see that there is a lookuptable. Googling the first
 (nonzero) constant in that table leads us to the crc64 implementation of
 redis which looks exactly like the implementation we got. So either we implement
@@ -78,7 +78,7 @@ are five actions we can perform, it seems that the first one just prints a
 number, so we change the function call with the format specified to `sprintf`,
 the buffer we write into is used after the switch, first we put it into a
 function which returns an int, which we send to the other side using fwrite,
-then we pass the buffer into a second function. This looks like we're just
+then we pass the buffer into a second function. This looks like we’re just
 sending the size of the buffer and then the buffer, so I rename the functions
 to `strlen` and `write_buffer` and the buffer to `output_data` respectively.
 (I ignored the first if case in the function as it had to with futexes and
@@ -89,7 +89,7 @@ those are rarely important).
 So now we know how to communicate (and we can already write a script to
 communicate which just sends packets and receives the answer), however
 the interesting part starts now as we have to reverse the actual part
-we can interact with, so let's look at the switch.
+we can interact with, so let’s look at the switch.
 
 The first case just returns a numberm which is the result of a function
 call with an object which seems to be referenced a lot.
