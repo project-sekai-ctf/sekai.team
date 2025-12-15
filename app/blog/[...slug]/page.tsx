@@ -50,7 +50,7 @@ export async function generateMetadata({
     authors: authorNames,
   } as Record<string, string>
   const query = new URLSearchParams(organizedParams).toString()
-  const defaultSocialBanner = `https://og-vercel-ruby.vercel.app/api/sekai?${query}`
+  const defaultSocialBanner = `https://og-vercel-4x79pbsev-blueset.vercel.app/api/sekai?${query}`
   let imageList = [defaultSocialBanner]
   if (post.images) {
     imageList = typeof post.images === 'string' ? [post.images] : post.images
