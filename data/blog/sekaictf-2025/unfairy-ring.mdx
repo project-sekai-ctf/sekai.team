@@ -61,16 +61,16 @@ There was also some discussion about solving it without key reuse after the CTF 
 So it is quite impressive when Neobeo said that he can solve 7 key case without key reuse and will make a revenge in SekaiCTF.
 The only hints I got from Neobeo are these two screenshots:
 
-![hint1](./static/images/sekaictf-2025/hint1.png)
+![hint1](/static/images/sekaictf-2025/hint1.png)
 
-![hint2](./static/images/sekaictf-2025/hint2.png)
+![hint2](/static/images/sekaictf-2025/hint2.png)
 
 The actual solution is far more complicated than the hints and includes many tricks.
-So in the writeup I'll try to start from the very beginning and explain how we finally get to the 6 keys solution step by step.
+So in the writeup I’ll try to start from the very beginning and explain how we finally get to the 6 keys solution step by step.
 
 ## Preliminaries
 
-Some mathematical tools we'll use later.
+Some mathematical tools we’ll use later.
 
 ### Quadratic Forms over Characteristic 2 Field
 
@@ -152,7 +152,7 @@ This challenge can be formulated as an instance of $MQ^{m}(n, \cdots, n)$ with $
 In the first hint, Neobeo gives two papers Furue et al.[^furue] and Hashimoto[^hashimoto] and both papers explains Thomae Wolf's idea.
 I recommend reading this [slide](https://www.pqcrypto2021.kr/download/program/1.2.1_hirokifurue_slide.pdf) from PQCrypto 2021.
 
-It’s not relevant to the actual solution, but I've finished this section before the drama happened, so I'll keep it here.
+It’s not relevant to the actual solution, but I’ve finished this section before the drama happened, so I’ll keep it here.
 
 [^furue]: H. Furue, S. Nakamura, T. Takagi, Improving Thomae-Wolf algorithm for solving underdetermined multivariate quadratic polynomial problem.
 [^hashimoto]: Y. Hashimoto, An improvement of algorithms to solve under-defined systems of  multivariate quadratic equations.
@@ -166,11 +166,11 @@ The algorithm consists of three steps:
 2. Choose $x_{m+1},\cdots, x_n$ properly so that the equations become linear in $x_1^2, x_2^2, \cdots, x_m^2$. 
 3. Apply Frobenius endomorphism to transform these equations into linear equations in $x_1, x_2, \cdots, x_m$.
 
-Here I'll formulate the steps in polar form.
+Here I’ll formulate the steps in polar form.
 
 #### Step 1
 
-Firstly we'll find a set of linear independent vectors $\mathbf{v}_1,\mathbf{v}_2,\cdots,\mathbf{v}_m$ such that
+Firstly we’ll find a set of linear independent vectors $\mathbf{v}_1,\mathbf{v}_2,\cdots,\mathbf{v}_m$ such that
 
 $$
 f_{M_l}'(\mathbf{v}_i, \mathbf{v}_j)=0, \forall 1\leq i<j\leq m, 1\leq l\leq\alpha
@@ -245,7 +245,7 @@ Luckily, it didn't become a full implement-paper challenge because the orthogona
 
 ### Iterative reduction
 
-We've got two basic operations to reduce the equations,
+We’ve got two basic operations to reduce the equations,
 
 1. Replace $f_{A_i} = t_i$ with $f_{A_i}-cf_{A_j} = t_i - ct_j$, where $c$ is a constant.
 2. Apply a linear transformation $\mathbf{x} = T\mathbf{y}$. $T$ may be non-square and $\mathbf{y}$ is a subspace of $\mathbf{x}$.
@@ -261,7 +261,7 @@ In general, it’s impossible to make all equations orthogonal, so we must cost 
 For a linear transformation $T$, let’s say the columns of $T$ are $\mathbf{t}_0, \cdots, \mathbf{t}_k$.
 We can express the orthogonal condition by the polar form $f_{A_i}'(\mathbf{t}_0,\mathbf{t}_j)=0, 1\leq j\leq k$.
 Hence if we randomly set $\mathbf{t}_0$, the rest $\mathbf{t}_j$ are all in the kernel of linear equations $f_{A_i}'(\mathbf{t}_0,\mathbf{t}_j)=0$.
-Since we've got $m$ equations, the dimension of the kernel is at least $n-m$.
+Since we’ve got $m$ equations, the dimension of the kernel is at least $n-m$.
 Note that $f_{A_i}'(\mathbf{t}_0,\mathbf{t}_0)=0$ always holds, so the largest subspace we can get is $k=n-m-1$.
 
 Once we have an orthogonal variable, we can do the first operation to eliminate the square terms $x_0^2$.
@@ -280,7 +280,7 @@ $$
 
 Now we can keep the last $m-1$ equations and keep reducing it.
 After finding a solution of $x_1, \cdots$, $x_0$ can be easily solved by $x_0^2 = t_1 - Q_1(x_1, \cdots)$ and the Frobenius endomorphism ensures that $x_1$ always has a solution.
-The operations we've done don't damage the orthogonal structure and only the first $n_1$ variables are affected during the reduction.
+The operations we’ve done don't damage the orthogonal structure and only the first $n_1$ variables are affected during the reduction.
 Hence, the last $m-1$ equations is a $MQ^{m-1}(n_1-m-1, n_2, \cdots, n_k)$ problem.
 
 ### Improving the reduction
@@ -312,7 +312,7 @@ What’s the probability of sampling a low rank matrix?
 
 With a good $\mathbf{t}_0$, it is $m-1$ independent equations.
 After exculding the trivial solution $\mathbf{t}_0$, there's $n-1$ variables in the equations.
-Hence the shape of the matrix is $(m-1, n-1)$ and we've shown that the probability of the rank being less than $m$ is $\frac{1}{256^{n-m+1}}$.
+Hence the shape of the matrix is $(m-1, n-1)$ and we’ve shown that the probability of the rank being less than $m$ is $\frac{1}{256^{n-m+1}}$.
 So only if $n-m$ is small, it is possible to sample a low rank matrix.
 
 > Lemma.
@@ -1751,4 +1751,4 @@ It’s very cool because I have no idea how to do GF(256) and these matrix opera
 
 Finally, let’s return fairy-ring and break it with no reused keys.
 
-![fairy-ring sol](./static/images/sekaictf-2025/sol.png)
+![fairy-ring sol](/static/images/sekaictf-2025/sol.png)
