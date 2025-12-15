@@ -49,7 +49,7 @@ length minus eight. So we are entering the key and data and their sizes.
 
 Looking at that function we see a few assertions (including file name, line
 number and function name & arguments), so we can already name all of those.
-If you've ever reversed malware (or some "secure" c2 server), this encryption
+If you’ve ever reversed malware (or some "secure" c2 server), this encryption
 might look familiar, as it is just doing rc4 encryption. It mallocs a new buffer
 for the output and returns a pointer to that.
 
@@ -109,11 +109,11 @@ Yes as it looks like the temporary buffer is used as the format for
 a printf to the output buffer... Well, if that's not handy...
 
 The next case takes the rest of the buffer as a string (`char*`) and
-calls another function with it, which probably means it's inserting
+calls another function with it, which probably means its inserting
 that into the list. Then we get the iterator and end iterator of that
 returned string, then we clear the topmost bit of every char along the
 way (We iterate over all the chars we just put into the string)
-This is likely to limit us to ascii-only values, but we'll see about that
+This is likely to limit us to ascii-only values, but we’ll see about that
 
 The fourth case just calls a function and returns "OK", my guess was this
 clears the list and with a bit of experimenting that seemed to be the
@@ -222,7 +222,7 @@ with a ropgadget to increase the stack pointer (So it ends up in our buffer)
 Next we just add the format, then get the string (which executes the vulnerability),
 with optional data being set to the formatstring payload and the ropchain.
 
-There are some magic values, but they're not really that magic, the base
+There are some magic values, but they’re not really that magic, the base
 stack address is just calculated, since we have two returns and the gadget
 increases the stack address by 0x78, we have a total of 0x88 bytes,
 the 0x14fd22 is the offset to that gadget, the 553 is the offset into the

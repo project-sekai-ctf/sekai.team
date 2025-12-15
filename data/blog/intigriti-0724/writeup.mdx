@@ -11,7 +11,7 @@ summary: 'Chaining DOM Clobbering and Relative Path Overwrite to obtain XSS.'
 
 ## Introduction
 
-I started this July by solving the usual Intigriti challenge, it was a straightforward and fun challenge where as usual you need to connect the bugs and features you got and leverage them to an XSS in order to alert `document.domain`. In this blog post, I'll be explaining the different attack techniques encountered in this challenge, how I used them to pop an alert and my thinking methodology while solving the challenge.
+I started this July by solving the usual Intigriti challenge, it was a straightforward and fun challenge where as usual you need to connect the bugs and features you got and leverage them to an XSS in order to alert `document.domain`. In this blog post, I’ll be explaining the different attack techniques encountered in this challenge, how I used them to pop an alert and my thinking methodology while solving the challenge.
 
 ## Overview
 
@@ -147,7 +147,7 @@ Reading the source code, we can see **dompurify** being included at the top and 
   }
 ```
 
-The first 2 lines take the input and inserts it into the DOM. Later, there is a check `origin === "http://localhost"` checking if the current origin is **localhost** or not. If so, it will define the **isDevelopment** variable we've seen in the dynamic analysis part and set it to **true**. All the code below that check will be executed only if **isDevelopment** variable is set to anything beside $0$ or **false**. 
+The first 2 lines take the input and inserts it into the DOM. Later, there is a check `origin === "http://localhost"` checking if the current origin is **localhost** or not. If so, it will define the **isDevelopment** variable we’ve seen in the dynamic analysis part and set it to **true**. All the code below that check will be executed only if **isDevelopment** variable is set to anything beside $0$ or **false**. 
 
 Since it’s impossible to set **origin** to **localhost** in this case, we need to figure out how can we initialize the **isDevelopment** variable.
 
@@ -185,7 +185,7 @@ As expected the reference error saying **isDevelopment** variable is undefined i
 < <a id="isDevelopment"></a>
 ```
 
-So far so good. We are now inside the **try** block and its working well so no errors are thrown. We can also take a look at **DOMPurify** source code included by the challenge's page for `throw` statements, as this is the way to throw errors explicitly in JavaScript, maybe one malformed input will trigger an error. I’m not going to dig into this path as this will not help solve the challenge nor is the right way. However, doing so you'll find 5 `throw` statements and if you limit the code to only the part that is going to execute with the default configuration you practically have no way to throw an error. So how are we going to pass to the **catch** block.
+So far so good. We are now inside the **try** block and its working well so no errors are thrown. We can also take a look at **DOMPurify** source code included by the challenge's page for `throw` statements, as this is the way to throw errors explicitly in JavaScript, maybe one malformed input will trigger an error. I’m not going to dig into this path as this will not help solve the challenge nor is the right way. However, doing so you’ll find 5 `throw` statements and if you limit the code to only the part that is going to execute with the default configuration you practically have no way to throw an error. So how are we going to pass to the **catch** block.
 
 ### Relative Path Overwrite (RPO)
 
