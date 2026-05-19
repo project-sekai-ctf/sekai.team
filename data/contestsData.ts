@@ -15,6 +15,16 @@ export interface ContestData {
 
 const contestsData: ContestData[] = [
   {
+    place: 1000,
+    name: 'CVE-2026-6068',
+    ctfPoints: 0,
+    ctftimeRating: 0,
+    writeupTag: 'nasm-cve-disclosure',
+    year: 2026,
+    startDate: '2026-05-18T00:00:00+00:00',
+    endDate: '2026-05-19T00:00:00+00:00',
+  },
+  {
     place: 5,
     ctftimeId: 2999,
     name: 'Cyber Mimic Defense Finals',
