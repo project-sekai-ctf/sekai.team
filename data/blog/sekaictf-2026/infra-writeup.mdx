@@ -33,7 +33,17 @@ There is not much to talk about the platform honestly, it just.. works. And does
 We were hosting the platform instance on a hetzner vps with **the databases hosted in the same compose stack**.
 Here is the CPU usage graph to give you an idea how lightweight everything is (keep in mind, SekaiCTF is a _very_ popular CTF event).
 
-![CPU usage (%) / platform + databases](/static/images/sekaictf-2026/cpu-usage-platform-databases.svg)
+<figure className="not-prose my-6">
+  <figcaption className="mb-1 text-sm text-muted-foreground">
+    CPU usage (%) / platform + databases
+    <span className="opacity-70"> / ~1m/point (peak)</span>
+  </figcaption>
+  <img
+    src="/static/images/sekaictf-2026/cpu-usage-platform-databases.svg"
+    alt="CPU usage (%) / platform + databases"
+    className="m-0 block h-auto w-full border border-border bg-background"
+  />
+</figure>
 
 For reference, for all the previous years we hosted, we were using CTFd with a custom theme. And during all previous years, except for 2025, we were experiencing one _very_ annoying issue, which is the platform going down during the start of the CTF, because CTFd is horrible with the resource usage. It’s especially funny, because every year we were increasing the specs but it was never enough. In 2025, though, we overprovisioned to the absolute limits and it was the first year when we didn’t go down during the first minutes of the CTF (unfortunately the metrics were lost).
 
@@ -300,7 +310,17 @@ Those per-team anvil pods get the same default-deny treatment as everything else
 
 We had only 2 ethereum challenges and here’s how many of those anvil instances were alive throughout the CTF:
 
-![active ethereum instances](/static/images/sekaictf-2026/active-ethereum-instances.svg)
+<figure className="not-prose my-6">
+  <figcaption className="mb-1 text-sm text-muted-foreground">
+    active ethereum instances
+    <span className="opacity-70"> / ~5m/point</span>
+  </figcaption>
+  <img
+    src="/static/images/sekaictf-2026/active-ethereum-instances.svg"
+    alt="active ethereum instances"
+    className="m-0 block h-auto w-full border border-border bg-background"
+  />
+</figure>
 
 It’s a fork of [paradigm’s CTF infra](https://github.com/paradigmxyz/paradigm-ctf-infrastructure) with a few fixes on top. Unfortunately, the code quality of this project and architecture designs are somewhat poor, so in the future I am planning on fully rewriting it from scratch instead of trying to fix it. Though, I must admit, it does work pretty reliably.
 
@@ -311,11 +331,31 @@ The `instancer-infra` cluster consisted of two node pools:
 - primary pool: running 2 to 32 `n2-standard-8` (8 vCPU, 32GiB) nodes per zone
 - arm64 pool: running 1 to 8 `c4a-standard-8` (AArch64, 8 vCPU, 32GiB) nodes per zone
 
-![instancer cluster nodes](/static/images/sekaictf-2026/instancer-cluster-nodes.svg)
+<figure className="not-prose my-6">
+  <figcaption className="mb-1 text-sm text-muted-foreground">
+    instancer cluster nodes
+    <span className="opacity-70"> / ~5m/point</span>
+  </figcaption>
+  <img
+    src="/static/images/sekaictf-2026/instancer-cluster-nodes.svg"
+    alt="instancer cluster nodes"
+    className="m-0 block h-auto w-full border border-border bg-background"
+  />
+</figure>
 
 Over the whole weekend the instancer spawned around 6,400 instances:
 
-![active instances](/static/images/sekaictf-2026/active-instances.svg)
+<figure className="not-prose my-6">
+  <figcaption className="mb-1 text-sm text-muted-foreground">
+    active instances
+    <span className="opacity-70"> / ~5m/point</span>
+  </figcaption>
+  <img
+    src="/static/images/sekaictf-2026/active-instances.svg"
+    alt="active instances"
+    className="m-0 block h-auto w-full border border-border bg-background"
+  />
+</figure>
 
 #### One more custom kubernetes operator
 
@@ -590,4 +630,14 @@ To be clear, €465 was sort of the point. I had a pile of Google credits to bur
 
 This price does not include Postmark/Hetzner bills, but that was cheap anyway.
 
-![HTTP requests per second](/static/images/sekaictf-2026/http-requests-per-second.svg)
+<figure className="not-prose my-6">
+  <figcaption className="mb-1 text-sm text-muted-foreground">
+    HTTP requests per second
+    <span className="opacity-70"> / ~5m/point</span>
+  </figcaption>
+  <img
+    src="/static/images/sekaictf-2026/http-requests-per-second.svg"
+    alt="HTTP requests per second"
+    className="m-0 block h-auto w-full border border-border bg-background"
+  />
+</figure>
