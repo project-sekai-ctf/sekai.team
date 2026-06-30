@@ -1,12 +1,13 @@
 # Install dependencies and build the app
 FROM node:18.20.2 AS builder
-COPY . /app
 WORKDIR /app
-RUN npm i
+COPY package.json package-lock.json ./
+RUN npm ci --ignore-scripts
+COPY . .
 RUN npx next build
 
 # Production image
-FROM node:18.20.2-alpine as runner
+FROM node:18.20.2-alpine AS runner
 ENV NODE_ENV=production
 WORKDIR /app
 RUN chown -R node:node /app
@@ -17,4 +18,4 @@ COPY --chown=node:node --from=builder /app/public /app/public
 COPY --chown=node:node --from=builder /app/next.config.js /app/
 COPY --chown=node:node --from=builder /app/package.json /app/
 EXPOSE 3000
-CMD npx next start
+CMD ["npx", "next", "start"]
